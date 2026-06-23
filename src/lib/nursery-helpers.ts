@@ -52,10 +52,6 @@ export type NurseryCalendarEntry = {
   note?: string;
 };
 
-export type TodaySpecialEvent = {
-  time: string;
-  label: string;
-};
 
 export const CALENDAR_ENTRY_TYPE_OPTIONS: Array<{
   value: CalendarEntryType;
@@ -498,18 +494,6 @@ export function toDateKey(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
-export function getTodaySpecialEvents(
-  entries: NurseryCalendarEntry[],
-  referenceDate: Date = new Date(),
-) {
-  const dateKey = toDateKey(referenceDate);
-  return getEntriesForDate(entries, dateKey)
-    .filter((entry) => entry.entry_type === "event" && entry.start_time)
-    .map((entry) => ({
-      time: formatDisplayTime(entry.start_time!),
-      label: entry.title,
-    }));
-}
 
 export function buildMonthGrid(year: number, month: number) {
   const firstDay = new Date(year, month - 1, 1);
@@ -560,8 +544,7 @@ export const CALENDAR_VIEW_OPTIONS: Array<{ value: CalendarViewMode; label: stri
 ];
 
 export function parseDateKey(dateKey: string) {
-  const [year, month, day] = dateKey.split("-").map(Number);
-  return new Date(year!, month! - 1, day!);
+  return new Date(`${dateKey}T12:00:00`);
 }
 
 export function addDaysToDateKey(dateKey: string, days: number) {
@@ -571,13 +554,12 @@ export function addDaysToDateKey(dateKey: string, days: number) {
 }
 
 export function getWeekDateKeys(dateKey: string) {
-  const date = new Date(`${dateKey}T12:00:00`);
-  const dayOfWeek = date.getDay();
-  const monday = new Date(date);
-  monday.setDate(date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
+  const anchor = parseDateKey(dateKey);
+  const sunday = new Date(anchor);
+  sunday.setDate(anchor.getDate() - anchor.getDay());
   return Array.from({ length: 7 }, (_, index) => {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + index);
+    const d = new Date(sunday);
+    d.setDate(sunday.getDate() + index);
     return toDateKey(d);
   });
 }
@@ -587,15 +569,15 @@ export function getEntriesForWeek(entries: NurseryCalendarEntry[], dateKey: stri
   return sortCalendarEntries(entries.filter((entry) => weekKeys.has(entry.entry_date)));
 }
 
-export function formatWeekRangeLabel(dateKey: string) {
-  const keys = getWeekDateKeys(dateKey);
-  const first = keys[0]!;
-  const last = keys[6]!;
-  const start = new Date(`${first}T12:00:00`);
-  const end = new Date(`${last}T12:00:00`);
-  const startLabel = start.toLocaleDateString("ja-JP", { month: "long", day: "numeric" });
-  const endLabel = end.toLocaleDateString("ja-JP", { month: "long", day: "numeric" });
-  return `${startLabel} 〜 ${endLabel}`;
+export function formatWeekRangeLabel(weekDateKeys: string[]) {
+  const start = parseDateKey(weekDateKeys[0]!);
+  const end = parseDateKey(weekDateKeys[6]!);
+  const startText = start.toLocaleDateString("ja-JP", { month: "long", day: "numeric" });
+  const endText = end.toLocaleDateString("ja-JP", { month: "long", day: "numeric" });
+  if (start.getMonth() === end.getMonth()) {
+    return `${start.getFullYear()}年${start.getMonth() + 1}月${start.getDate()}日〜${end.getDate()}日`;
+  }
+  return `${start.getFullYear()}年${startText}〜${endText}`;
 }
 
 export function formatDayHeading(dateKey: string) {
@@ -617,11 +599,23 @@ export function createClosedDayId() {
 }
 
 export function sortClosedDays(days: NurseryClosedDay[]) {
-  return [...days].sort((a, b) => a.date.localeCompare(b.date));
+  return [...days].sort((a, b) => {
+    const aKey = a.repeats_annually
+      ? parseDateKey(a.date).getMonth() * 100 + parseDateKey(a.date).getDate()
+      : parseDateKey(a.date).getTime();
+    const bKey = b.repeats_annually
+      ? parseDateKey(b.date).getMonth() * 100 + parseDateKey(b.date).getDate()
+      : parseDateKey(b.date).getTime();
+    return aKey - bKey;
+  });
 }
 
-export function formatClosedDayDateLabel(date: string) {
-  return new Date(`${date}T12:00:00`).toLocaleDateString("ja-JP", {
+export function formatClosedDayDateLabel(entry: NurseryClosedDay) {
+  const parsed = parseDateKey(entry.date);
+  if (entry.repeats_annually) {
+    return `${parsed.getMonth() + 1}月${parsed.getDate()}日（毎年）`;
+  }
+  return parsed.toLocaleDateString("ja-JP", {
     year: "numeric",
     month: "long",
     day: "numeric",

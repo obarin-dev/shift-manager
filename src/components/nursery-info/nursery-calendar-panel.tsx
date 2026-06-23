@@ -275,7 +275,7 @@ export function NurseryCalendarPanel() {
       return {
         prevLabel: "前週",
         nextLabel: "翌週",
-        title: formatWeekRangeLabel(weekDateKeys[0] ?? focusDate),
+        title: formatWeekRangeLabel(weekDateKeys),
         onPrev: () => shiftFocusDate(-7),
         onNext: () => shiftFocusDate(7),
       };

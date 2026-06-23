@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { requireAuth } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
+import { AdminShell } from "@/components/layout/admin-shell";
+import { AppHeader } from "@/components/layout/app-header";
+import { NurseryHubCard } from "@/components/nursery/nursery-hub-card";
+
 type NurseryHubCardConfig = {
   title: string;
   description: string;
@@ -40,10 +45,6 @@ const NURSERY_HUB_CARDS: NurseryHubCardConfig[] = [
       "M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM20 8v6M17 11h6",
   },
 ];
-import { requireAuth } from "@/lib/page-auth";
-import { AdminShell } from "@/components/layout/admin-shell";
-import { AppHeader } from "@/components/layout/app-header";
-import { NurseryHubCard } from "@/components/nursery/nursery-hub-card";
 
 export default async function NurseryPage() {
   const { account } = await requireAuth();

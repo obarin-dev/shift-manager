@@ -305,4 +305,3 @@ export function getRosterCellStaffSlots(staffIds: string[]) {
   return staffIds;
 }
 
-export { sortClassrooms };

@@ -159,18 +159,8 @@ async function main() {
         age_group: classroom.ageGroup,
         child_count: classroom.childCount,
         auxiliary_slots: classroom.auxiliarySlots,
-        main_staff_id:
-          classroom.id === "class-1"
-            ? "staff-1"
-            : classroom.id === "class-mixed"
-              ? "staff-3"
-              : null,
-        other_staff_ids:
-          classroom.id === "class-1"
-            ? ["staff-2"]
-            : classroom.id === "class-mixed"
-              ? ["staff-4", "staff-6"]
-              : [],
+        main_staff_id: classroom.mainStaffId ?? null,
+        other_staff_ids: classroom.otherStaffIds,
         note: classroom.note || null,
       },
     });

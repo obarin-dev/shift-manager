@@ -257,7 +257,7 @@ export function NurseryRestDaysSection({
                 <li key={entry.id} className="nursery-closed-days-list__item">
                   <div>
                     <p className="nursery-closed-days-list__date">
-                      {formatClosedDayDateLabel(entry.date)}
+                      {formatClosedDayDateLabel(entry)}
                     </p>
                     <p className="nursery-closed-days-list__title">{entry.title}</p>
                   </div>
@@ -326,7 +326,7 @@ export function NurseryRestDaysSection({
                   <li key={entry.id} className="nursery-closed-days-list__item">
                     <div>
                       <p className="nursery-closed-days-list__date">
-                        {formatClosedDayDateLabel(entry.date)}
+                        {formatClosedDayDateLabel(entry)}
                       </p>
                       <p className="nursery-closed-days-list__title">{entry.title}</p>
                     </div>
