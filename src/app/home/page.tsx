@@ -3,7 +3,6 @@ import { buildAdminHref } from "@/lib/admin-navigation";
 import { listCalendarEntries, getTodaySpecialEvents, toDateKey } from "@/lib/calendar-entry-db";
 import { requireAuth } from "@/lib/page-auth";
 import { HomeFeatureCard } from "@/components/home/home-feature-card";
-import { StaffRequestAlert } from "@/components/home/staff-request-alert";
 import { TodayScheduleHeader } from "@/components/home/today-schedule-header";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
@@ -11,7 +10,6 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarIcon } from "@/components/layout/sidebar-icon";
 import { DailyRosterGrid } from "@/components/roster/daily-roster-grid";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
-import { listAdminStaffRequestAlerts } from "@/lib/staff-request-db";
 import type { UserRole } from "@/lib/auth-session";
 import type { ReactNode } from "react";
 
@@ -189,16 +187,6 @@ export default async function HomePage() {
   }
 
   if (role === "admin") {
-    let staffRequestAlerts: Awaited<ReturnType<typeof listAdminStaffRequestAlerts>> = {
-      total: 0,
-      requests: [],
-    };
-    try {
-      staffRequestAlerts = await listAdminStaffRequestAlerts(account.nurseryId);
-    } catch {
-      // 出勤希望アラートは補助情報なので、失敗してもホーム表示は継続する
-    }
-
     return (
       <AdminShell
         activeNav="home"
@@ -211,7 +199,6 @@ export default async function HomePage() {
           dateLabel={todayLabel}
           items={todayScheduleItems}
         />
-        <StaffRequestAlert total={staffRequestAlerts.total} />
         <DailyRosterGrid
           className="home-roster-panel"
           nurseryName={nurseryName}
