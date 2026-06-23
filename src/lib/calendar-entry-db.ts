@@ -136,3 +136,28 @@ export async function deleteCalendarEntry(id: string) {
   await prisma.calendarEntry.delete({ where: { id } });
 }
 
+export function toDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export type TodaySpecialEvent = {
+  time: string;
+  label: string;
+};
+
+export function getTodaySpecialEvents(
+  entries: NurseryCalendarEntry[],
+  referenceDate: Date = new Date(),
+): TodaySpecialEvent[] {
+  const dateKey = toDateKey(referenceDate);
+  return entries
+    .filter((entry) => entry.entry_date === dateKey && entry.entry_type === "event" && entry.start_time)
+    .map((entry) => ({
+      time: entry.start_time!.slice(0, 5),
+      label: entry.title,
+    }));
+}
+

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-import type { UserRole } from "@/lib/mock-auth";
+
+export type UserRole = "admin" | "manager" | "staff";
 
 export const SESSION_COOKIE_NAME = "shift_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;

@@ -10,7 +10,7 @@ import {
   type StaffRequestWriteInput,
 } from "@/lib/staff-request-db";
 import { getAuthAccountByUserId } from "@/lib/user-db";
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
 

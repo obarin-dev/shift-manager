@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { buildAdminHref } from "@/lib/admin-navigation";
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 import type { AuthAccount } from "@/lib/user-db";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
