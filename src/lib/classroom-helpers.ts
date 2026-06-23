@@ -152,52 +152,6 @@ function timeToMinutes(value: string) {
   return Number(match[1]) * 60 + Number(match[2]);
 }
 
-export const INITIAL_MOCK_CLASSROOMS: Classroom[] = [
-  {
-    id: "class-0",
-    name: "0歳児クラス",
-    ageGroup: "age_0",
-    childCount: 8,
-    auxiliarySlots: [{ id: "aux-0-1", count: 1, time: "10:00-15:00" }],
-    mainStaffId: null,
-    otherStaffIds: [],
-    note: "",
-  },
-  {
-    id: "class-1",
-    name: "1歳児クラス",
-    ageGroup: "age_1",
-    childCount: 12,
-    auxiliarySlots: [
-      { id: "aux-1-1", count: 1, time: "9:00-12:00" },
-      { id: "aux-1-2", count: 1, time: "14:00-17:00" },
-    ],
-    mainStaffId: "staff-1",
-    otherStaffIds: ["staff-2"],
-    note: "",
-  },
-  {
-    id: "class-2",
-    name: "2歳児クラス",
-    ageGroup: "age_2",
-    childCount: 15,
-    auxiliarySlots: [{ id: "aux-2-1", count: 2, time: "14:00-17:00" }],
-    mainStaffId: null,
-    otherStaffIds: [],
-    note: "",
-  },
-  {
-    id: "class-mixed",
-    name: "3・4・5歳児クラス",
-    ageGroup: "mixed",
-    childCount: 18,
-    auxiliarySlots: [{ id: "aux-m-1", count: 2, time: "12:00-15:00" }],
-    mainStaffId: "staff-3",
-    otherStaffIds: ["staff-4", "staff-6"],
-    note: "3歳児・4歳児・5歳児を同一クラスで運営しています。",
-  },
-];
-
 export function sortClassrooms(classrooms: Classroom[]) {
   return [...classrooms].sort((a, b) => {
     const ageDiff =

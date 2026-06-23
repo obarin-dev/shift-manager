@@ -1,4 +1,4 @@
-import type { Classroom } from "@/lib/mock-classes";
+import type { Classroom } from "@/lib/classroom-helpers";
 
 export type StaffClassAssignment = {
   homeroomClassId: string | null;

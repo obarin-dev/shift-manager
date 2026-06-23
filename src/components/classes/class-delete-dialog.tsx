@@ -1,6 +1,6 @@
 "use client";
 
-import type { Classroom } from "@/lib/mock-classes";
+import type { Classroom } from "@/lib/classroom-helpers";
 
 type ClassDeleteDialogProps = {
   classroom: Classroom | null;

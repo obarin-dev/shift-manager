@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { StaffMember } from "@/lib/mock-staff";
+import type { StaffMember } from "@/lib/staff-helpers";
 
 export function useStaffList() {
   const [staff, setStaff] = useState<StaffMember[]>([]);

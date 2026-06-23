@@ -6,8 +6,8 @@ import type {
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
-import type { EmploymentType, JobType, StaffMember, StaffShiftTime } from "@/lib/mock-staff";
-import { getJobTypeLabel } from "@/lib/mock-staff";
+import type { EmploymentType, JobType, StaffMember, StaffShiftTime } from "@/lib/staff-helpers";
+import { getJobTypeLabel } from "@/lib/staff-helpers";
 import { formatDbTime, parseTimeToDate } from "@/lib/nursery-time";
 
 export type StaffWriteInput = {

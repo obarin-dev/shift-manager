@@ -3,7 +3,7 @@
 import {
   getAgeGroupLabel,
   type Classroom,
-} from "@/lib/mock-classes";
+} from "@/lib/classroom-helpers";
 type ClassDetailPanelProps = {
   classroom: Classroom | null;
   getStaffName: (id: string | null | undefined) => string | null;

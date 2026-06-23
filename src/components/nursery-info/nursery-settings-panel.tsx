@@ -9,7 +9,7 @@ import {
   isWorkShiftType,
   type NurseryProfile,
   type ShiftTypeDefinition,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 import { ShiftTypeInlineRow } from "@/components/nursery-info/shift-type-inline-row";
 import {
   DEFAULT_SHIFT_TYPE_COLOR,

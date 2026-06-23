@@ -1,10 +1,9 @@
 import {
-  INITIAL_MOCK_CLASSROOMS,
   generateTimeOptions,
   sortClassrooms,
   type Classroom,
-} from "@/lib/mock-classes";
-import { getStaffSurname } from "@/lib/mock-shift-schedule";
+} from "@/lib/classroom-helpers";
+import { getStaffSurname } from "@/lib/shift-helpers";
 
 export type RosterTimeSlot = string;
 
@@ -12,7 +11,6 @@ export type RosterCellAssignment = {
   row_id: string;
   classroom_id: string;
   staff_ids: string[];
-  /** 旧データ互換（読み込み時のみ使用） */
   time_slot?: RosterTimeSlot;
 };
 
@@ -99,10 +97,6 @@ export function buildRosterTimeSlots(
   );
 }
 
-export function getRosterClassrooms() {
-  return sortClassrooms(INITIAL_MOCK_CLASSROOMS);
-}
-
 function hashSeed(value: string) {
   let hash = 0;
   for (let index = 0; index < value.length; index += 1) {
@@ -129,7 +123,7 @@ function normalizeRosterTime(value: string) {
 export function migrateRosterAssignments(
   rows: Array<{ id: string; kind: string; timeSlot?: string }>,
   assignments: RosterCellAssignment[],
-  classrooms: Classroom[] = getRosterClassrooms(),
+  classrooms: Classroom[] = [],
 ): RosterCellAssignment[] {
   if (assignments.length === 0) {
     return [];
@@ -190,7 +184,7 @@ export function migrateRosterAssignments(
 export function buildMockRosterAssignments(
   dateKey: string,
   scheduleRows: RosterScheduleRowRef[],
-  classrooms: Classroom[] = getRosterClassrooms(),
+  classrooms: Classroom[] = [],
 ): RosterCellAssignment[] {
   return scheduleRows.flatMap((row) =>
     classrooms.map((classroom) => {
@@ -303,7 +297,6 @@ export function setRosterCellStaffIds(
   });
 }
 
-/** セル表示用: 最低1枠のコンボボックスを確保 */
 export function getRosterCellStaffSlots(staffIds: string[]) {
   if (staffIds.length === 0) {
     return [""];
@@ -311,3 +304,5 @@ export function getRosterCellStaffSlots(staffIds: string[]) {
 
   return staffIds;
 }
+
+export { sortClassrooms };

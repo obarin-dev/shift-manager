@@ -12,10 +12,10 @@ import {
   validateClosedDayInput,
   type NurseryClosedDay,
   type NurseryRestSettings,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 
 function weeklyClosedLabel(days: number[], closeOnPublicHolidays: boolean) {
-  const parts = days.map((day) => WEEKDAY_LABELS[day]);
+  const parts: string[] = days.map((day) => WEEKDAY_LABELS[day] ?? String(day));
   if (closeOnPublicHolidays) {
     parts.push(PUBLIC_HOLIDAY_RULE_LABEL);
   }
@@ -126,7 +126,7 @@ export function NurseryRestDaysSection({
   };
 
   const handleAddClosedDay = () => {
-    const errors = validateClosedDayInput({ date: newDate, title: newTitle });
+    const errors = validateClosedDayInput(newDate, newTitle, closedDaysDraft);
     setAddErrors(errors);
     if (Object.keys(errors).length > 0) {
       return;
@@ -257,7 +257,7 @@ export function NurseryRestDaysSection({
                 <li key={entry.id} className="nursery-closed-days-list__item">
                   <div>
                     <p className="nursery-closed-days-list__date">
-                      {formatClosedDayDateLabel(entry)}
+                      {formatClosedDayDateLabel(entry.date)}
                     </p>
                     <p className="nursery-closed-days-list__title">{entry.title}</p>
                   </div>
@@ -326,7 +326,7 @@ export function NurseryRestDaysSection({
                   <li key={entry.id} className="nursery-closed-days-list__item">
                     <div>
                       <p className="nursery-closed-days-list__date">
-                        {formatClosedDayDateLabel(entry)}
+                        {formatClosedDayDateLabel(entry.date)}
                       </p>
                       <p className="nursery-closed-days-list__title">{entry.title}</p>
                     </div>

@@ -4,7 +4,7 @@ import type {
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
-import type { NurseryCalendarEntry } from "@/lib/mock-nursery-info";
+import type { NurseryCalendarEntry } from "@/lib/nursery-helpers";
 import { formatDbDate, formatDbTime, parseDateToDb, parseTimeToDate } from "@/lib/nursery-time";
 
 export type CalendarEntryWriteInput = {

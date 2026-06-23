@@ -1,18 +1,42 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
-import { INITIAL_MOCK_CLASSROOMS } from "../src/lib/mock-classes";
 import {
   INITIAL_NURSERY_CALENDAR_ENTRIES,
   INITIAL_NURSERY_PROFILE,
   INITIAL_NURSERY_REST,
-  INITIAL_SHIFT_TYPES,
-} from "../src/lib/mock-nursery-info";
-import { MOCK_ACCOUNTS } from "../src/lib/mock-auth";
-import { MOCK_STAFF } from "../src/lib/mock-staff";
+} from "../src/lib/nursery-helpers";
 import { DEFAULT_NURSERY_ID } from "../src/lib/nursery-db";
 import { parseTimeToDate } from "../src/lib/nursery-time";
 import { hashPassword } from "../src/lib/user-db";
+
+const SEED_ACCOUNTS = [
+  { role: "admin" as const, email: "admin@example.com" },
+  { role: "manager" as const, email: "manager@example.com" },
+  { role: "staff" as const, email: "staff@example.com" },
+];
+
+const SEED_STAFF = [
+  { id: "staff-1", staff_id: "000001", name: "山田 花子", employment_type: "seikin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1", "class-mixed"], work_availability: { start: "07:00", end: "19:30" }, is_active: true },
+  { id: "staff-2", staff_id: "000002", name: "佐藤 太郎", employment_type: "hijokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1"], work_availability: { start: "07:30", end: "09:00" }, is_active: true },
+  { id: "staff-3", staff_id: "000003", name: "鈴木 美咲", employment_type: "jokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-2", "class-mixed"], work_availability: { start: "15:00", end: "19:00" }, is_active: true },
+  { id: "staff-4", staff_id: "000004", name: "高橋 健", employment_type: "hijokin" as const, job_type: "nurse" as const, has_nursery_teacher_license: false, capable_class_ids: ["class-0"], work_availability: { start: "14:00", end: "18:00" }, is_active: true },
+  { id: "staff-5", staff_id: "000005", name: "田中 由美", employment_type: "hijokin" as const, job_type: "cook" as const, has_nursery_teacher_license: false, capable_class_ids: ["class-mixed"], work_availability: { start: "", end: "" }, is_active: true },
+  { id: "staff-6", staff_id: "000006", name: "伊藤 誠", employment_type: "jokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-0", "class-2"], work_availability: { start: "07:00", end: "19:00" }, is_active: true },
+];
+
+const SEED_CLASSROOMS = [
+  { id: "class-0", name: "0歳児クラス", ageGroup: "age_0" as const, childCount: 8, auxiliarySlots: [{ id: "aux-0-1", count: 1, time: "10:00-15:00" }], mainStaffId: null, otherStaffIds: [] as string[], note: "" },
+  { id: "class-1", name: "1歳児クラス", ageGroup: "age_1" as const, childCount: 12, auxiliarySlots: [{ id: "aux-1-1", count: 1, time: "9:00-12:00" }, { id: "aux-1-2", count: 1, time: "14:00-17:00" }], mainStaffId: "staff-1", otherStaffIds: ["staff-2"], note: "" },
+  { id: "class-2", name: "2歳児クラス", ageGroup: "age_2" as const, childCount: 15, auxiliarySlots: [{ id: "aux-2-1", count: 2, time: "14:00-17:00" }], mainStaffId: null, otherStaffIds: [] as string[], note: "" },
+  { id: "class-mixed", name: "3・4・5歳児クラス", ageGroup: "mixed" as const, childCount: 18, auxiliarySlots: [{ id: "aux-m-1", count: 2, time: "12:00-15:00" }], mainStaffId: "staff-3", otherStaffIds: ["staff-4", "staff-6"], note: "3歳児・4歳児・5歳児を同一クラスで運営しています。" },
+];
+
+const SEED_SHIFT_TYPES = [
+  { id: "shift-early", code: "early", name: "早番", start: "07:00", end: "15:00", is_active: true, sort_order: 1, color: "#BFDBFE" },
+  { id: "shift-day", code: "day", name: "日勤", start: "09:00", end: "17:00", is_active: true, sort_order: 2, color: "#BBF7D0" },
+  { id: "shift-late", code: "late", name: "遅番", start: "11:00", end: "19:00", is_active: true, sort_order: 3, color: "#FED7AA" },
+];
 
 async function main() {
   const connectionString = process.env.DATABASE_URL;
@@ -78,19 +102,19 @@ async function main() {
         title: entry.title,
         repeats_annually:
           "repeats_annually" in entry ? Boolean(entry.repeats_annually) : false,
-        start_time: entry.start_time ? parseTimeToDate(entry.start_time) : null,
-        end_time: entry.end_time ? parseTimeToDate(entry.end_time) : null,
-        open_time: entry.open_time ? parseTimeToDate(entry.open_time) : null,
-        close_time: entry.close_time ? parseTimeToDate(entry.close_time) : null,
-        extended_close_time: entry.extended_close_time
+        start_time: "start_time" in entry && entry.start_time ? parseTimeToDate(entry.start_time) : null,
+        end_time: "end_time" in entry && entry.end_time ? parseTimeToDate(entry.end_time) : null,
+        open_time: "open_time" in entry && entry.open_time ? parseTimeToDate(entry.open_time) : null,
+        close_time: "close_time" in entry && entry.close_time ? parseTimeToDate(entry.close_time) : null,
+        extended_close_time: "extended_close_time" in entry && entry.extended_close_time
           ? parseTimeToDate(entry.extended_close_time)
           : null,
-        note: entry.note ?? null,
+        note: "note" in entry ? (entry.note ?? null) : null,
       },
     });
   }
 
-  for (const staff of MOCK_STAFF) {
+  for (const staff of SEED_STAFF) {
     const exists = await prisma.staff.findUnique({
       where: { id: staff.id },
       select: { id: true },
@@ -119,7 +143,7 @@ async function main() {
     });
   }
 
-  for (const classroom of INITIAL_MOCK_CLASSROOMS) {
+  for (const classroom of SEED_CLASSROOMS) {
     const exists = await prisma.classroom.findUnique({
       where: { id: classroom.id },
       select: { id: true },
@@ -159,7 +183,7 @@ async function main() {
     "staff@example.com": "staff-6",
   };
 
-  for (const account of MOCK_ACCOUNTS) {
+  for (const account of SEED_ACCOUNTS) {
     const userId = `user-${account.role}`;
     const exists = await prisma.user.findUnique({
       where: { id: userId },
@@ -204,7 +228,7 @@ async function main() {
     });
   }
 
-  for (const shiftType of INITIAL_SHIFT_TYPES) {
+  for (const shiftType of SEED_SHIFT_TYPES) {
     const exists = await prisma.shiftType.findUnique({
       where: { id: shiftType.id },
       select: { id: true },
@@ -216,7 +240,7 @@ async function main() {
       data: {
         id: shiftType.id,
         nursery_id: DEFAULT_NURSERY_ID,
-        code: shiftType.code,
+        code: shiftType.code as import("../src/lib/nursery-helpers").ShiftTypeCode,
         name: shiftType.name,
         start_time: parseTimeToDate(shiftType.start),
         end_time: parseTimeToDate(shiftType.end),
@@ -246,17 +270,17 @@ async function main() {
   console.log("");
   console.log("Seed completed:");
   console.log(`  Nursery:    ${nurseryCount} row(s)`);
-  console.log(`  Staff:      ${staffCount} row(s) (expected ${MOCK_STAFF.length})`);
-  console.log(`  Classroom:  ${classroomCount} row(s) (expected ${INITIAL_MOCK_CLASSROOMS.length})`);
+  console.log(`  Staff:      ${staffCount} row(s) (expected ${SEED_STAFF.length})`);
+  console.log(`  Classroom:  ${classroomCount} row(s) (expected ${SEED_CLASSROOMS.length})`);
   console.log(
-    `  ShiftType:  ${shiftTypeCount} row(s) (expected ${INITIAL_SHIFT_TYPES.length})`,
+    `  ShiftType:  ${shiftTypeCount} row(s) (expected ${SEED_SHIFT_TYPES.length})`,
   );
   console.log(
     `  Calendar:   ${calendarEntryCount} row(s) (expected ${calendarSeedEntries.length})`,
   );
-  console.log(`  User:       ${userCount} row(s) (expected ${MOCK_ACCOUNTS.length})`);
+  console.log(`  User:       ${userCount} row(s) (expected ${SEED_ACCOUNTS.length})`);
 
-  if (staffCount < MOCK_STAFF.length) {
+  if (staffCount < SEED_STAFF.length) {
     throw new Error(
       `Staff の投入が不足しています。マイグレーション後に npm run db:seed を再実行してください。`,
     );

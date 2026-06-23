@@ -1,5 +1,5 @@
-import { sortClassrooms, type Classroom } from "@/lib/mock-classes";
-import { compareStaffLoginIds, type StaffMember } from "@/lib/mock-staff";
+import { sortClassrooms, type Classroom } from "@/lib/classroom-helpers";
+import { compareStaffLoginIds, type StaffMember } from "@/lib/staff-helpers";
 
 export type ShiftScheduleStaffRow = {
   staffId: string;

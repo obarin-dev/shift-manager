@@ -12,7 +12,7 @@ import {
   staffLoginIdToInput,
   getEmploymentTypeLabel,
   type StaffMember,
-} from "@/lib/mock-staff";
+} from "@/lib/staff-helpers";
 import { StaffFormModal, type StaffFormValues } from "@/components/staff/staff-form-modal";
 import { StaffDetailPanel } from "@/components/staff/staff-detail-panel";
 import {

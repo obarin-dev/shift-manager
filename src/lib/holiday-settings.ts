@@ -1,4 +1,4 @@
-import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/mock-nursery-info";
+import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/nursery-helpers";
 import {
   getJapanesePublicHolidays,
   type JapanesePublicHoliday,

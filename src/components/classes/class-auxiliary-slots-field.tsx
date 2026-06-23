@@ -6,7 +6,7 @@ import {
   parseTimeInput,
   type AuxiliarySlotFormValue,
   type AuxiliarySlotErrors,
-} from "@/lib/mock-classes";
+} from "@/lib/classroom-helpers";
 
 type ClassAuxiliarySlotsFieldProps = {
   errors?: AuxiliarySlotErrors;

@@ -19,7 +19,7 @@ import {
   type NurseryCalendarEntry,
   timeToMinutes,
   WEEKDAY_LABELS,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 import { CalendarEntryModal } from "@/components/nursery-info/calendar-entry-modal";
 import { useHolidaySettings } from "@/hooks/use-holiday-settings";
 import {
@@ -275,7 +275,7 @@ export function NurseryCalendarPanel() {
       return {
         prevLabel: "前週",
         nextLabel: "翌週",
-        title: formatWeekRangeLabel(weekDateKeys),
+        title: formatWeekRangeLabel(weekDateKeys[0] ?? focusDate),
         onPrev: () => shiftFocusDate(-7),
         onNext: () => shiftFocusDate(7),
       };

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { ShiftAssignment, ShiftScheduleStatus } from "@/lib/mock-shift-schedule";
+import type { ShiftAssignment, ShiftScheduleStatus } from "@/lib/shift-helpers";
 import {
   getPublishedShiftScheduleByMonth,
   getShiftScheduleByMonth,

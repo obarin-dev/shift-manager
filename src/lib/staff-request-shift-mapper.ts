@@ -1,5 +1,5 @@
-import type { ShiftTypeDefinition } from "@/lib/mock-nursery-info";
-import type { ShiftAssignment } from "@/lib/mock-shift-schedule";
+import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
+import type { ShiftAssignment } from "@/lib/shift-helpers";
 import {
   SHIFT_CELL_OFF,
   type ShiftCellValue,

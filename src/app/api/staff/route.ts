@@ -5,7 +5,7 @@ import {
   listStaff,
   type StaffWriteInput,
 } from "@/lib/staff-db";
-import type { EmploymentType, JobType, StaffShiftTime } from "@/lib/mock-staff";
+import type { EmploymentType, JobType, StaffShiftTime } from "@/lib/staff-helpers";
 export const runtime = "nodejs";
 
 const EMPLOYMENT_TYPES = new Set<EmploymentType>(["seikin", "jokin", "hijokin"]);
