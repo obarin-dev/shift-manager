@@ -1,11 +1,5 @@
-export type EmploymentType = "seikin" | "jokin" | "hijokin";
-
-export type JobType =
-  | "nursery_teacher"
-  | "nurse"
-  | "cook"
-  | "office"
-  | "other";
+import type { EmploymentType, JobType } from "@/generated/prisma/client";
+export type { EmploymentType, JobType };
 
 export const EMPLOYMENT_TYPE_OPTIONS: Array<{
   value: EmploymentType;

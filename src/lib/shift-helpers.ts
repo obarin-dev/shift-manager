@@ -13,7 +13,8 @@ export type ShiftAssignment = {
   shift_type: ShiftCellValue;
 };
 
-export type ShiftScheduleStatus = "draft" | "checking" | "confirmed" | "published";
+import type { ShiftScheduleStatus } from "@/generated/prisma/client";
+export type { ShiftScheduleStatus };
 
 export type MonthlyShiftSchedule = {
   id: string;

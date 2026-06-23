@@ -1,4 +1,4 @@
-import type { ShiftType as PrismaShiftType, ShiftTypeCode as PrismaShiftTypeCode } from "@/generated/prisma/client";
+import type { ShiftType as PrismaShiftType } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
 import type { ShiftTypeCode, ShiftTypeDefinition } from "@/lib/nursery-helpers";
@@ -91,7 +91,7 @@ export async function createShiftType(input: ShiftTypeWriteInput, nurseryId?: st
   const row = await prisma.shiftType.create({
     data: {
       nursery_id: resolvedNurseryId,
-      code: input.code as PrismaShiftTypeCode,
+      code: input.code,
       name: input.name.trim(),
       start_time: parseTimeToDate(input.start),
       end_time: parseTimeToDate(input.end),
@@ -114,7 +114,7 @@ export async function updateShiftType(id: string, input: ShiftTypeWriteInput) {
   const row = await prisma.shiftType.update({
     where: { id },
     data: {
-      code: input.code as PrismaShiftTypeCode,
+      code: input.code,
       name: input.name.trim(),
       start_time: parseTimeToDate(input.start),
       end_time: parseTimeToDate(input.end),

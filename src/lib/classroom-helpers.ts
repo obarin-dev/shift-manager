@@ -1,11 +1,5 @@
-export type AgeGroup =
-  | "age_0"
-  | "age_1"
-  | "age_2"
-  | "age_3"
-  | "age_4"
-  | "age_5"
-  | "mixed";
+import type { AgeGroup } from "@/generated/prisma/client";
+export type { AgeGroup };
 
 export type AuxiliaryStaffSlot = {
   id: string;
