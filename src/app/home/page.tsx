@@ -211,10 +211,7 @@ export default async function HomePage() {
           dateLabel={todayLabel}
           items={todayScheduleItems}
         />
-        <StaffRequestAlert
-          requests={staffRequestAlerts.requests}
-          total={staffRequestAlerts.total}
-        />
+        <StaffRequestAlert total={staffRequestAlerts.total} />
         <DailyRosterGrid
           className="home-roster-panel"
           nurseryName={nurseryName}

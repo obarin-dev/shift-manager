@@ -2,18 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { AdminStaffRequestAlert } from "@/lib/staff-request-db";
 
-export function StaffRequestAlert({
-  requests,
-  total,
-}: {
-  requests: AdminStaffRequestAlert[];
-  total: number;
-}) {
-  const [collapsed, setCollapsed] = useState(false);
+export function StaffRequestAlert({ total }: { total: number }) {
+  const [dismissed, setDismissed] = useState(false);
 
-  if (total === 0) {
+  if (total === 0 || dismissed) {
     return null;
   }
 
@@ -31,28 +24,14 @@ export function StaffRequestAlert({
           希望一覧を見る
         </Link>
         <button
-          aria-label={collapsed ? "詳細を開く" : "閉じる"}
+          aria-label="閉じる"
           className="staff-request-alert__close"
-          onClick={() => setCollapsed((c) => !c)}
+          onClick={() => setDismissed(true)}
           type="button"
         >
-          {collapsed ? "▼" : "×"}
+          ×
         </button>
       </div>
-
-      {!collapsed && (
-        <div className="staff-request-alert__list">
-          {requests.map((request) => (
-            <article className="staff-request-alert__item" key={request.id}>
-              <strong>{request.staffName}</strong>
-              <span>
-                {request.date} / {request.type} / {request.time}
-              </span>
-              {request.memo ? <small>{request.memo}</small> : null}
-            </article>
-          ))}
-        </div>
-      )}
     </section>
   );
 }
