@@ -289,7 +289,13 @@ export default async function HomePage() {
           <div className="home-content">
             <AppHeader
               actions={headerActions}
-              description="希望休の入力や公開済み勤務表の確認ができます。"
+              description={
+                role === "staff"
+                  ? "希望休の入力や公開済み勤務表の確認ができます。"
+                  : role === "manager"
+                    ? "勤務表の作成・修正や希望休の確認ができます。"
+                    : "勤務表・体制表の管理や園の設定を行います。"
+              }
               eyebrow="ホーム"
               title="ようこそ"
             />

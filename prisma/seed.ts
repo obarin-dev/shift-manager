@@ -5,6 +5,7 @@ import {
   INITIAL_NURSERY_CALENDAR_ENTRIES,
   INITIAL_NURSERY_PROFILE,
   INITIAL_NURSERY_REST,
+  INITIAL_SHIFT_TYPES,
 } from "../src/lib/nursery-helpers";
 import { DEFAULT_NURSERY_ID } from "../src/lib/nursery-db";
 import { parseTimeToDate } from "../src/lib/nursery-time";
@@ -32,11 +33,6 @@ const SEED_CLASSROOMS = [
   { id: "class-mixed", name: "3・4・5歳児クラス", ageGroup: "mixed" as const, childCount: 18, auxiliarySlots: [{ id: "aux-m-1", count: 2, time: "12:00-15:00" }], mainStaffId: "staff-3", otherStaffIds: ["staff-4", "staff-6"], note: "3歳児・4歳児・5歳児を同一クラスで運営しています。" },
 ];
 
-const SEED_SHIFT_TYPES = [
-  { id: "shift-early", code: "early", name: "早番", start: "07:00", end: "15:00", is_active: true, sort_order: 1, color: "#BFDBFE" },
-  { id: "shift-day", code: "day", name: "日勤", start: "09:00", end: "17:00", is_active: true, sort_order: 2, color: "#BBF7D0" },
-  { id: "shift-late", code: "late", name: "遅番", start: "11:00", end: "19:00", is_active: true, sort_order: 3, color: "#FED7AA" },
-];
 
 async function main() {
   const connectionString = process.env.DATABASE_URL;
@@ -218,7 +214,7 @@ async function main() {
     });
   }
 
-  for (const shiftType of SEED_SHIFT_TYPES) {
+  for (const shiftType of INITIAL_SHIFT_TYPES) {
     const exists = await prisma.shiftType.findUnique({
       where: { id: shiftType.id },
       select: { id: true },
@@ -263,7 +259,7 @@ async function main() {
   console.log(`  Staff:      ${staffCount} row(s) (expected ${SEED_STAFF.length})`);
   console.log(`  Classroom:  ${classroomCount} row(s) (expected ${SEED_CLASSROOMS.length})`);
   console.log(
-    `  ShiftType:  ${shiftTypeCount} row(s) (expected ${SEED_SHIFT_TYPES.length})`,
+    `  ShiftType:  ${shiftTypeCount} row(s) (expected ${INITIAL_SHIFT_TYPES.length})`,
   );
   console.log(
     `  Calendar:   ${calendarEntryCount} row(s) (expected ${calendarSeedEntries.length})`,

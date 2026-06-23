@@ -62,6 +62,7 @@ export const CALENDAR_ENTRY_TYPE_OPTIONS: Array<{
   { value: "special_hours", label: "臨時の開園時間" },
 ];
 
+
 export const INITIAL_SHIFT_TYPES: ShiftTypeDefinition[] = [
   { id: "shift-early", code: "early", name: "早番", start: "07:00", end: "15:00", is_active: true, sort_order: 1, color: "#BFDBFE" },
   { id: "shift-day", code: "day", name: "日勤", start: "09:00", end: "17:00", is_active: true, sort_order: 2, color: "#BBF7D0" },
