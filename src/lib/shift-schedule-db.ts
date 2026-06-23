@@ -1,0 +1,180 @@
+import type { Prisma, ShiftScheduleStatus } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import type { ShiftAssignment, ShiftScheduleStatus as AppShiftScheduleStatus } from "@/lib/mock-shift-schedule";
+import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
+import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
+
+export type ShiftSchedulePayload = {
+  status: AppShiftScheduleStatus;
+  assignments: ShiftAssignment[];
+};
+
+async function resolveNurseryId(nurseryId?: string) {
+  if (nurseryId) {
+    return nurseryId;
+  }
+
+  const nursery = await getPrimaryNursery();
+  return nursery?.id ?? DEFAULT_NURSERY_ID;
+}
+
+function toShiftAssignment(slot: {
+  staff_id: string;
+  work_date: Date;
+  shift_type: string;
+}): ShiftAssignment {
+  return {
+    staff_id: slot.staff_id,
+    work_date: formatDbDate(slot.work_date),
+    shift_type: slot.shift_type,
+  };
+}
+
+function parsePublishedAssignments(value: Prisma.JsonValue | null): ShiftAssignment[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  const assignments: ShiftAssignment[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== "object") {
+      continue;
+    }
+
+    const row = item as Record<string, unknown>;
+    if (
+      typeof row.staff_id !== "string" ||
+      typeof row.work_date !== "string" ||
+      typeof row.shift_type !== "string"
+    ) {
+      continue;
+    }
+
+    assignments.push({
+      staff_id: row.staff_id,
+      work_date: row.work_date,
+      shift_type: row.shift_type,
+    });
+  }
+
+  return assignments;
+}
+
+export async function getShiftScheduleByMonth(
+  targetMonth: string,
+  nurseryId?: string,
+): Promise<ShiftSchedulePayload | null> {
+  const resolvedNurseryId = await resolveNurseryId(nurseryId);
+  const schedule = await prisma.shiftSchedule.findUnique({
+    where: {
+      nursery_id_target_month: {
+        nursery_id: resolvedNurseryId,
+        target_month: targetMonth,
+      },
+    },
+    include: {
+      slots: {
+        orderBy: [{ work_date: "asc" }, { staff_id: "asc" }],
+      },
+    },
+  });
+
+  if (!schedule) {
+    return null;
+  }
+
+  return {
+    status: schedule.status as AppShiftScheduleStatus,
+    assignments: schedule.slots.map(toShiftAssignment),
+  };
+}
+
+export async function getPublishedShiftScheduleByMonth(
+  targetMonth: string,
+  nurseryId?: string,
+): Promise<ShiftSchedulePayload | null> {
+  const resolvedNurseryId = await resolveNurseryId(nurseryId);
+  const schedule = await prisma.shiftSchedule.findUnique({
+    where: {
+      nursery_id_target_month: {
+        nursery_id: resolvedNurseryId,
+        target_month: targetMonth,
+      },
+    },
+    include: {
+      slots: {
+        orderBy: [{ work_date: "asc" }, { staff_id: "asc" }],
+      },
+    },
+  });
+
+  if (!schedule) {
+    return null;
+  }
+
+  const assignments = schedule.published_payload
+    ? parsePublishedAssignments(schedule.published_payload)
+    : schedule.status === "published"
+      ? schedule.slots.map(toShiftAssignment)
+      : [];
+
+  return {
+    status: "published",
+    assignments,
+  };
+}
+
+export async function saveShiftSchedule(
+  targetMonth: string,
+  payload: ShiftSchedulePayload,
+  nurseryId?: string,
+) {
+  const resolvedNurseryId = await resolveNurseryId(nurseryId);
+  const status = payload.status as ShiftScheduleStatus;
+  const isPublishing = payload.status === "published";
+  const publishedPayload = payload.assignments as unknown as Prisma.InputJsonValue;
+
+  await prisma.$transaction(async (tx) => {
+    const schedule = await tx.shiftSchedule.upsert({
+      where: {
+        nursery_id_target_month: {
+          nursery_id: resolvedNurseryId,
+          target_month: targetMonth,
+        },
+      },
+      create: {
+        nursery_id: resolvedNurseryId,
+        target_month: targetMonth,
+        status,
+        published_payload: isPublishing ? publishedPayload : undefined,
+        published_at: isPublishing ? new Date() : undefined,
+      },
+      update: {
+        status,
+        ...(isPublishing
+          ? {
+              published_payload: publishedPayload,
+              published_at: new Date(),
+            }
+          : {}),
+      },
+    });
+
+    await tx.shiftSlot.deleteMany({
+      where: { shift_schedule_id: schedule.id },
+    });
+
+    if (payload.assignments.length === 0) {
+      return;
+    }
+
+    await tx.shiftSlot.createMany({
+      data: payload.assignments.map((assignment) => ({
+        shift_schedule_id: schedule.id,
+        staff_id: assignment.staff_id,
+        work_date: parseDateToDb(assignment.work_date),
+        shift_type: assignment.shift_type,
+      })),
+    });
+  });
+}

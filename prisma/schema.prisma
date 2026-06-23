@@ -1,0 +1,272 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  admin
+  manager
+  staff
+}
+
+enum AgeGroup {
+  age_0
+  age_1
+  age_2
+  age_3
+  age_4
+  age_5
+  mixed
+}
+
+enum EmploymentType {
+  seikin
+  jokin
+  hijokin
+}
+
+enum JobType {
+  nursery_teacher
+  nurse
+  cook
+  office
+  other
+}
+
+enum ShiftTypeCode {
+  early
+  day
+  late
+  extended
+  other
+}
+
+enum CalendarEntryType {
+  closure
+  special_hours
+  event
+}
+
+enum ShiftScheduleStatus {
+  draft
+  checking
+  confirmed
+  published
+}
+
+enum StaffRequestType {
+  day_off
+  work
+  time_consultation
+}
+
+enum StaffRequestStatus {
+  submitted
+  approved
+  needs_review
+}
+
+model Nursery {
+  id                       String          @id @default(cuid())
+  name                     String
+  address                  String?
+  phone_number             String?
+  open_time                DateTime        @db.Time
+  close_time               DateTime        @db.Time
+  extended_close_time      DateTime?       @db.Time
+  /**
+   * 毎週休園の曜日（0=日 … 6=土）
+   */
+  weekly_closed_weekdays   Int[]           @default([])
+  /**
+   * 国民の祝日を休園とする
+   */
+  close_on_public_holidays Boolean         @default(false)
+  created_at               DateTime        @default(now())
+  updated_at               DateTime        @updatedAt
+  classrooms               Classroom[]
+  staffs                   Staff[]
+  users                    User[]
+  shift_types              ShiftType[]
+  calendar_entries         CalendarEntry[]
+  shift_schedules          ShiftSchedule[]
+  roster_sheets            RosterSheet[]
+  staff_requests           StaffRequest[]
+}
+
+model CalendarEntry {
+  id                  String            @id @default(cuid())
+  nursery_id          String
+  nursery             Nursery           @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  entry_date          DateTime          @db.Date
+  entry_type          CalendarEntryType
+  title               String
+  repeats_annually    Boolean           @default(false)
+  start_time          DateTime?         @db.Time
+  end_time            DateTime?         @db.Time
+  open_time           DateTime?         @db.Time
+  close_time          DateTime?         @db.Time
+  extended_close_time DateTime?         @db.Time
+  note                String?
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @updatedAt
+
+  @@index([nursery_id])
+  @@index([nursery_id, entry_date])
+}
+
+model ShiftType {
+  id         String        @id @default(cuid())
+  nursery_id String
+  nursery    Nursery       @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  code       ShiftTypeCode
+  name       String
+  start_time DateTime      @db.Time
+  end_time   DateTime      @db.Time
+  is_active  Boolean       @default(true)
+  sort_order Int
+  color      String        @default("#FEF08A")
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+
+  @@index([nursery_id])
+}
+
+model Classroom {
+  id              String   @id @default(cuid())
+  nursery_id      String
+  nursery         Nursery  @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  name            String
+  age_group       AgeGroup
+  child_count     Int
+  auxiliary_slots Json     @default("[]")
+  main_staff_id   String?
+  main_staff      Staff?   @relation("MainStaff", fields: [main_staff_id], references: [id], onDelete: SetNull)
+  other_staff_ids String[] @default([])
+  note            String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@unique([nursery_id, name])
+  @@index([nursery_id])
+}
+
+model Staff {
+  id                          String         @id @default(cuid())
+  nursery_id                  String
+  nursery                     Nursery        @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  name                        String
+  name_kana                   String?
+  phone_number                String?
+  employment_type             EmploymentType
+  job_type                    JobType
+  has_nursery_teacher_license Boolean        @default(false)
+  capable_class_ids           String[]       @default([])
+  staff_login_id              String?
+  work_availability_start     DateTime?      @db.Time
+  work_availability_end       DateTime?      @db.Time
+  can_work_early_shift        Boolean        @default(false)
+  can_work_late_shift         Boolean        @default(false)
+  can_work_extended_care      Boolean        @default(false)
+  is_active                   Boolean        @default(true)
+  created_at                  DateTime       @default(now())
+  updated_at                  DateTime       @updatedAt
+  main_staff_for              Classroom[]    @relation("MainStaff")
+  user                        User?
+  shift_slots                 ShiftSlot[]
+  staff_requests              StaffRequest[]
+
+  @@unique([nursery_id, staff_login_id])
+  @@index([nursery_id])
+}
+
+model ShiftSchedule {
+  id                String              @id @default(cuid())
+  nursery_id        String
+  nursery           Nursery             @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  target_month      String
+  status            ShiftScheduleStatus @default(draft)
+  published_payload Json?
+  published_at      DateTime?
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+  slots             ShiftSlot[]
+
+  @@unique([nursery_id, target_month])
+  @@index([nursery_id])
+}
+
+model ShiftSlot {
+  id                String        @id @default(cuid())
+  shift_schedule_id String
+  shift_schedule    ShiftSchedule @relation(fields: [shift_schedule_id], references: [id], onDelete: Cascade)
+  staff_id          String
+  staff             Staff         @relation(fields: [staff_id], references: [id], onDelete: Cascade)
+  work_date         DateTime      @db.Date
+  /**
+   * `off` または shift_type.id
+   */
+  shift_type        String
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+
+  @@unique([shift_schedule_id, staff_id, work_date])
+  @@index([shift_schedule_id])
+  @@index([staff_id])
+}
+
+model RosterSheet {
+  id         String   @id @default(cuid())
+  nursery_id String
+  nursery    Nursery  @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  entry_date DateTime @db.Date
+  payload    Json
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([nursery_id, entry_date])
+  @@index([nursery_id])
+}
+
+model User {
+  id             String         @id @default(cuid())
+  nursery_id     String
+  nursery        Nursery        @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  staff_id       String?        @unique
+  staff          Staff?         @relation(fields: [staff_id], references: [id], onDelete: SetNull)
+  email          String
+  password_hash  String
+  role           UserRole
+  is_active      Boolean        @default(true)
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  staff_requests StaffRequest[]
+
+  @@unique([nursery_id, email])
+  @@index([nursery_id])
+}
+
+model StaffRequest {
+  id              String             @id @default(cuid())
+  nursery_id      String
+  nursery         Nursery            @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  user_id         String
+  user            User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  staff_id        String?
+  staff           Staff?             @relation(fields: [staff_id], references: [id], onDelete: SetNull)
+  request_date    DateTime           @db.Date
+  request_type    StaffRequestType
+  time_preference String
+  memo            String?
+  status          StaffRequestStatus @default(submitted)
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+
+  @@index([nursery_id, request_date])
+  @@index([user_id])
+  @@index([staff_id])
+}

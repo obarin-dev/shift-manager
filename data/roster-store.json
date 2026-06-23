@@ -1,0 +1,395 @@
+{
+  "byDate": {
+    "2026-06-10": {
+      "rows": [
+        {
+          "id": "row-mq7ztu12-nxh1q",
+          "kind": "schedule",
+          "timeSlot": "7:00"
+        },
+        {
+          "id": "row-mq7ztu12-pl4dt",
+          "kind": "schedule",
+          "timeSlot": "8:00"
+        },
+        {
+          "id": "row-mq7ztu12-b2lf3",
+          "kind": "schedule",
+          "timeSlot": "9:00"
+        },
+        {
+          "id": "row-mq7ztu12-b88n1",
+          "kind": "schedule",
+          "timeSlot": "10:00"
+        },
+        {
+          "id": "row-mq7ztu12-jn2n9",
+          "kind": "schedule",
+          "timeSlot": "11:00"
+        },
+        {
+          "id": "row-mq7ztu12-8y5c3",
+          "kind": "schedule",
+          "timeSlot": "12:00"
+        },
+        {
+          "id": "row-mq7ztu12-om449",
+          "kind": "schedule",
+          "timeSlot": "13:00"
+        },
+        {
+          "id": "row-mq7ztu12-nj8aw",
+          "kind": "schedule",
+          "timeSlot": "14:00"
+        },
+        {
+          "id": "row-mq7ztu12-bt6p6",
+          "kind": "schedule",
+          "timeSlot": "15:00"
+        },
+        {
+          "id": "row-mq7ztu12-hxyi0",
+          "kind": "schedule",
+          "timeSlot": "16:00"
+        },
+        {
+          "id": "row-mq7ztu12-2irnp",
+          "kind": "schedule",
+          "timeSlot": "17:00"
+        },
+        {
+          "id": "row-mq7ztu12-tpg0o",
+          "kind": "schedule",
+          "timeSlot": "18:00"
+        },
+        {
+          "id": "row-mq7ztu12-suuw8",
+          "kind": "schedule",
+          "timeSlot": "19:00"
+        }
+      ],
+      "assignments": [
+        {
+          "classroom_id": "class-0",
+          "time_slot": "7:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "8:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "9:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "10:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "11:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "12:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "13:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "14:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "15:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "16:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "17:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "18:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-0",
+          "time_slot": "19:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "7:00",
+          "staff_ids": [
+            "staff-1"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "8:00",
+          "staff_ids": [
+            "staff-2"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "9:00",
+          "staff_ids": [
+            "staff-1"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "10:00",
+          "staff_ids": [
+            "staff-1"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "11:00",
+          "staff_ids": [
+            "staff-2",
+            "staff-1"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "12:00",
+          "staff_ids": [
+            "staff-1"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "13:00",
+          "staff_ids": [
+            "staff-2"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "14:00",
+          "staff_ids": [
+            "staff-1",
+            "staff-2"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "15:00",
+          "staff_ids": [
+            "staff-2"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "16:00",
+          "staff_ids": [
+            "staff-1"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "17:00",
+          "staff_ids": [
+            "staff-2"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "18:00",
+          "staff_ids": [
+            "staff-1"
+          ]
+        },
+        {
+          "classroom_id": "class-1",
+          "time_slot": "19:00",
+          "staff_ids": [
+            "staff-2"
+          ]
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "7:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "8:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "9:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "10:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "11:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "12:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "13:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "14:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "15:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "16:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "17:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "18:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-2",
+          "time_slot": "19:00",
+          "staff_ids": []
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "7:00",
+          "staff_ids": [
+            "staff-6"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "8:00",
+          "staff_ids": [
+            "staff-3"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "9:00",
+          "staff_ids": [
+            "staff-4"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "10:00",
+          "staff_ids": [
+            "staff-6"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "11:00",
+          "staff_ids": [
+            "staff-4"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "12:00",
+          "staff_ids": [
+            "staff-3",
+            "staff-4"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "13:00",
+          "staff_ids": [
+            "staff-6"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "14:00",
+          "staff_ids": [
+            "staff-4"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "15:00",
+          "staff_ids": [
+            "staff-3",
+            "staff-4"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "16:00",
+          "staff_ids": [
+            "staff-6"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "17:00",
+          "staff_ids": [
+            "staff-4"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "18:00",
+          "staff_ids": [
+            "staff-3"
+          ]
+        },
+        {
+          "classroom_id": "class-mixed",
+          "time_slot": "19:00",
+          "staff_ids": [
+            "staff-6"
+          ]
+        }
+      ],
+      "todayChildCounts": {},
+      "slotCountsByRowAndClass": {},
+      "columnWidths": {},
+      "rowHeights": {}
+    }
+  }
+}
