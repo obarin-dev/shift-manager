@@ -4,17 +4,16 @@ import {
   type ShiftCellValue,
 } from "@/lib/shift-schedule-options";
 import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
+import type { ShiftScheduleStatus } from "@/generated/prisma/client";
 
 export type { ShiftCellValue } from "@/lib/shift-schedule-options";
+export type { ShiftScheduleStatus };
 
 export type ShiftAssignment = {
   staff_id: string;
   work_date: string;
   shift_type: ShiftCellValue;
 };
-
-import type { ShiftScheduleStatus } from "@/generated/prisma/client";
-export type { ShiftScheduleStatus };
 
 export type MonthlyShiftSchedule = {
   id: string;

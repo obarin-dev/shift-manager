@@ -38,7 +38,6 @@ export type NurseryRestSettings = {
   closed_days: NurseryClosedDay[];
 };
 
-
 export type NurseryCalendarEntry = {
   id: string;
   entry_date: string;
