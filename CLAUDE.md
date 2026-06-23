@@ -81,3 +81,9 @@ DB操作は `src/lib/*-db.ts` の関数経由で行い、ページや API route 
 ### ShiftSlot.shift_type の値
 
 `"off"`（休み）または `ShiftType.id`（UUID）。`"early"` などの ShiftTypeCode ではない点に注意。
+
+## 開発規約
+
+### PR・コミット
+- PR タイトルは日本語で書く
+- コミットメッセージは英語でも日本語でも可
