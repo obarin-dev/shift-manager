@@ -11,9 +11,9 @@ export function StaffRequestAlert({
   requests: AdminStaffRequestAlert[];
   total: number;
 }) {
-  const [dismissed, setDismissed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
-  if (total === 0 || dismissed) {
+  if (total === 0) {
     return null;
   }
 
@@ -27,34 +27,32 @@ export function StaffRequestAlert({
           <h2>出勤希望が提出されています</h2>
           <p>{total}件の提出があります。勤務表作成前に確認してください。</p>
         </div>
-        <Link
-          className="staff-request-alert__link"
-          href="/requests"
-          onClick={() => setDismissed(true)}
-        >
+        <Link className="staff-request-alert__link" href="/requests">
           希望一覧を見る
         </Link>
         <button
-          aria-label="閉じる"
+          aria-label={collapsed ? "詳細を開く" : "閉じる"}
           className="staff-request-alert__close"
-          onClick={() => setDismissed(true)}
+          onClick={() => setCollapsed((c) => !c)}
           type="button"
         >
-          ×
+          {collapsed ? "▼" : "×"}
         </button>
       </div>
 
-      <div className="staff-request-alert__list">
-        {requests.map((request) => (
-          <article className="staff-request-alert__item" key={request.id}>
-            <strong>{request.staffName}</strong>
-            <span>
-              {request.date} / {request.type} / {request.time}
-            </span>
-            {request.memo ? <small>{request.memo}</small> : null}
-          </article>
-        ))}
-      </div>
+      {!collapsed && (
+        <div className="staff-request-alert__list">
+          {requests.map((request) => (
+            <article className="staff-request-alert__item" key={request.id}>
+              <strong>{request.staffName}</strong>
+              <span>
+                {request.date} / {request.type} / {request.time}
+              </span>
+              {request.memo ? <small>{request.memo}</small> : null}
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
