@@ -38,8 +38,8 @@ ShiftSchedule と RosterSheet は DB レベルで独立しており、相互参�
 **`migrateRosterAssignments()` で旧データ互換を維持**
 ペイロードの `assignments` 形式が変更された際に、旧形式（`time_slot` フィールドを持つ）を新形式（`row_id` を持つ）に変換する。`getRosterSheetByDate()` と `normalizeRosterSheetPayload()` の両方で呼ばれ、読み込み時に常にマイグレーションが走る。
 
-**`RosterCellAssignment` のキーは `row_id` + `classroom_id`**
-セルの一意性は「行ID × クラスID」で決まる。行IDは `RosterSheetRow` の `id`（UUID）であり、時刻文字列ではない。`buildRosterAssignmentMap()` で `"classroomId:rowId"` 形式の文字列キーにしてマップ化して参照する。
+**`RosterCellAssignment` のキーは `classroom_id` + `row_id`**
+セルの一意性は「クラスID × 行ID」で決まる。行IDは `RosterSheetRow` の `id`（UUID）であり、時刻文字列ではない。`buildRosterAssignmentMap()` で `"classroomId:rowId"` 形式の文字列キーにしてマップ化して参照する。
 
 ## 用語定義
 
