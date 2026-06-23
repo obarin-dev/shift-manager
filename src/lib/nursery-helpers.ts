@@ -585,13 +585,13 @@ export function formatDayHeading(dateKey: string) {
     year: "numeric",
     month: "long",
     day: "numeric",
-    weekday: "short",
+    weekday: "long",
   });
 }
 
 export function syncYearMonthFromDateKey(dateKey: string) {
   const [year, month] = dateKey.split("-").map(Number);
-  return { year: year!, month: month! };
+  return { year: year ?? new Date().getFullYear(), month: month ?? 1 };
 }
 
 export function createClosedDayId() {

@@ -4,8 +4,15 @@ import type {
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
-import type { NurseryCalendarEntry } from "@/lib/nursery-helpers";
+import {
+  getEntriesForDate,
+  formatDisplayTime,
+  toDateKey,
+  type NurseryCalendarEntry,
+} from "@/lib/nursery-helpers";
 import { formatDbDate, formatDbTime, parseDateToDb, parseTimeToDate } from "@/lib/nursery-time";
+
+export { toDateKey };
 
 export type CalendarEntryWriteInput = {
   entry_date: string;
@@ -136,13 +143,6 @@ export async function deleteCalendarEntry(id: string) {
   await prisma.calendarEntry.delete({ where: { id } });
 }
 
-export function toDateKey(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 export type TodaySpecialEvent = {
   time: string;
   label: string;
@@ -153,10 +153,10 @@ export function getTodaySpecialEvents(
   referenceDate: Date = new Date(),
 ): TodaySpecialEvent[] {
   const dateKey = toDateKey(referenceDate);
-  return entries
-    .filter((entry) => entry.entry_date === dateKey && entry.entry_type === "event" && entry.start_time)
+  return getEntriesForDate(entries, dateKey)
+    .filter((entry) => entry.entry_type === "event" && entry.start_time)
     .map((entry) => ({
-      time: entry.start_time!.slice(0, 5),
+      time: formatDisplayTime(entry.start_time!),
       label: entry.title,
     }));
 }
