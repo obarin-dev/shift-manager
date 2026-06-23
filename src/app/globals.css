@@ -876,6 +876,24 @@ a.home-card:hover {
   text-align: left;
   font-weight: 900;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-requests-staff-badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #f97316;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 0 6px;
 }
 
 .admin-requests-staff-button.is-active {
