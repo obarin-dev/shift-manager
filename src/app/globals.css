@@ -800,6 +800,26 @@ a.home-card:hover {
   white-space: nowrap;
 }
 
+.staff-request-alert__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #9a3412;
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.staff-request-alert__close:hover {
+  background: rgba(249, 115, 22, 0.12);
+}
+
 .staff-request-alert__list {
   display: grid;
   gap: 8px;
