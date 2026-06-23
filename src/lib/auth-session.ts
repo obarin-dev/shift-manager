@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 
-export type UserRole = "admin" | "manager" | "staff";
+import type { UserRole } from "@/generated/prisma/client";
+export type { UserRole };
 
 export const SESSION_COOKIE_NAME = "shift_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;

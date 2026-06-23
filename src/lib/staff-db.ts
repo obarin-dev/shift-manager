@@ -1,8 +1,4 @@
-import type {
-  EmploymentType as PrismaEmploymentType,
-  JobType as PrismaJobType,
-  Staff as PrismaStaff,
-} from "@/generated/prisma/client";
+import type { Staff as PrismaStaff } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
@@ -71,8 +67,8 @@ async function resolveNurseryId(nurseryId?: string) {
 function buildStaffData(input: StaffWriteInput, staffLoginId: string | null) {
   return {
     name: input.name,
-    employment_type: input.employment_type as PrismaEmploymentType,
-    job_type: input.job_type as PrismaJobType,
+    employment_type: input.employment_type,
+    job_type: input.job_type,
     has_nursery_teacher_license: input.has_nursery_teacher_license,
     staff_login_id: staffLoginId,
     ...shiftTimeToDb(input.work_availability),

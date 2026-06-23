@@ -1,6 +1,7 @@
 import { parseTimeInput } from "@/lib/classroom-helpers";
+import type { CalendarEntryType, ShiftTypeCode } from "@/generated/prisma/client";
 
-export type ShiftTypeCode = "early" | "day" | "late" | "extended" | "other";
+export type { CalendarEntryType, ShiftTypeCode };
 
 export type ShiftTypeDefinition = {
   id: string;
@@ -36,8 +37,6 @@ export type NurseryRestSettings = {
   close_on_public_holidays: boolean;
   closed_days: NurseryClosedDay[];
 };
-
-export type CalendarEntryType = "closure" | "special_hours" | "event";
 
 export type NurseryCalendarEntry = {
   id: string;

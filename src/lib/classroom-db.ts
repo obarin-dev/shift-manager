@@ -1,4 +1,4 @@
-import type { AgeGroup as PrismaAgeGroup, Classroom as PrismaClassroom } from "@/generated/prisma/client";
+import type { Classroom as PrismaClassroom } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
@@ -108,7 +108,7 @@ function buildClassroomData(
 ) {
   return {
     name: input.name,
-    age_group: input.ageGroup as PrismaAgeGroup,
+    age_group: input.ageGroup,
     child_count: input.childCount,
     auxiliary_slots: input.auxiliarySlots as Prisma.InputJsonValue,
     main_staff_id: staff.mainStaffId,

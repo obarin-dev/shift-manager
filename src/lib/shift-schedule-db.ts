@@ -1,11 +1,11 @@
-import type { Prisma, ShiftScheduleStatus } from "@/generated/prisma/client";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { ShiftAssignment, ShiftScheduleStatus as AppShiftScheduleStatus } from "@/lib/shift-helpers";
+import type { ShiftAssignment, ShiftScheduleStatus } from "@/lib/shift-helpers";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
 export type ShiftSchedulePayload = {
-  status: AppShiftScheduleStatus;
+  status: ShiftScheduleStatus;
   assignments: ShiftAssignment[];
 };
 
@@ -84,7 +84,7 @@ export async function getShiftScheduleByMonth(
   }
 
   return {
-    status: schedule.status as AppShiftScheduleStatus,
+    status: schedule.status as ShiftScheduleStatus,
     assignments: schedule.slots.map(toShiftAssignment),
   };
 }
