@@ -1,7 +1,7 @@
 "use client";
 
-import { AUXILIARY_TIME_OPTIONS, parseTimeInput } from "@/lib/mock-classes";
-import type { StaffShiftTime } from "@/lib/mock-staff";
+import { AUXILIARY_TIME_OPTIONS, parseTimeInput } from "@/lib/classroom-helpers";
+import type { StaffShiftTime } from "@/lib/staff-helpers";
 
 type StaffWorkAvailabilityFieldProps = {
   time: StaffShiftTime;

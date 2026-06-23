@@ -1,4 +1,4 @@
-import type { ShiftTypeDefinition } from "@/lib/mock-nursery-info";
+import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
 import { shiftTypeColorToCellStyle } from "@/lib/shift-type-colors";
 
 /** 休み（勤務区分マスタ外） */

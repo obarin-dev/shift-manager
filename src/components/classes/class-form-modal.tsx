@@ -7,11 +7,11 @@ import {
   type ClassroomFormValues,
   validateClassroomForm,
   type Classroom,
-} from "@/lib/mock-classes";
+} from "@/lib/classroom-helpers";
 import { ClassAuxiliarySlotsField } from "@/components/classes/class-auxiliary-slots-field";
 import { StaffCombobox, StaffMultiCombobox } from "@/components/classes/staff-combobox";
-import type { AuxiliarySlotErrors } from "@/lib/mock-classes";
-import type { StaffMember } from "@/lib/mock-staff";
+import type { AuxiliarySlotErrors } from "@/lib/classroom-helpers";
+import type { StaffMember } from "@/lib/staff-helpers";
 
 type ClassFormModalProps = {
   mode: "create" | "edit";

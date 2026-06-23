@@ -4,7 +4,7 @@ import {
   createSessionToken,
   sessionCookieOptions,
 } from "@/lib/auth-session";
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 import {
   findActiveUserByEmail,
   verifyPassword,

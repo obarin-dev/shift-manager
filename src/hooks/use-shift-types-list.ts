@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { ShiftTypeDefinition } from "@/lib/mock-nursery-info";
+import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
 import {
   DEFAULT_SHIFT_TYPE_COLOR,
   getDefaultColorForShiftCode,

@@ -6,7 +6,7 @@ import {
   getJobTypeLabel,
   formatStaffWorkAvailability,
   type StaffMember,
-} from "@/lib/mock-staff";
+} from "@/lib/staff-helpers";
 import {
   formatStaffClassLabels,
   type StaffClassAssignment,

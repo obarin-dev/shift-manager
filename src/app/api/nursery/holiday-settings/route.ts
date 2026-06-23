@@ -3,7 +3,7 @@ import {
   getHolidaySettings,
   updateHolidaySettings,
 } from "@/lib/nursery-holiday-settings-db";
-import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/mock-nursery-info";
+import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/nursery-helpers";
 
 export const runtime = "nodejs";
 

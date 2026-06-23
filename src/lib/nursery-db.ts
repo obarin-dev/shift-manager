@@ -1,7 +1,6 @@
 import type { Nursery } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { NurseryProfile } from "@/lib/mock-nursery-info";
-import { MOCK_NURSERY_NAME } from "@/lib/mock-nursery";
+import type { NurseryProfile } from "@/lib/nursery-helpers";
 import { formatDbTime, parseTimeToDate } from "@/lib/nursery-time";
 
 export const DEFAULT_NURSERY_ID = "nursery-hoshinoko";
@@ -27,7 +26,7 @@ export async function getPrimaryNursery() {
 
 export async function getPrimaryNurseryName(): Promise<string> {
   const nursery = await getPrimaryNursery();
-  return nursery?.name ?? MOCK_NURSERY_NAME;
+  return nursery?.name ?? "保育園";
 }
 
 export async function getPrimaryNurseryProfile() {

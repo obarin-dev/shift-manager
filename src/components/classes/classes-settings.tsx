@@ -10,7 +10,7 @@ import {
   sortClassrooms,
   type Classroom,
   type ClassroomFormValues,
-} from "@/lib/mock-classes";
+} from "@/lib/classroom-helpers";
 import { useStaffList } from "@/hooks/use-staff-list";
 import { ClassDeleteDialog } from "@/components/classes/class-delete-dialog";
 import { ClassDetailPanel } from "@/components/classes/class-detail-panel";

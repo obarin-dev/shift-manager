@@ -6,7 +6,7 @@ import {
   listClassrooms,
   type ClassroomWriteInput,
 } from "@/lib/classroom-db";
-import type { AgeGroup, AuxiliaryStaffSlot } from "@/lib/mock-classes";
+import type { AgeGroup, AuxiliaryStaffSlot } from "@/lib/classroom-helpers";
 
 export const runtime = "nodejs";
 

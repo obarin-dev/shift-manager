@@ -19,7 +19,7 @@ import {
   type NurseryCalendarEntry,
   timeToMinutes,
   WEEKDAY_LABELS,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 import { CalendarEntryModal } from "@/components/nursery-info/calendar-entry-modal";
 import { useHolidaySettings } from "@/hooks/use-holiday-settings";
 import {

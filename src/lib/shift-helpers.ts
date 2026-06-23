@@ -3,7 +3,7 @@ import {
   buildRotationValues,
   type ShiftCellValue,
 } from "@/lib/shift-schedule-options";
-import type { ShiftTypeDefinition } from "@/lib/mock-nursery-info";
+import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
 
 export type { ShiftCellValue } from "@/lib/shift-schedule-options";
 
@@ -24,7 +24,7 @@ export type MonthlyShiftSchedule = {
 
 export function getStaffSurname(name: string) {
   const trimmed = name.trim();
-  const parts = trimmed.split(/[\s\u3000]+/).filter(Boolean);
+  const parts = trimmed.split(/[\s　]+/).filter(Boolean);
   return parts[0] ?? trimmed;
 }
 
@@ -105,13 +105,6 @@ export function buildAssignmentsForMonth(
     }),
   );
 }
-
-export const INITIAL_MONTHLY_SHIFT_SCHEDULE: MonthlyShiftSchedule = {
-  id: "schedule-2026-05",
-  target_month: "2026-05",
-  status: "draft",
-  assignments: [],
-};
 
 export function buildAssignmentMap(assignments: ShiftAssignment[]) {
   const map = new Map<string, ShiftCellValue>();

@@ -1,12 +1,12 @@
 "use client";
 
 import { type FormEvent, useEffect, useState } from "react";
-import { AUXILIARY_TIME_OPTIONS, parseTimeInput } from "@/lib/mock-classes";
+import { AUXILIARY_TIME_OPTIONS, parseTimeInput } from "@/lib/classroom-helpers";
 import {
   type NurseryProfile,
   type ShiftTypeDefinition,
   validateShiftTypeTimes,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 
 type ShiftTypeFormValues = {
   name: string;

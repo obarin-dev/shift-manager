@@ -9,7 +9,7 @@ import {
   EMPTY_STAFF_SHIFT_TIME,
   formatStaffLoginId,
   type StaffShiftTime,
-} from "@/lib/mock-staff";
+} from "@/lib/staff-helpers";
 import {
   StaffWorkAvailabilityField,
   validateStaffWorkAvailability,

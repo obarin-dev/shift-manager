@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 
 const ROLE_LABELS: Record<UserRole, string> = {
   admin: "管理者",

@@ -2,7 +2,7 @@ import type { AgeGroup as PrismaAgeGroup, Classroom as PrismaClassroom } from "@
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
-import type { AgeGroup, AuxiliaryStaffSlot, Classroom } from "@/lib/mock-classes";
+import type { AgeGroup, AuxiliaryStaffSlot, Classroom } from "@/lib/classroom-helpers";
 
 export type ClassroomWriteInput = {
   name: string;

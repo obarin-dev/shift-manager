@@ -1,4 +1,4 @@
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 
 export type AdminNavKey = "home" | "shifts" | "roster" | "requests" | "nursery";
 

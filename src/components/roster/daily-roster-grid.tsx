@@ -10,11 +10,11 @@ import {
 } from "react";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useStaffList } from "@/hooks/use-staff-list";
-import { sortClassrooms } from "@/lib/mock-classes";
+import { sortClassrooms } from "@/lib/classroom-helpers";
 import {
   formatCalendarEntrySummary,
   type NurseryCalendarEntry,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 import { RosterClassColumnHeader } from "@/components/roster/roster-class-column-header";
 import { RosterStaffSelect } from "@/components/roster/roster-staff-select";
 import {
@@ -31,7 +31,7 @@ import {
   toDateKey,
   type RosterCellAssignment,
   type RosterTimeSlot,
-} from "@/lib/mock-roster";
+} from "@/lib/roster-helpers";
 
 type DailyRosterGridProps = {
   nurseryName?: string;

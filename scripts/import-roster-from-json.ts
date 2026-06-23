@@ -2,7 +2,7 @@ import "dotenv/config";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { listClassrooms } from "../src/lib/classroom-db";
-import { sortClassrooms } from "../src/lib/mock-classes";
+import { sortClassrooms } from "../src/lib/classroom-helpers";
 import {
   normalizeRosterSheetPayload,
   saveRosterSheet,

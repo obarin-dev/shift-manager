@@ -4,7 +4,7 @@ import {
   type AdminNavKey,
   resolveAdminNavHref,
 } from "@/lib/admin-navigation";
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 import type { AuthAccount } from "@/lib/user-db";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarIcon } from "@/components/layout/sidebar-icon";

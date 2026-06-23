@@ -1,7 +1,7 @@
 "use client";
 
-import type { StaffMember } from "@/lib/mock-staff";
-import { getStaffSurname } from "@/lib/mock-shift-schedule";
+import type { StaffMember } from "@/lib/staff-helpers";
+import { getStaffSurname } from "@/lib/shift-helpers";
 
 type RosterStaffSelectProps = {
   staff: StaffMember[];

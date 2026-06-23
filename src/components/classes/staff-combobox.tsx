@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { useStaffList } from "@/hooks/use-staff-list";
-import type { StaffMember } from "@/lib/mock-staff";
+import type { StaffMember } from "@/lib/staff-helpers";
 
 function matchesQuery(staff: StaffMember, query: string) {
   const normalized = query.trim().toLowerCase();

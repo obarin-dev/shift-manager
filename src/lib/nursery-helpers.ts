@@ -1,4 +1,4 @@
-import { parseTimeInput } from "@/lib/mock-classes";
+import { parseTimeInput } from "@/lib/classroom-helpers";
 
 export type ShiftTypeCode = "early" | "day" | "late" | "extended" | "other";
 
@@ -22,29 +22,18 @@ export type NurseryProfile = {
   extended_close_time: string;
 };
 
-/**
- * 休園日1件（表示用DTO）。
- * 永続化は `calendar_entry`（entry_type = closure）。`nursery_closed_day` は使わない。
- */
 export type NurseryClosedDay = {
   id: string;
-  /** YYYY-MM-DD */
   date: string;
   title: string;
-  /** 毎年同じ月日を休園とする（例: 元日） */
   repeats_annually: boolean;
 };
 
-/** 定休トグル「祝」（国民の祝日）の表示ラベル */
 export const PUBLIC_HOLIDAY_RULE_LABEL = "祝";
 
-/** 休日設定画面用のまとめDTO（DB: nursery + calendar_entry closure） */
 export type NurseryRestSettings = {
-  /** 0=日 … 6=土。毎週この曜日は休園 → nursery.weekly_closed_weekdays */
   weekly_closed_days: number[];
-  /** 国民の祝日を休園とする → nursery.close_on_public_holidays */
   close_on_public_holidays: boolean;
-  /** 日付指定の休園（臨時・創立記念日など）→ calendar_entry（closure） */
   closed_days: NurseryClosedDay[];
 };
 
@@ -63,11 +52,6 @@ export type NurseryCalendarEntry = {
   note?: string;
 };
 
-export type TodaySpecialEvent = {
-  time: string;
-  label: string;
-};
-
 export const CALENDAR_ENTRY_TYPE_OPTIONS: Array<{
   value: CalendarEntryType;
   label: string;
@@ -75,6 +59,12 @@ export const CALENDAR_ENTRY_TYPE_OPTIONS: Array<{
   { value: "event", label: "行事・打ち合わせ" },
   { value: "closure", label: "休園" },
   { value: "special_hours", label: "臨時の開園時間" },
+];
+
+export const INITIAL_SHIFT_TYPES: ShiftTypeDefinition[] = [
+  { id: "shift-early", code: "early", name: "早番", start: "07:00", end: "15:00", is_active: true, sort_order: 1, color: "#BFDBFE" },
+  { id: "shift-day", code: "day", name: "日勤", start: "09:00", end: "17:00", is_active: true, sort_order: 2, color: "#BBF7D0" },
+  { id: "shift-late", code: "late", name: "遅番", start: "11:00", end: "19:00", is_active: true, sort_order: 3, color: "#FED7AA" },
 ];
 
 export const INITIAL_NURSERY_PROFILE: NurseryProfile = {
@@ -104,44 +94,6 @@ export const INITIAL_NURSERY_REST: NurseryRestSettings = {
     },
   ],
 };
-
-export const INITIAL_SHIFT_TYPES: ShiftTypeDefinition[] = [
-  {
-    id: "shift-early",
-    code: "early",
-    name: "早番",
-    start: "07:00",
-    end: "15:00",
-    is_active: true,
-    sort_order: 1,
-    color: "#BFDBFE",
-  },
-  {
-    id: "shift-day",
-    code: "day",
-    name: "日勤",
-    start: "09:00",
-    end: "17:00",
-    is_active: true,
-    sort_order: 2,
-    color: "#BBF7D0",
-  },
-  {
-    id: "shift-late",
-    code: "late",
-    name: "遅番",
-    start: "11:00",
-    end: "19:00",
-    is_active: true,
-    sort_order: 3,
-    color: "#FED7AA",
-  },
-];
-
-/** 勤務区分マスタに表示する区分（延長保育は保育時間で設定） */
-export function isWorkShiftType(shift: Pick<ShiftTypeDefinition, "code">) {
-  return shift.code !== "extended";
-}
 
 export const INITIAL_NURSERY_CALENDAR_ENTRIES: NurseryCalendarEntry[] = [
   {
@@ -195,11 +147,12 @@ export const INITIAL_NURSERY_CALENDAR_ENTRIES: NurseryCalendarEntry[] = [
   },
 ];
 
-let calendarEntryCounter = INITIAL_NURSERY_CALENDAR_ENTRIES.length;
-
 export function createCalendarEntryId() {
-  calendarEntryCounter += 1;
-  return `cal-${calendarEntryCounter}`;
+  return `cal-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+export function isWorkShiftType(shift: Pick<ShiftTypeDefinition, "code">) {
+  return shift.code !== "extended";
 }
 
 export function formatTimeRange(start: string, end: string) {
@@ -221,7 +174,6 @@ export function formatDisplayTime(time: string) {
   return `${String(hour).padStart(2, "0")}:${match[2]}`;
 }
 
-/** 延長保育の時間帯表示（開始＝閉園、終了＝延長終了） */
 export function formatExtendedCareRange(
   closeTime: string,
   extendedCloseTime: string,
@@ -291,7 +243,6 @@ export function validateNurseryHours(
   return errors;
 }
 
-/** 勤務区分に設定できる最遅の終了時刻（延長終了が閉園より後なら延長終了まで可） */
 export function getWorkShiftLatestEndMinutes(
   profile: Pick<NurseryProfile, "close_time" | "extended_close_time">,
 ) {
@@ -542,19 +493,6 @@ export function toDateKey(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
-export function getTodaySpecialEvents(
-  entries: NurseryCalendarEntry[],
-  referenceDate: Date = new Date(),
-) {
-  const dateKey = toDateKey(referenceDate);
-  return getEntriesForDate(entries, dateKey)
-    .filter((entry) => entry.entry_type === "event" && entry.start_time)
-    .map((entry) => ({
-      time: formatDisplayTime(entry.start_time!),
-      label: entry.title,
-    }));
-}
-
 export function buildMonthGrid(year: number, month: number) {
   const firstDay = new Date(year, month - 1, 1);
   const lastDay = new Date(year, month, 0);
@@ -597,63 +535,51 @@ export const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"] 
 
 export type CalendarViewMode = "month" | "week" | "day";
 
-export const CALENDAR_VIEW_OPTIONS: Array<{ value: CalendarViewMode; label: string }> =
-  [
-    { value: "month", label: "月" },
-    { value: "week", label: "週" },
-    { value: "day", label: "日" },
-  ];
+export const CALENDAR_VIEW_OPTIONS: Array<{ value: CalendarViewMode; label: string }> = [
+  { value: "month", label: "月" },
+  { value: "week", label: "週" },
+  { value: "day", label: "日" },
+];
 
 export function parseDateKey(dateKey: string) {
   return new Date(`${dateKey}T12:00:00`);
 }
 
 export function addDaysToDateKey(dateKey: string, days: number) {
-  const next = parseDateKey(dateKey);
+  const next = new Date(`${dateKey}T12:00:00`);
   next.setDate(next.getDate() + days);
   return toDateKey(next);
 }
 
-/** 日曜始まりの1週間（dateKey を含む週） */
 export function getWeekDateKeys(dateKey: string) {
   const anchor = parseDateKey(dateKey);
-  const start = new Date(anchor);
-  start.setDate(anchor.getDate() - anchor.getDay());
-
+  const sunday = new Date(anchor);
+  sunday.setDate(anchor.getDate() - anchor.getDay());
   return Array.from({ length: 7 }, (_, index) => {
-    const cell = new Date(start);
-    cell.setDate(start.getDate() + index);
-    return toDateKey(cell);
+    const d = new Date(sunday);
+    d.setDate(sunday.getDate() + index);
+    return toDateKey(d);
   });
 }
 
 export function getEntriesForWeek(entries: NurseryCalendarEntry[], dateKey: string) {
-  const weekDates = new Set(getWeekDateKeys(dateKey));
-  return sortCalendarEntries(entries.filter((entry) => weekDates.has(entry.entry_date)));
+  const weekKeys = new Set(getWeekDateKeys(dateKey));
+  return sortCalendarEntries(entries.filter((entry) => weekKeys.has(entry.entry_date)));
 }
 
 export function formatWeekRangeLabel(weekDateKeys: string[]) {
   const start = parseDateKey(weekDateKeys[0]!);
   const end = parseDateKey(weekDateKeys[6]!);
-
-  const startText = start.toLocaleDateString("ja-JP", {
-    month: "long",
-    day: "numeric",
-  });
-  const endText = end.toLocaleDateString("ja-JP", {
-    month: "long",
-    day: "numeric",
-  });
-
+  const startText = start.toLocaleDateString("ja-JP", { month: "long", day: "numeric" });
+  const endText = end.toLocaleDateString("ja-JP", { month: "long", day: "numeric" });
   if (start.getMonth() === end.getMonth()) {
     return `${start.getFullYear()}年${start.getMonth() + 1}月${start.getDate()}日〜${end.getDate()}日`;
   }
-
   return `${start.getFullYear()}年${startText}〜${endText}`;
 }
 
 export function formatDayHeading(dateKey: string) {
-  return parseDateKey(dateKey).toLocaleDateString("ja-JP", {
+  return new Date(`${dateKey}T12:00:00`).toLocaleDateString("ja-JP", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -662,15 +588,12 @@ export function formatDayHeading(dateKey: string) {
 }
 
 export function syncYearMonthFromDateKey(dateKey: string) {
-  const parsed = parseDateKey(dateKey);
-  return {
-    year: parsed.getFullYear(),
-    month: parsed.getMonth() + 1,
-  };
+  const [year, month] = dateKey.split("-").map(Number);
+  return { year: year ?? new Date().getFullYear(), month: month ?? 1 };
 }
 
 export function createClosedDayId() {
-  return `rest-${Date.now()}`;
+  return `rest-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export function sortClosedDays(days: NurseryClosedDay[]) {
@@ -698,16 +621,25 @@ export function formatClosedDayDateLabel(entry: NurseryClosedDay) {
   });
 }
 
-export function validateClosedDayInput(input: {
-  date: string;
-  title: string;
-}): Partial<Record<"date" | "title", string>> {
-  const errors: Partial<Record<"date" | "title", string>> = {};
-  if (!input.date.trim()) {
-    errors.date = "日付を選択してください";
+export function validateClosedDayInput(
+  date: string,
+  title: string,
+  existing: NurseryClosedDay[],
+  editingId?: string,
+) {
+  const errors: { date?: string; title?: string } = {};
+
+  if (!date) {
+    errors.date = "日付を選択してください。";
+  } else if (
+    existing.some((day) => day.id !== editingId && day.date === date)
+  ) {
+    errors.date = "この日付はすでに登録されています。";
   }
-  if (!input.title.trim()) {
-    errors.title = "名称を入力してください";
+
+  if (!title.trim()) {
+    errors.title = "タイトルを入力してください。";
   }
+
   return errors;
 }

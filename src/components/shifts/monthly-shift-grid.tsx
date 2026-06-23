@@ -18,7 +18,7 @@ import {
   type ShiftAssignment,
   type ShiftCellValue,
   type ShiftScheduleStatus,
-} from "@/lib/mock-shift-schedule";
+} from "@/lib/shift-helpers";
 import { ShiftScheduleLegend } from "@/components/shifts/shift-schedule-legend";
 import { useAdminStaffRequests } from "@/hooks/use-admin-staff-requests";
 import { mergeStaffRequestsIntoAssignments } from "@/lib/staff-request-shift-mapper";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { NurseryRestSettings } from "@/lib/mock-nursery-info";
+import type { NurseryRestSettings } from "@/lib/nursery-helpers";
 
 type HolidaySettingsResponse = {
   data?: NurseryRestSettings;

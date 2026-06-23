@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { listClassrooms } from "@/lib/classroom-db";
-import { sortClassrooms } from "@/lib/mock-classes";
+import { sortClassrooms } from "@/lib/classroom-helpers";
 import {
   getRosterSheetByDate,
   normalizeRosterSheetPayload,

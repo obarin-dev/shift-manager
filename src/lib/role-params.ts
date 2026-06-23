@@ -1,4 +1,4 @@
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 
 export function isUserRole(value: string | undefined): value is UserRole {
   return value === "admin" || value === "manager" || value === "staff";

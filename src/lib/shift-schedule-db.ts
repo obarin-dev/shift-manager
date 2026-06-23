@@ -1,6 +1,6 @@
 import type { Prisma, ShiftScheduleStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { ShiftAssignment, ShiftScheduleStatus as AppShiftScheduleStatus } from "@/lib/mock-shift-schedule";
+import type { ShiftAssignment, ShiftScheduleStatus as AppShiftScheduleStatus } from "@/lib/shift-helpers";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 

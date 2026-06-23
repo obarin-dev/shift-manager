@@ -3,7 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useStaffList } from "@/hooks/use-staff-list";
-import type { UserRole } from "@/lib/mock-auth";
+import type { UserRole } from "@/lib/auth-session";
 import {
   compareStaffLoginIds,
   EMPTY_STAFF_SHIFT_TIME,
@@ -12,7 +12,7 @@ import {
   staffLoginIdToInput,
   getEmploymentTypeLabel,
   type StaffMember,
-} from "@/lib/mock-staff";
+} from "@/lib/staff-helpers";
 import { StaffFormModal, type StaffFormValues } from "@/components/staff/staff-form-modal";
 import { StaffDetailPanel } from "@/components/staff/staff-detail-panel";
 import {

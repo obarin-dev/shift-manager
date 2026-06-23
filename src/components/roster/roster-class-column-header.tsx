@@ -1,11 +1,11 @@
 "use client";
 
-import type { Classroom } from "@/lib/mock-classes";
+import type { Classroom } from "@/lib/classroom-helpers";
 import {
   dailyChildCountKey,
   getTodayChildCount,
   parseDailyChildCountInput,
-} from "@/lib/mock-roster";
+} from "@/lib/roster-helpers";
 
 type RosterClassColumnHeaderProps = {
   classroom: Classroom;

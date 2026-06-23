@@ -9,7 +9,7 @@ import {
   type NurseryProfile,
   type ShiftTypeDefinition,
   validateShiftTypeTimes,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 
 type ShiftTypeInlineRowProps = {
   saved: ShiftTypeDefinition;

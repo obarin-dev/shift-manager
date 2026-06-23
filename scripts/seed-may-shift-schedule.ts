@@ -4,7 +4,7 @@ import {
   buildAssignmentsForMonth,
   buildMonthDateKeys,
   type ShiftAssignment,
-} from "../src/lib/mock-shift-schedule";
+} from "../src/lib/shift-helpers";
 import { isClosedDate } from "../src/lib/holiday-settings";
 import { SHIFT_CELL_OFF } from "../src/lib/shift-schedule-options";
 import {

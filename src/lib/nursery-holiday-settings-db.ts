@@ -1,7 +1,7 @@
 import type { CalendarEntry } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
-import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/mock-nursery-info";
+import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/nursery-helpers";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
 function toClosedDay(record: CalendarEntry): NurseryClosedDay {

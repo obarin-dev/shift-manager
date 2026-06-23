@@ -24,7 +24,7 @@ import {
   timeToMinutes,
   validateNurseryHours,
   validateCalendarEntryForm,
-} from "@/lib/mock-nursery-info";
+} from "@/lib/nursery-helpers";
 
 import { CalendarEntryModal } from "@/components/nursery-info/calendar-entry-modal";
 import { ShiftTypeFormModal } from "@/components/nursery-info/shift-type-form-modal";
@@ -166,6 +166,7 @@ export function NurseryInfoSettings() {
         end,
         is_active: true,
         sort_order: Math.max(...shiftTypes.map((s) => s.sort_order), 0) + 1,
+        color: "#E5E7EB",
       },
     });
   };

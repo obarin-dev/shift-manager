@@ -7,7 +7,7 @@ import {
   updateShiftType,
   type ShiftTypeWriteInput,
 } from "@/lib/shift-type-db";
-import type { ShiftTypeCode } from "@/lib/mock-nursery-info";
+import type { ShiftTypeCode } from "@/lib/nursery-helpers";
 import { DEFAULT_SHIFT_TYPE_COLOR } from "@/lib/shift-type-colors";
 
 export const runtime = "nodejs";

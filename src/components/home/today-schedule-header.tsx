@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { TodaySpecialEvent } from "@/lib/mock-nursery-info";
+import type { TodaySpecialEvent } from "@/lib/calendar-entry-db";
 
 type TodayScheduleHeaderProps = {
   dateLabel: string;

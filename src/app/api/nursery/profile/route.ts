@@ -3,7 +3,7 @@ import {
   getPrimaryNurseryProfile,
   updatePrimaryNurseryProfile,
 } from "@/lib/nursery-db";
-import type { NurseryProfile } from "@/lib/mock-nursery-info";
+import type { NurseryProfile } from "@/lib/nursery-helpers";
 
 export const runtime = "nodejs";
 

@@ -1,7 +1,7 @@
 import type { ShiftType as PrismaShiftType, ShiftTypeCode as PrismaShiftTypeCode } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
-import type { ShiftTypeCode, ShiftTypeDefinition } from "@/lib/mock-nursery-info";
+import type { ShiftTypeCode, ShiftTypeDefinition } from "@/lib/nursery-helpers";
 import {
   DEFAULT_SHIFT_TYPE_COLOR,
   getDefaultColorForShiftCode,

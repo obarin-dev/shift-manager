@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { Classroom } from "@/lib/mock-classes";
+import type { Classroom } from "@/lib/classroom-helpers";
 
 export function useClassroomsList() {
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
