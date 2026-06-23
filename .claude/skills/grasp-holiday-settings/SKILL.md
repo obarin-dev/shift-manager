@@ -15,6 +15,18 @@
 | `japanese-public-holidays.ts` | 年ごとの祝日データをハードコードで保持。`getJapanesePublicHolidays(year)` で取得 |
 | `mock-nursery-info.ts` | `NurseryRestSettings` / `NurseryClosedDay` の型定義 |
 
+## 依存方向
+
+```
+shift-schedule-ai.ts（sanitizeAssignments）
+calendar-entry-db.ts / カレンダー表示
+  → holiday-settings.ts（isClosedDate）
+    → japanese-public-holidays.ts（祝日データ）
+nursery-holiday-settings-db.ts（getHolidaySettings）
+  → Nursery テーブル + CalendarEntry(closure) テーブル
+  → NurseryRestSettings（isClosedDate に渡す集約型）
+```
+
 ## 3つの休園ソース
 
 ```

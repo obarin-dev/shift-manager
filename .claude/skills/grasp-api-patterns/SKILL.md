@@ -14,10 +14,22 @@ Next.js App Router の API route で共通して使うパターンと設計上�
 2. **認証・認可チェック** — `getSession()` + `getAuthAccountByUserId()` でセッションとユーザーを確認
 3. **DB 操作の委譲** — `*-db.ts` の関数を呼ぶだけ。route に直接 `prisma` を呼ぶコードは書かない
 
+## 依存方向
+
+```
+ページ / クライアント
+  → API route（src/app/api/）
+    → auth-session.ts / user-db.ts（認証チェック）
+    → *-db.ts（DB操作）
+      → prisma.ts
+middleware.ts
+  → auth-session.ts（JWT検証のみ、DBなし）
+```
+
 ## 重要な設計判断
 
 **`runtime = "nodejs"` を全 route に指定する**
-Next.js のデフォルト runtime は Edge だが、Prisma（`@prisma/adapter-pg`）と bcrypt は Edge Runtime で動かない。全 API route に `export const runtime = "nodejs"` を必ず書く。これがないと本番デプロイ時に実行時エラーになる。
+Next.js のデフォルト runtime は nodejs だが、Vercel 等の一部デプロイ環境では明示しないと Edge として扱われる場合がある。Prisma（`@prisma/adapter-pg`）と bcrypt は Edge Runtime で動かないため、全 API route に `export const runtime = "nodejs"` を明示する。これがないと特定の環境でデプロイ時に実行時エラーになる。
 
 **認証チェックは `getSession()` + `getAuthAccountByUserId()` の2段**
 `getSession()` は JWT 検証のみで DB を見ない。無効化されたユーザー（`is_active: false`）を弾くには続けて `getAuthAccountByUserId()` を呼ぶ必要がある。どちらか一方だけでは不十分。`/api/staff-requests` の `getRequestOwner()` ヘルパーがこのパターンの参考実装。
