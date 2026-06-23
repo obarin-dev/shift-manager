@@ -18,8 +18,8 @@
 ## 依存方向
 
 ```
-shift-schedule-ai.ts（sanitizeAssignments）
-calendar-entry-db.ts / カレンダー表示
+shift-schedule-ai.ts（sanitizeAssignments / formatClosedDates）
+カレンダー表示（UI層）
   → holiday-settings.ts（isClosedDate）
     → japanese-public-holidays.ts（祝日データ）
 nursery-holiday-settings-db.ts（getHolidaySettings）
