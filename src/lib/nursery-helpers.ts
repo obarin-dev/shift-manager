@@ -52,7 +52,6 @@ export type NurseryCalendarEntry = {
   note?: string;
 };
 
-
 export const CALENDAR_ENTRY_TYPE_OPTIONS: Array<{
   value: CalendarEntryType;
   label: string;
@@ -61,7 +60,6 @@ export const CALENDAR_ENTRY_TYPE_OPTIONS: Array<{
   { value: "closure", label: "休園" },
   { value: "special_hours", label: "臨時の開園時間" },
 ];
-
 
 export const INITIAL_SHIFT_TYPES: ShiftTypeDefinition[] = [
   { id: "shift-early", code: "early", name: "早番", start: "07:00", end: "15:00", is_active: true, sort_order: 1, color: "#BFDBFE" },
@@ -494,7 +492,6 @@ export function toDateKey(date: Date) {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
-
 
 export function buildMonthGrid(year: number, month: number) {
   const firstDay = new Date(year, month - 1, 1);

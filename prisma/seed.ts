@@ -6,6 +6,7 @@ import {
   INITIAL_NURSERY_PROFILE,
   INITIAL_NURSERY_REST,
   INITIAL_SHIFT_TYPES,
+  type ShiftTypeCode,
 } from "../src/lib/nursery-helpers";
 import { DEFAULT_NURSERY_ID } from "../src/lib/nursery-db";
 import { parseTimeToDate } from "../src/lib/nursery-time";
@@ -226,7 +227,7 @@ async function main() {
       data: {
         id: shiftType.id,
         nursery_id: DEFAULT_NURSERY_ID,
-        code: shiftType.code as import("../src/lib/nursery-helpers").ShiftTypeCode,
+        code: shiftType.code as ShiftTypeCode,
         name: shiftType.name,
         start_time: parseTimeToDate(shiftType.start),
         end_time: parseTimeToDate(shiftType.end),
