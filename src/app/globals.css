@@ -922,9 +922,21 @@ a.home-card:hover {
   font-weight: 750;
 }
 
+.admin-requests-date-item--approved {
+  opacity: 0.55;
+  background: #f8fafc;
+}
+
 .admin-requests-date-item__date {
   color: var(--primary-dark);
   font-weight: 900;
+}
+
+.admin-requests-date-item__approved {
+  color: #16a34a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .admin-requests-date-item small {
