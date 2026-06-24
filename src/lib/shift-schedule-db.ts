@@ -170,19 +170,6 @@ export async function saveShiftSchedule(
       where: { shift_schedule_id: schedule.id },
     });
 
-    if (payload.assignments.length === 0) {
-      return;
-    }
-
-    await tx.shiftSlot.createMany({
-      data: payload.assignments.map((assignment) => ({
-        shift_schedule_id: schedule.id,
-        staff_id: assignment.staff_id,
-        work_date: parseDateToDb(assignment.work_date),
-        shift_type: assignment.shift_type,
-      })),
-    });
-
     if (isFirstPublish) {
       const monthStart = new Date(`${targetMonth}-01T00:00:00.000Z`);
       const monthEnd = new Date(monthStart);
@@ -197,5 +184,18 @@ export async function saveShiftSchedule(
         data: { status: "approved" },
       });
     }
+
+    if (payload.assignments.length === 0) {
+      return;
+    }
+
+    await tx.shiftSlot.createMany({
+      data: payload.assignments.map((assignment) => ({
+        shift_schedule_id: schedule.id,
+        staff_id: assignment.staff_id,
+        work_date: parseDateToDb(assignment.work_date),
+        shift_type: assignment.shift_type,
+      })),
+    });
   });
 }

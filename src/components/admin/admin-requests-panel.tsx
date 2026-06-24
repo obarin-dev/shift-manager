@@ -19,15 +19,13 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
   );
 
   useEffect(() => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      for (const g of groups) {
-        if (g.requests.some((r) => r.status === "提出済み")) {
-          next.add(g.staffId);
-        }
-      }
-      return next;
-    });
+    setExpandedIds(
+      new Set(
+        groups
+          .filter((g) => g.requests.some((r) => r.status === "提出済み"))
+          .map((g) => g.staffId),
+      ),
+    );
   }, [groups]);
 
   if (groups.length === 0) {
