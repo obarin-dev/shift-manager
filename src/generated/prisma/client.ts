@@ -87,6 +87,11 @@ export type RosterSheet = Prisma.RosterSheetModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model Invitation
+ * 
+ */
+export type Invitation = Prisma.InvitationModel
+/**
  * Model StaffRequest
  * 
  */

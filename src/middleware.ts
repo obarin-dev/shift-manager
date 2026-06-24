@@ -2,11 +2,19 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth-session";
 
-const PUBLIC_PATHS = ["/login"];
-const PUBLIC_API_PATHS = ["/api/auth/login"];
+const PUBLIC_PATHS = ["/login", "/register"];
+const PUBLIC_API_PATHS = ["/api/auth/login", "/api/invitations/"];
+
+function isPublicApiInvitation(pathname: string) {
+  return /^\/api\/invitations\/[^/]+(\/register)?$/.test(pathname);
+}
 
 function isPublicPath(pathname: string) {
   if (PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
+    return true;
+  }
+
+  if (isPublicApiInvitation(pathname)) {
     return true;
   }
 

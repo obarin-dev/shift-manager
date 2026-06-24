@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useStaffList } from "@/hooks/use-staff-list";
 import type { UserRole } from "@/lib/auth-session";
@@ -119,6 +119,40 @@ export function StaffManagementSettings({
   const [invitations, setInvitations] = useState<InvitationRecord[]>([]);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    type ApiInv = {
+      id: string;
+      staffId: string | null;
+      staffName: string | null;
+      adminNote: string;
+      method: InviteMethod;
+      status: InviteStatus;
+      token: string;
+      expiresAt: string;
+      createdAt: string;
+    };
+    fetch("/api/invitations")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body: { data?: ApiInv[] } | null) => {
+        if (!body?.data) return;
+        const origin = window.location.origin;
+        setInvitations(
+          body.data.map((inv) => ({
+            id: inv.id,
+            staffId: inv.staffId,
+            adminNote: inv.adminNote,
+            registeredName: inv.staffName,
+            method: inv.method,
+            status: inv.status,
+            inviteUrl: `${origin}/register/${inv.token}`,
+            createdAt: inv.createdAt,
+            expiresAt: inv.expiresAt,
+          })),
+        );
+      })
+      .catch(() => undefined);
+  }, []);
 
   const sortedStaff = useMemo(() => {
     return [...staffMembers].sort((a, b) => {
@@ -298,25 +332,58 @@ export function StaffManagementSettings({
     setInviteError("");
     setCopyMessage("");
 
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + inviteDraft.expiryHours * 60 * 60 * 1000);
-    const token = Math.random().toString(36).slice(2, 12);
-    const inviteUrl = `https://example.com/invite/${token}`;
+    void (async () => {
+      try {
+        const response = await fetch("/api/invitations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            staff_id: inviteTargetStaffId,
+            admin_note: inviteDraft.adminNote.trim(),
+            method: inviteDraft.method,
+            expiry_hours: inviteDraft.expiryHours,
+          }),
+        });
 
-    const invitation: InvitationRecord = {
-      id: `invite-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      staffId: inviteTargetStaffId,
-      adminNote: inviteDraft.adminNote.trim(),
-      registeredName: null,
-      method: inviteDraft.method,
-      status: "pending",
-      inviteUrl,
-      createdAt: now.toISOString(),
-      expiresAt: expiresAt.toISOString(),
-    };
+        type ApiInvitation = {
+          id: string;
+          staffId: string | null;
+          staffName: string | null;
+          adminNote: string;
+          method: InviteMethod;
+          status: InviteStatus;
+          inviteUrl: string;
+          createdAt: string;
+          expiresAt: string;
+        };
+        const body = (await response.json()) as {
+          data?: ApiInvitation;
+          error?: string;
+        };
 
-    setInvitations((current) => [invitation, ...current]);
-    setIssuedInvitationId(invitation.id);
+        if (!response.ok || !body.data) {
+          setInviteError("招待の発行に失敗しました。もう一度お試しください。");
+          return;
+        }
+
+        const invitation: InvitationRecord = {
+          id: body.data.id,
+          staffId: body.data.staffId,
+          adminNote: body.data.adminNote,
+          registeredName: body.data.staffName ?? null,
+          method: body.data.method,
+          status: body.data.status,
+          inviteUrl: body.data.inviteUrl,
+          createdAt: body.data.createdAt,
+          expiresAt: body.data.expiresAt,
+        };
+
+        setInvitations((current) => [invitation, ...current]);
+        setIssuedInvitationId(invitation.id);
+      } catch {
+        setInviteError("招待の発行に失敗しました。もう一度お試しください。");
+      }
+    })();
   };
 
   const handleCopyUrl = async (url: string) => {
