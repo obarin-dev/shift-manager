@@ -135,6 +135,12 @@ export async function saveShiftSchedule(
   const publishedPayload = payload.assignments as unknown as Prisma.InputJsonValue;
 
   await prisma.$transaction(async (tx) => {
+    const existing = await tx.shiftSchedule.findFirst({
+      where: { nursery_id: resolvedNurseryId, target_month: targetMonth },
+      select: { status: true },
+    });
+    const isFirstPublish = isPublishing && existing?.status !== "published";
+
     const schedule = await tx.shiftSchedule.upsert({
       where: {
         nursery_id_target_month: {
@@ -177,7 +183,7 @@ export async function saveShiftSchedule(
       })),
     });
 
-    if (isPublishing) {
+    if (isFirstPublish) {
       const monthStart = new Date(`${targetMonth}-01T00:00:00.000Z`);
       const monthEnd = new Date(monthStart);
       monthEnd.setUTCMonth(monthEnd.getUTCMonth() + 1);

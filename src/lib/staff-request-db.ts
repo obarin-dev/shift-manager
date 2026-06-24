@@ -31,11 +31,8 @@ export type StaffRequestOwner = {
   staffId?: string;
 };
 
-export type AdminStaffRequestAlert = StaffRequestPayload & {
+export type AdminStaffRequestItem = StaffRequestPayload & {
   staffName: string;
-};
-
-export type AdminStaffRequestItem = AdminStaffRequestAlert & {
   userId: string;
   staffId: string | null;
   submittedAt: string;
@@ -93,40 +90,6 @@ export async function listStaffRequests(owner: StaffRequestOwner) {
   return rows.map(toStaffRequestPayload);
 }
 
-export async function listAdminStaffRequestAlerts(nurseryId: string, limit = 3) {
-  const rows = await prisma.staffRequest.findMany({
-    where: {
-      nursery_id: nurseryId,
-      status: "submitted",
-    },
-    include: {
-      staff: { select: { name: true } },
-      user: {
-        select: {
-          email: true,
-          staff: { select: { name: true } },
-        },
-      },
-    },
-    orderBy: [{ created_at: "desc" }],
-    take: limit,
-  });
-
-  const total = await prisma.staffRequest.count({
-    where: {
-      nursery_id: nurseryId,
-      status: "submitted",
-    },
-  });
-
-  return {
-    total,
-    requests: rows.map((row) => ({
-      ...toStaffRequestPayload(row),
-      staffName: row.staff?.name ?? row.user.staff?.name ?? row.user.email,
-    })),
-  };
-}
 
 export async function listAdminStaffRequests(nurseryId: string) {
   const rows = await prisma.staffRequest.findMany({

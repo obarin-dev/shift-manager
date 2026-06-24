@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AdminStaffRequestGroup } from "@/lib/staff-request-db";
 
 function formatShortDate(date: string) {
@@ -17,6 +17,18 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
           .map((g) => g.staffId),
       ),
   );
+
+  useEffect(() => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      for (const g of groups) {
+        if (g.requests.some((r) => r.status === "提出済み")) {
+          next.add(g.staffId);
+        }
+      }
+      return next;
+    });
+  }, [groups]);
 
   if (groups.length === 0) {
     return (
