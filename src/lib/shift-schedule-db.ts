@@ -177,17 +177,19 @@ export async function saveShiftSchedule(
       })),
     });
 
-    const monthStart = new Date(`${targetMonth}-01T00:00:00.000Z`);
-    const monthEnd = new Date(monthStart);
-    monthEnd.setUTCMonth(monthEnd.getUTCMonth() + 1);
+    if (isPublishing) {
+      const monthStart = new Date(`${targetMonth}-01T00:00:00.000Z`);
+      const monthEnd = new Date(monthStart);
+      monthEnd.setUTCMonth(monthEnd.getUTCMonth() + 1);
 
-    await tx.staffRequest.updateMany({
-      where: {
-        nursery_id: resolvedNurseryId,
-        status: "submitted",
-        request_date: { gte: monthStart, lt: monthEnd },
-      },
-      data: { status: "approved" },
-    });
+      await tx.staffRequest.updateMany({
+        where: {
+          nursery_id: resolvedNurseryId,
+          status: "submitted",
+          request_date: { gte: monthStart, lt: monthEnd },
+        },
+        data: { status: "approved" },
+      });
+    }
   });
 }
