@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth-session";
 
 const PUBLIC_PATHS = ["/login", "/register"];
-const PUBLIC_API_PATHS = ["/api/auth/login", "/api/invitations/"];
+const PUBLIC_API_PATHS = ["/api/auth/login"];
 
 function isPublicApiInvitation(pathname: string) {
   return /^\/api\/invitations\/[^/]+(\/register)?$/.test(pathname);

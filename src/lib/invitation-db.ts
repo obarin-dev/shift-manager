@@ -89,7 +89,7 @@ export async function createInvitation({
 
 export async function listPendingInvitations(nurseryId: string): Promise<InvitationRecord[]> {
   const invitations = await prisma.invitation.findMany({
-    where: { nursery_id: nurseryId },
+    where: { nursery_id: nurseryId, status: "pending" },
     include: INCLUDE_STAFF,
     orderBy: { created_at: "desc" },
   });
@@ -107,9 +107,46 @@ export async function getInvitationByToken(token: string): Promise<InvitationRec
   return toRecord(inv);
 }
 
-export async function markInvitationUsed(token: string): Promise<void> {
-  await prisma.invitation.update({
-    where: { token },
-    data: { status: "used" },
+export class InvitationInvalidError extends Error {
+  constructor() {
+    super("invitation_invalid");
+    this.name = "InvitationInvalidError";
+  }
+}
+
+export async function registerWithInvitation({
+  token,
+  email,
+  passwordHash,
+}: {
+  token: string;
+  email: string;
+  passwordHash: string;
+}): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const updated = await tx.invitation.updateMany({
+      where: { token, status: "pending", expires_at: { gt: new Date() } },
+      data: { status: "used" },
+    });
+
+    if (updated.count === 0) {
+      throw new InvitationInvalidError();
+    }
+
+    const inv = await tx.invitation.findUnique({
+      where: { token },
+      select: { nursery_id: true, staff_id: true },
+    });
+
+    await tx.user.create({
+      data: {
+        nursery_id: inv!.nursery_id,
+        staff_id: inv!.staff_id ?? null,
+        email,
+        password_hash: passwordHash,
+        role: "staff",
+        is_active: true,
+      },
+    });
   });
 }

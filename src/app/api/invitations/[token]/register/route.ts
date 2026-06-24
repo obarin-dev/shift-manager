@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
-import { getInvitationByToken, markInvitationUsed } from "@/lib/invitation-db";
-import { createUser, findActiveUserByEmail } from "@/lib/user-db";
+import {
+  getInvitationByToken,
+  InvitationInvalidError,
+  registerWithInvitation,
+} from "@/lib/invitation-db";
+import { findActiveUserByEmail, hashPassword } from "@/lib/user-db";
 
 export const runtime = "nodejs";
 
@@ -22,7 +26,7 @@ export async function POST(
   }
 
   const payload = body as Record<string, unknown>;
-  const email = typeof payload.email === "string" ? payload.email.trim() : "";
+  const email = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
   const password = typeof payload.password === "string" ? payload.password : "";
 
   if (!email || !password) {
@@ -36,11 +40,7 @@ export async function POST(
   try {
     const invitation = await getInvitationByToken(token);
 
-    if (!invitation) {
-      return NextResponse.json({ error: "invitation_not_found" }, { status: 404 });
-    }
-
-    if (invitation.status !== "pending") {
+    if (!invitation || invitation.status !== "pending") {
       return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });
     }
 
@@ -49,18 +49,16 @@ export async function POST(
       return NextResponse.json({ error: "email_already_used" }, { status: 409 });
     }
 
-    await createUser({
-      nurseryId: invitation.nurseryId,
-      staffId: invitation.staffId,
-      email,
-      password,
-      role: "staff",
-    });
+    const passwordHash = await hashPassword(password);
 
-    await markInvitationUsed(token);
+    await registerWithInvitation({ token, email, passwordHash });
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+    if (error instanceof InvitationInvalidError) {
+      return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });
+    }
+
     console.error("POST /api/invitations/[token]/register failed:", error);
     return NextResponse.json({ error: "server_error" }, { status: 500 });
   }

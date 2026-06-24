@@ -17,6 +17,10 @@ export async function GET() {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
+  if (session.role !== "admin" && session.role !== "manager") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   try {
     const nursery = await getPrimaryNursery();
     const nurseryId = nursery?.id ?? DEFAULT_NURSERY_ID;
@@ -70,7 +74,7 @@ export async function POST(request: Request) {
       expiryHours,
     });
 
-    const origin = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+    const origin = process.env.NEXT_PUBLIC_BASE_URL ?? new URL(request.url).origin;
     const inviteUrl = `${origin}/register/${invitation.token}`;
 
     return NextResponse.json({ data: { ...invitation, inviteUrl } }, { status: 201 });

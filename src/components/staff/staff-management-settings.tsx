@@ -114,6 +114,7 @@ export function StaffManagementSettings({
     EMPTY_INVITATION_DRAFT,
   );
   const [inviteError, setInviteError] = useState("");
+  const [isInviting, setIsInviting] = useState(false);
   const [issuedInvitationId, setIssuedInvitationId] = useState<string | null>(null);
   const [copyMessage, setCopyMessage] = useState("");
   const [invitations, setInvitations] = useState<InvitationRecord[]>([]);
@@ -234,6 +235,7 @@ export function StaffManagementSettings({
     setInviteTargetStaffId(null);
     setInviteError("");
     setCopyMessage("");
+    setIsInviting(false);
   };
 
   const openEdit = (staff: StaffMember) => {
@@ -329,8 +331,13 @@ export function StaffManagementSettings({
   const handleInviteSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (isInviting) return;
+
     setInviteError("");
     setCopyMessage("");
+    setIsInviting(true);
+
+    const targetStaffId = inviteTargetStaffId;
 
     void (async () => {
       try {
@@ -338,7 +345,7 @@ export function StaffManagementSettings({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            staff_id: inviteTargetStaffId,
+            staff_id: targetStaffId,
             admin_note: inviteDraft.adminNote.trim(),
             method: inviteDraft.method,
             expiry_hours: inviteDraft.expiryHours,
@@ -363,6 +370,7 @@ export function StaffManagementSettings({
 
         if (!response.ok || !body.data) {
           setInviteError("招待の発行に失敗しました。もう一度お試しください。");
+          setIsInviting(false);
           return;
         }
 
@@ -382,6 +390,8 @@ export function StaffManagementSettings({
         setIssuedInvitationId(invitation.id);
       } catch {
         setInviteError("招待の発行に失敗しました。もう一度お試しください。");
+      } finally {
+        setIsInviting(false);
       }
     })();
   };
@@ -703,8 +713,8 @@ export function StaffManagementSettings({
                 <button className="secondary-button" onClick={closeInvite} type="button">
                   キャンセル
                 </button>
-                <button className="primary-button" type="submit">
-                  招待を発行
+                <button className="primary-button" disabled={isInviting} type="submit">
+                  {isInviting ? "発行中…" : "招待を発行"}
                 </button>
               </div>
             </form>
