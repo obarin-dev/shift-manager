@@ -85,38 +85,6 @@ export async function getAuthAccountByUserId(userId: string): Promise<AuthAccoun
   return toAuthAccount(user);
 }
 
-export async function createUser({
-  nurseryId,
-  staffId,
-  email,
-  password,
-  role,
-}: {
-  nurseryId: string;
-  staffId: string | null;
-  email: string;
-  password: string;
-  role: UserRole;
-}): Promise<AuthAccount> {
-  const normalized = email.trim().toLowerCase();
-  const passwordHash = await hashPassword(password);
-
-  const user = await prisma.user.create({
-    data: {
-      nursery_id: nurseryId,
-      staff_id: staffId ?? null,
-      email: normalized,
-      password_hash: passwordHash,
-      role,
-      is_active: true,
-    },
-    include: {
-      staff: { select: { name: true } },
-    },
-  });
-
-  return toAuthAccount(user);
-}
 
 export async function listDemoAccountsForLogin(): Promise<DemoAccountSummary[]> {
   const users = await prisma.user.findMany({

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@/generated/prisma/client";
 import {
   getInvitationByToken,
   InvitationInvalidError,
@@ -57,6 +58,13 @@ export async function POST(
   } catch (error) {
     if (error instanceof InvitationInvalidError) {
       return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });
+    }
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return NextResponse.json({ error: "email_already_used" }, { status: 409 });
     }
 
     console.error("POST /api/invitations/[token]/register failed:", error);

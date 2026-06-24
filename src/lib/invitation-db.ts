@@ -89,7 +89,7 @@ export async function createInvitation({
 
 export async function listPendingInvitations(nurseryId: string): Promise<InvitationRecord[]> {
   const invitations = await prisma.invitation.findMany({
-    where: { nursery_id: nurseryId, status: "pending" },
+    where: { nursery_id: nurseryId, status: "pending", expires_at: { gt: new Date() } },
     include: INCLUDE_STAFF,
     orderBy: { created_at: "desc" },
   });
