@@ -9,14 +9,7 @@ function formatShortDate(date: string) {
 }
 
 export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[] }) {
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(
-    () =>
-      new Set(
-        groups
-          .filter((g) => g.requests.some((r) => r.status === "提出済み"))
-          .map((g) => g.staffId),
-      ),
-  );
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setExpandedIds(

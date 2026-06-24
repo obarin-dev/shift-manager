@@ -135,11 +135,14 @@ export async function saveShiftSchedule(
   const publishedPayload = payload.assignments as unknown as Prisma.InputJsonValue;
 
   await prisma.$transaction(async (tx) => {
-    const existing = await tx.shiftSchedule.findFirst({
-      where: { nursery_id: resolvedNurseryId, target_month: targetMonth },
-      select: { status: true },
-    });
-    const isFirstPublish = isPublishing && existing?.status !== "published";
+    let isFirstPublish = false;
+    if (isPublishing) {
+      const existing = await tx.shiftSchedule.findFirst({
+        where: { nursery_id: resolvedNurseryId, target_month: targetMonth },
+        select: { published_at: true },
+      });
+      isFirstPublish = existing?.published_at == null;
+    }
 
     const schedule = await tx.shiftSchedule.upsert({
       where: {
