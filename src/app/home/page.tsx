@@ -10,10 +10,6 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarIcon } from "@/components/layout/sidebar-icon";
 import { DailyRosterGrid } from "@/components/roster/daily-roster-grid";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
-import {
-  listAdminStaffRequestAlerts,
-  type AdminStaffRequestAlert,
-} from "@/lib/staff-request-db";
 import type { UserRole } from "@/lib/auth-session";
 import type { ReactNode } from "react";
 
@@ -166,46 +162,6 @@ function HomeCards({ role, cards }: { role: UserRole; cards: CardConfig[] }) {
   );
 }
 
-function StaffRequestAlert({
-  requests,
-  total,
-}: {
-  requests: AdminStaffRequestAlert[];
-  total: number;
-}) {
-  if (total === 0) {
-    return null;
-  }
-
-  return (
-    <section className="staff-request-alert" aria-label="出勤希望アラート">
-      <div className="staff-request-alert__heading">
-        <span className="staff-request-alert__icon" aria-hidden="true">
-          !
-        </span>
-        <div>
-          <h2>出勤希望が提出されています</h2>
-          <p>{total}件の提出があります。勤務表作成前に確認してください。</p>
-        </div>
-        <Link className="staff-request-alert__link" href="/requests">
-          希望一覧を見る
-        </Link>
-      </div>
-
-      <div className="staff-request-alert__list">
-        {requests.map((request) => (
-          <article className="staff-request-alert__item" key={request.id}>
-            <strong>{request.staffName}</strong>
-            <span>
-              {request.date} / {request.type} / {request.time}
-            </span>
-            {request.memo ? <small>{request.memo}</small> : null}
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 export default async function HomePage() {
   const { account } = await requireAuth();
@@ -231,16 +187,6 @@ export default async function HomePage() {
   }
 
   if (role === "admin") {
-    let staffRequestAlerts: Awaited<ReturnType<typeof listAdminStaffRequestAlerts>> = {
-      total: 0,
-      requests: [],
-    };
-    try {
-      staffRequestAlerts = await listAdminStaffRequestAlerts(account.nurseryId);
-    } catch {
-      // 出勤希望アラートは補助情報なので、失敗してもホーム表示は継続する
-    }
-
     return (
       <AdminShell
         activeNav="home"
@@ -252,10 +198,6 @@ export default async function HomePage() {
           actions={headerActions}
           dateLabel={todayLabel}
           items={todayScheduleItems}
-        />
-        <StaffRequestAlert
-          requests={staffRequestAlerts.requests}
-          total={staffRequestAlerts.total}
         />
         <DailyRosterGrid
           className="home-roster-panel"

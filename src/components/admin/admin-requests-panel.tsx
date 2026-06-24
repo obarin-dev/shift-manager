@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AdminStaffRequestGroup } from "@/lib/staff-request-db";
 
 function formatShortDate(date: string) {
@@ -9,7 +9,24 @@ function formatShortDate(date: string) {
 }
 
 export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[] }) {
-  const [expandedStaffId, setExpandedStaffId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(
+    () =>
+      new Set(
+        groups
+          .filter((g) => g.requests.some((r) => r.status === "提出済み"))
+          .map((g) => g.staffId),
+      ),
+  );
+
+  useEffect(() => {
+    setExpandedIds(
+      new Set(
+        groups
+          .filter((g) => g.requests.some((r) => r.status === "提出済み"))
+          .map((g) => g.staffId),
+      ),
+    );
+  }, [groups]);
 
   if (groups.length === 0) {
     return (
@@ -19,11 +36,24 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
     );
   }
 
+  function toggle(staffId: string) {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(staffId)) {
+        next.delete(staffId);
+      } else {
+        next.add(staffId);
+      }
+      return next;
+    });
+  }
+
   return (
     <section className="admin-requests-panel" aria-label="提出された出勤希望">
       <div className="admin-requests-staff-list" aria-label="職員一覧">
         {groups.map((group) => {
-          const isExpanded = group.staffId === expandedStaffId;
+          const isExpanded = expandedIds.has(group.staffId);
+          const pendingCount = group.requests.filter((r) => r.status === "提出済み").length;
 
           return (
             <div className="admin-requests-staff-row" key={group.staffId}>
@@ -34,26 +64,35 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
                     ? "admin-requests-staff-button is-active"
                     : "admin-requests-staff-button"
                 }
-                onClick={() =>
-                  setExpandedStaffId((current) =>
-                    current === group.staffId ? null : group.staffId,
-                  )
-                }
+                onClick={() => toggle(group.staffId)}
                 type="button"
               >
                 {group.staffName}
+                {pendingCount > 0 && (
+                  <span className="admin-requests-staff-badge">{pendingCount}</span>
+                )}
               </button>
 
               {isExpanded ? (
                 group.requests.length > 0 ? (
                   <ul className="admin-requests-date-list">
                     {group.requests.map((request) => (
-                      <li className="admin-requests-date-item" key={request.id}>
+                      <li
+                        className={
+                          request.status === "承認"
+                            ? "admin-requests-date-item admin-requests-date-item--approved"
+                            : "admin-requests-date-item"
+                        }
+                        key={request.id}
+                      >
                         <span className="admin-requests-date-item__date">
                           {formatShortDate(request.date)}
                         </span>
                         <span>{request.type}</span>
                         <span>{request.time}</span>
+                        {request.status === "承認" && (
+                          <span className="admin-requests-date-item__approved">✓ 反映済み</span>
+                        )}
                         {request.memo ? <small>{request.memo}</small> : null}
                       </li>
                     ))}

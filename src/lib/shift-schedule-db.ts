@@ -135,6 +135,15 @@ export async function saveShiftSchedule(
   const publishedPayload = payload.assignments as unknown as Prisma.InputJsonValue;
 
   await prisma.$transaction(async (tx) => {
+    let isFirstPublish = false;
+    if (isPublishing) {
+      const existing = await tx.shiftSchedule.findFirst({
+        where: { nursery_id: resolvedNurseryId, target_month: targetMonth },
+        select: { published_at: true },
+      });
+      isFirstPublish = existing?.published_at == null;
+    }
+
     const schedule = await tx.shiftSchedule.upsert({
       where: {
         nursery_id_target_month: {
@@ -163,6 +172,21 @@ export async function saveShiftSchedule(
     await tx.shiftSlot.deleteMany({
       where: { shift_schedule_id: schedule.id },
     });
+
+    if (isFirstPublish) {
+      const monthStart = new Date(`${targetMonth}-01T00:00:00.000Z`);
+      const monthEnd = new Date(monthStart);
+      monthEnd.setUTCMonth(monthEnd.getUTCMonth() + 1);
+
+      await tx.staffRequest.updateMany({
+        where: {
+          nursery_id: resolvedNurseryId,
+          status: "submitted",
+          request_date: { gte: monthStart, lt: monthEnd },
+        },
+        data: { status: "approved" },
+      });
+    }
 
     if (payload.assignments.length === 0) {
       return;

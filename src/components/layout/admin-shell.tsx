@@ -47,8 +47,9 @@ export function AdminShell({
       isActive: activeStaffNav === "shifts",
       icon: <SidebarIcon path="M8 2v4M16 2v4M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm3 7h8m-8 4h5" />,
     },
-    { label: "管理者", kind: "section" as const },
-    ...navItems.slice(1),
+    ...(role !== "staff"
+      ? [{ label: "管理者", kind: "section" as const }, ...navItems.slice(1)]
+      : []),
   ].filter(Boolean);
 
   return (
