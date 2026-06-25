@@ -5,8 +5,26 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth-session";
 const PUBLIC_PATHS = ["/login"];
 const PUBLIC_API_PATHS = ["/api/auth/login"];
 
+// Token format: randomBytes(20).toString("hex") = 40 lowercase hex chars (see invitation-db.ts generateToken)
+function isPublicRegisterPage(pathname: string) {
+  return /^\/register\/[0-9a-f]{40}$/.test(pathname);
+}
+
+// POST only — this path exemption is method-agnostic; do not add GET/DELETE handlers here without adding auth
+function isPublicApiInvitation(pathname: string) {
+  return /^\/api\/invitations\/[0-9a-f]{40}\/register$/.test(pathname);
+}
+
 function isPublicPath(pathname: string) {
   if (PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
+    return true;
+  }
+
+  if (isPublicRegisterPage(pathname)) {
+    return true;
+  }
+
+  if (isPublicApiInvitation(pathname)) {
     return true;
   }
 

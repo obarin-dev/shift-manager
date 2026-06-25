@@ -85,6 +85,7 @@ export async function getAuthAccountByUserId(userId: string): Promise<AuthAccoun
   return toAuthAccount(user);
 }
 
+
 export async function listDemoAccountsForLogin(): Promise<DemoAccountSummary[]> {
   const users = await prisma.user.findMany({
     where: { is_active: true },

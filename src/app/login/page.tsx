@@ -1,7 +1,11 @@
 import { listDemoAccountsForLogin } from "@/lib/user-db";
 import { LoginForm } from "./login-form";
 
-export default async function LoginPage() {
+type Props = {
+  searchParams: Promise<{ registered?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: Props) {
   let demoAccounts: Awaited<ReturnType<typeof listDemoAccountsForLogin>> = [];
 
   try {
@@ -9,6 +13,8 @@ export default async function LoginPage() {
   } catch {
     demoAccounts = [];
   }
+
+  const { registered } = await searchParams;
 
   return (
     <main className="login-page">
@@ -23,9 +29,15 @@ export default async function LoginPage() {
       <section className="login-card" aria-label="ログインフォーム">
         <div className="card-heading">
           <h2>アカウントにログイン</h2>
-          <p>
-            園コードは不要です。招待済みのメールアドレスとパスワードでログインしてください。
-          </p>
+          {registered === "1" ? (
+            <p className="form-success">
+              アカウントを作成しました。メールアドレスとパスワードでログインしてください。
+            </p>
+          ) : (
+            <p>
+              園コードは不要です。招待済みのメールアドレスとパスワードでログインしてください。
+            </p>
+          )}
         </div>
 
         <LoginForm demoAccounts={demoAccounts} />

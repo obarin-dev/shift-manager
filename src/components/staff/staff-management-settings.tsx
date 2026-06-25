@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useStaffList } from "@/hooks/use-staff-list";
 import type { UserRole } from "@/lib/auth-session";
@@ -19,11 +19,9 @@ import {
   formatStaffClassLabels,
   getStaffClassAssignment,
 } from "@/lib/staff-class-assignment";
+import type { InvitationMethod as InviteMethod, InvitationStatus as InviteStatus } from "@/lib/invitation-db";
 
 type ModalState = { type: "edit"; staffId: string } | { type: "create" } | null;
-
-type InviteMethod = "qr" | "url";
-type InviteStatus = "pending" | "used" | "expired" | "disabled";
 
 type InvitationRecord = {
   id: string;
@@ -35,6 +33,18 @@ type InvitationRecord = {
   inviteUrl: string;
   createdAt: string;
   expiresAt: string;
+};
+
+type ApiInvitationResponse = {
+  id: string;
+  staffId: string | null;
+  staffName: string | null;
+  adminNote: string;
+  method: InviteMethod;
+  status: InviteStatus;
+  token: string;
+  expiresAt: string;
+  createdAt: string;
 };
 
 type InvitationDraft = {
@@ -114,11 +124,45 @@ export function StaffManagementSettings({
     EMPTY_INVITATION_DRAFT,
   );
   const [inviteError, setInviteError] = useState("");
+  const [isInviting, setIsInviting] = useState(false);
   const [issuedInvitationId, setIssuedInvitationId] = useState<string | null>(null);
   const [copyMessage, setCopyMessage] = useState("");
   const [invitations, setInvitations] = useState<InvitationRecord[]>([]);
+  const [invitationsLoadError, setInvitationsLoadError] = useState(false);
+  const [invitationsRetryKey, setInvitationsRetryKey] = useState(0);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setInvitationsLoadError(false);
+
+    fetch("/api/invitations", { signal: controller.signal })
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((body: { data?: ApiInvitationResponse[] }) => {
+        if (!body.data) return;
+        const origin = window.location.origin;
+        setInvitations(
+          body.data.map((inv) => ({
+            id: inv.id,
+            staffId: inv.staffId,
+            adminNote: inv.adminNote,
+            registeredName: inv.staffName,
+            method: inv.method,
+            status: inv.status,
+            inviteUrl: `${origin}/register/${inv.token}`,
+            createdAt: inv.createdAt,
+            expiresAt: inv.expiresAt,
+          })),
+        );
+      })
+      .catch((err: unknown) => {
+        if ((err as { name?: string })?.name === "AbortError") return;
+        setInvitationsLoadError(true);
+      });
+
+    return () => controller.abort();
+  }, [invitationsRetryKey]);
 
   const sortedStaff = useMemo(() => {
     return [...staffMembers].sort((a, b) => {
@@ -172,11 +216,16 @@ export function StaffManagementSettings({
       ? staffToFormValues(editingStaff)
       : EMPTY_STAFF_FORM_VALUES;
 
-  const getStaffPendingInvitation = (staffId: string) => {
-    return invitations.find(
-      (item) => item.staffId === staffId && item.status === "pending",
-    );
-  };
+  const pendingInvitationByStaffId = useMemo(() => {
+    const now = new Date();
+    const map = new Map<string, InvitationRecord>();
+    for (const item of invitations) {
+      if (item.staffId && item.status === "pending" && new Date(item.expiresAt) > now) {
+        map.set(item.staffId, item);
+      }
+    }
+    return map;
+  }, [invitations]);
 
   const openCreate = () => {
     setDetailId(null);
@@ -200,6 +249,7 @@ export function StaffManagementSettings({
     setInviteTargetStaffId(null);
     setInviteError("");
     setCopyMessage("");
+    setIsInviting(false);
   };
 
   const openEdit = (staff: StaffMember) => {
@@ -295,28 +345,58 @@ export function StaffManagementSettings({
   const handleInviteSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (isInviting) return;
+
     setInviteError("");
     setCopyMessage("");
+    setIssuedInvitationId(null);
+    setIsInviting(true);
 
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + inviteDraft.expiryHours * 60 * 60 * 1000);
-    const token = Math.random().toString(36).slice(2, 12);
-    const inviteUrl = `https://example.com/invite/${token}`;
+    const targetStaffId = inviteTargetStaffId;
 
-    const invitation: InvitationRecord = {
-      id: `invite-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      staffId: inviteTargetStaffId,
-      adminNote: inviteDraft.adminNote.trim(),
-      registeredName: null,
-      method: inviteDraft.method,
-      status: "pending",
-      inviteUrl,
-      createdAt: now.toISOString(),
-      expiresAt: expiresAt.toISOString(),
-    };
+    void (async () => {
+      try {
+        const response = await fetch("/api/invitations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            staff_id: targetStaffId,
+            admin_note: inviteDraft.adminNote.trim(),
+            method: inviteDraft.method,
+            expiry_hours: inviteDraft.expiryHours,
+          }),
+        });
 
-    setInvitations((current) => [invitation, ...current]);
-    setIssuedInvitationId(invitation.id);
+        const body = (await response.json()) as {
+          data?: ApiInvitationResponse;
+          error?: string;
+        };
+
+        if (!response.ok || !body.data) {
+          setInviteError("招待の発行に失敗しました。もう一度お試しください。");
+          return;
+        }
+
+        const invitation: InvitationRecord = {
+          id: body.data.id,
+          staffId: body.data.staffId,
+          adminNote: body.data.adminNote,
+          registeredName: body.data.staffName ?? null,
+          method: body.data.method,
+          status: body.data.status,
+          inviteUrl: `${window.location.origin}/register/${body.data.token}`,
+          createdAt: body.data.createdAt,
+          expiresAt: body.data.expiresAt,
+        };
+
+        setInvitations((current) => [invitation, ...current]);
+        setIssuedInvitationId(invitation.id);
+      } catch {
+        setInviteError("招待の発行に失敗しました。もう一度お試しください。");
+      } finally {
+        setIsInviting(false);
+      }
+    })();
   };
 
   const handleCopyUrl = async (url: string) => {
@@ -362,6 +442,18 @@ export function StaffManagementSettings({
               <p>{staffLoadError}</p>
             </div>
           ) : null}
+          {invitationsLoadError ? (
+            <div className="classes-empty">
+              <p>招待情報の読み込みに失敗しました。</p>
+              <button
+                className="secondary-button"
+                onClick={() => setInvitationsRetryKey((k) => k + 1)}
+                type="button"
+              >
+                再試行
+              </button>
+            </div>
+          ) : null}
           {staffLoading ? (
             <div className="classes-empty">
               <p>読み込み中…</p>
@@ -389,7 +481,7 @@ export function StaffManagementSettings({
               </thead>
               <tbody>
                 {filteredStaff.map((staff) => {
-                  const pendingInvite = getStaffPendingInvitation(staff.id);
+                  const pendingInvite = pendingInvitationByStaffId.get(staff.id);
 
                   return (
                   <tr key={staff.id}>
@@ -636,8 +728,8 @@ export function StaffManagementSettings({
                 <button className="secondary-button" onClick={closeInvite} type="button">
                   キャンセル
                 </button>
-                <button className="primary-button" type="submit">
-                  招待を発行
+                <button className="primary-button" disabled={isInviting} type="submit">
+                  {isInviting ? "発行中…" : "招待を発行"}
                 </button>
               </div>
             </form>

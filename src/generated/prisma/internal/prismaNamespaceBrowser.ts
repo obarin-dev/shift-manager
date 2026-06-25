@@ -60,6 +60,7 @@ export const ModelName = {
   ShiftSlot: 'ShiftSlot',
   RosterSheet: 'RosterSheet',
   User: 'User',
+  Invitation: 'Invitation',
   StaffRequest: 'StaffRequest'
 } as const
 
@@ -226,6 +227,22 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const InvitationScalarFieldEnum = {
+  id: 'id',
+  nursery_id: 'nursery_id',
+  staff_id: 'staff_id',
+  token: 'token',
+  admin_note: 'admin_note',
+  method: 'method',
+  status: 'status',
+  expires_at: 'expires_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
 
 
 export const StaffRequestScalarFieldEnum = {
