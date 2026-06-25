@@ -37,6 +37,18 @@ type InvitationRecord = {
   expiresAt: string;
 };
 
+type ApiInvitationResponse = {
+  id: string;
+  staffId: string | null;
+  staffName: string | null;
+  adminNote: string;
+  method: InviteMethod;
+  status: InviteStatus;
+  token: string;
+  expiresAt: string;
+  createdAt: string;
+};
+
 type InvitationDraft = {
   adminNote: string;
   method: InviteMethod;
@@ -118,24 +130,14 @@ export function StaffManagementSettings({
   const [issuedInvitationId, setIssuedInvitationId] = useState<string | null>(null);
   const [copyMessage, setCopyMessage] = useState("");
   const [invitations, setInvitations] = useState<InvitationRecord[]>([]);
+  const [invitationsLoadError, setInvitationsLoadError] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    type ApiInv = {
-      id: string;
-      staffId: string | null;
-      staffName: string | null;
-      adminNote: string;
-      method: InviteMethod;
-      status: InviteStatus;
-      token: string;
-      expiresAt: string;
-      createdAt: string;
-    };
     fetch("/api/invitations")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((body: { data?: ApiInv[] } | null) => {
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((body: { data?: ApiInvitationResponse[] }) => {
         if (!body?.data) return;
         const origin = window.location.origin;
         setInvitations(
@@ -152,7 +154,7 @@ export function StaffManagementSettings({
           })),
         );
       })
-      .catch(() => undefined);
+      .catch(() => setInvitationsLoadError(true));
   }, []);
 
   const sortedStaff = useMemo(() => {
@@ -352,25 +354,13 @@ export function StaffManagementSettings({
           }),
         });
 
-        type ApiInvitation = {
-          id: string;
-          staffId: string | null;
-          staffName: string | null;
-          adminNote: string;
-          method: InviteMethod;
-          status: InviteStatus;
-          inviteUrl: string;
-          createdAt: string;
-          expiresAt: string;
-        };
         const body = (await response.json()) as {
-          data?: ApiInvitation;
+          data?: ApiInvitationResponse;
           error?: string;
         };
 
         if (!response.ok || !body.data) {
           setInviteError("招待の発行に失敗しました。もう一度お試しください。");
-          setIsInviting(false);
           return;
         }
 
@@ -381,7 +371,7 @@ export function StaffManagementSettings({
           registeredName: body.data.staffName ?? null,
           method: body.data.method,
           status: body.data.status,
-          inviteUrl: body.data.inviteUrl,
+          inviteUrl: `${window.location.origin}/register/${body.data.token}`,
           createdAt: body.data.createdAt,
           expiresAt: body.data.expiresAt,
         };
@@ -437,6 +427,11 @@ export function StaffManagementSettings({
           {staffLoadError ? (
             <div className="classes-empty">
               <p>{staffLoadError}</p>
+            </div>
+          ) : null}
+          {invitationsLoadError ? (
+            <div className="classes-empty">
+              <p>招待情報の読み込みに失敗しました。ページを再読み込みしてください。</p>
             </div>
           ) : null}
           {staffLoading ? (
