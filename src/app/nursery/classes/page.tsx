@@ -34,7 +34,7 @@ export default async function NurseryClassesPage() {
       />
 
       <div className="scroll-panel-host">
-        <ClassesSettings />
+        <ClassesSettings readOnly={role === "manager"} />
       </div>
     </AdminShell>
   );

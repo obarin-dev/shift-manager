@@ -17,6 +17,7 @@ type ShiftTypeInlineRowProps = {
   profile: NurseryProfile;
   isSaving: boolean;
   isNew?: boolean;
+  readOnly?: boolean;
   onChange: (draft: ShiftTypeDefinition) => void;
   onSave: () => void | Promise<boolean>;
   onCancel?: () => void;
@@ -32,6 +33,7 @@ export function ShiftTypeInlineRow({
   profile,
   isSaving,
   isNew = false,
+  readOnly = false,
   onChange,
   onSave,
   onCancel,
@@ -109,7 +111,7 @@ export function ShiftTypeInlineRow({
           </p>
         </div>
 
-        <SectionEditPencilButton onClick={startEdit} />
+        {!readOnly ? <SectionEditPencilButton onClick={startEdit} /> : null}
       </div>
     );
   }

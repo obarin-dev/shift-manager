@@ -20,7 +20,7 @@ type ModalState =
   | { type: "edit"; classroomId: string }
   | null;
 
-export function ClassesSettings() {
+export function ClassesSettings({ readOnly = false }: { readOnly?: boolean } = {}) {
   const { staff, isLoading: staffLoading, getStaffName, getStaffNames } =
     useStaffList();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
@@ -187,13 +187,15 @@ export function ClassesSettings() {
             <p className="classes-panel__count">
               クラス数：{sortedClassrooms.length}件
             </p>
-            <button
-              className="primary-button"
-              onClick={() => setModalState({ type: "create" })}
-              type="button"
-            >
-              クラスを追加
-            </button>
+            {!readOnly ? (
+              <button
+                className="primary-button"
+                onClick={() => setModalState({ type: "create" })}
+                type="button"
+              >
+                クラスを追加
+              </button>
+            ) : null}
           </div>
         </div>
 
@@ -212,13 +214,15 @@ export function ClassesSettings() {
             <div className="classes-empty">
               <h2>クラスがまだ登録されていません</h2>
               <p>クラスを追加すると、勤務表・体制表作成で利用できます。</p>
-              <button
-                className="primary-button"
-                onClick={() => setModalState({ type: "create" })}
-                type="button"
-              >
-                クラスを追加
-              </button>
+              {!readOnly ? (
+                <button
+                  className="primary-button"
+                  onClick={() => setModalState({ type: "create" })}
+                  type="button"
+                >
+                  クラスを追加
+                </button>
+              ) : null}
             </div>
           ) : !isLoading && !loadError ? (
             <div className="classes-table-wrap classes-table-wrap--large">
@@ -268,12 +272,12 @@ export function ClassesSettings() {
         getStaffName={getStaffName}
         getStaffNames={getStaffNames}
         onClose={() => setDetailId(null)}
-        onDelete={() => {
+        onDelete={readOnly ? undefined : () => {
           if (detailClassroom) {
             setDeleteTarget(detailClassroom);
           }
         }}
-        onEdit={() => {
+        onEdit={readOnly ? undefined : () => {
           if (detailClassroom) {
             openEdit(detailClassroom);
           }

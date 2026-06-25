@@ -28,7 +28,7 @@ export default async function NurserySettingsPage() {
         title="基本設定"
       />
 
-      <NurserySettingsPanel />
+      <NurserySettingsPanel readOnly={role === "manager"} />
     </AdminShell>
   );
 }

@@ -30,11 +30,13 @@ function weeklyClosedLabel(days: number[], closeOnPublicHolidays: boolean) {
 type NurseryRestDaysSectionProps = {
   isEditing?: boolean;
   onIsEditingChange?: (editing: boolean) => void;
+  readOnly?: boolean;
 };
 
 export function NurseryRestDaysSection({
   isEditing: isEditingProp,
   onIsEditingChange,
+  readOnly = false,
 }: NurseryRestDaysSectionProps = {}) {
   const [isEditingInternal, setIsEditingInternal] = useState(false);
   const [settings, setSettings] = useState<NurseryRestSettings>(INITIAL_NURSERY_REST);
@@ -217,7 +219,7 @@ export function NurseryRestDaysSection({
 
   return (
     <section className="classes-panel" aria-label="休日設定">
-      {!isEditing ? (
+      {!isEditing && !readOnly ? (
         <div className="nursery-info-details__toolbar">
           <SectionEditPencilButton onClick={() => setIsEditing(true)} />
         </div>
