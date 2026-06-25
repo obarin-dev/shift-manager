@@ -216,11 +216,16 @@ export function StaffManagementSettings({
       ? staffToFormValues(editingStaff)
       : EMPTY_STAFF_FORM_VALUES;
 
-  const getStaffPendingInvitation = (staffId: string) => {
-    return invitations.find(
-      (item) => item.staffId === staffId && item.status === "pending",
-    );
-  };
+  const pendingInvitationByStaffId = useMemo(() => {
+    const now = new Date();
+    const map = new Map<string, InvitationRecord>();
+    for (const item of invitations) {
+      if (item.staffId && item.status === "pending" && new Date(item.expiresAt) > now) {
+        map.set(item.staffId, item);
+      }
+    }
+    return map;
+  }, [invitations]);
 
   const openCreate = () => {
     setDetailId(null);
@@ -475,7 +480,7 @@ export function StaffManagementSettings({
               </thead>
               <tbody>
                 {filteredStaff.map((staff) => {
-                  const pendingInvite = getStaffPendingInvitation(staff.id);
+                  const pendingInvite = pendingInvitationByStaffId.get(staff.id);
 
                   return (
                   <tr key={staff.id}>

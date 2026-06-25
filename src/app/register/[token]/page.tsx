@@ -29,6 +29,8 @@ export default async function RegisterPage({ params }: Props) {
             <p>
               {invitation.status === "used"
                 ? "この招待リンクはすでに使用されています。"
+                : invitation.status === "disabled"
+                ? "この招待リンクは無効化されています。"
                 : "この招待リンクの有効期限が切れています。"}
               管理者に新しい招待リンクを発行してもらってください。
             </p>
