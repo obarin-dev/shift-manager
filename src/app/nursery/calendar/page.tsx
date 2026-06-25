@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { requireAuth } from "@/lib/page-auth";
+import { requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { NurseryCalendarPanel } from "@/components/nursery-info/nursery-calendar-panel";
 
 export default async function NurseryCalendarPage() {
-  const { account } = await requireAuth();
+  const { account } = await requireAdminOrManager();
   const role = account.role;
 
   return (

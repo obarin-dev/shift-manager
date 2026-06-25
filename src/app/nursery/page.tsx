@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAuth } from "@/lib/page-auth";
+import { requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
 import { AdminShell } from "@/components/layout/admin-shell";
@@ -47,7 +47,7 @@ const NURSERY_HUB_CARDS: NurseryHubCardConfig[] = [
 ];
 
 export default async function NurseryPage() {
-  const { account } = await requireAuth();
+  const { account } = await requireAdminOrManager();
   const role = account.role;
   const nurseryName = await getPrimaryNurseryName();
 

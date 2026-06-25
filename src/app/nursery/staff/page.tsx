@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { requireAuth } from "@/lib/page-auth";
+import { requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { StaffManagementSettings } from "@/components/staff/staff-management-settings";
 
 export default async function NurseryStaffPage() {
-  const { account } = await requireAuth();
+  const { account } = await requireAdminOrManager();
   const role = account.role;
 
   return (

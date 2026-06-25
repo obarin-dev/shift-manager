@@ -1,11 +1,11 @@
-import { requireAuth } from "@/lib/page-auth";
+import { requireAdminOrManager } from "@/lib/page-auth";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { MonthlyShiftGrid } from "@/components/shifts/monthly-shift-grid";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
 
 export default async function ShiftsPage() {
-  const { account } = await requireAuth();
+  const { account } = await requireAdminOrManager();
   const role = account.role;
   const nurseryName = await getPrimaryNurseryName();
 
