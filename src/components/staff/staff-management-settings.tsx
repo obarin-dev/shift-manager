@@ -349,6 +349,7 @@ export function StaffManagementSettings({
 
     setInviteError("");
     setCopyMessage("");
+    setIssuedInvitationId(null);
     setIsInviting(true);
 
     const targetStaffId = inviteTargetStaffId;

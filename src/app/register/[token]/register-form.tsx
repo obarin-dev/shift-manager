@@ -13,7 +13,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   password_too_short: "パスワードは8文字以上で入力してください。",
   password_mismatch: "パスワードが一致しません。",
   invitation_invalid: "この招待リンクは使用済みまたは期限切れです。",
-  email_already_used: "このメールアドレスはすでに使用されています。",
+  email_already_used: "このメールアドレスはすでに使用されています。ログインページからログインするか、管理者にお問い合わせください。",
   server_error: "サーバーエラーが発生しました。しばらくしてから再度お試しください。",
 };
 
