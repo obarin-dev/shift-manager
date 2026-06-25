@@ -6,11 +6,11 @@ const PUBLIC_PATHS = ["/login"];
 const PUBLIC_API_PATHS = ["/api/auth/login"];
 
 function isPublicRegisterPage(pathname: string) {
-  return /^\/register\/[^/]+$/.test(pathname);
+  return /^\/register\/[0-9a-f]{40}$/.test(pathname);
 }
 
 function isPublicApiInvitation(pathname: string) {
-  return /^\/api\/invitations\/[^/]+\/register$/.test(pathname);
+  return /^\/api\/invitations\/[0-9a-f]{40}\/register$/.test(pathname);
 }
 
 function isPublicPath(pathname: string) {

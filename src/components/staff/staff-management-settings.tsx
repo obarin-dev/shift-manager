@@ -131,11 +131,15 @@ export function StaffManagementSettings({
   const [copyMessage, setCopyMessage] = useState("");
   const [invitations, setInvitations] = useState<InvitationRecord[]>([]);
   const [invitationsLoadError, setInvitationsLoadError] = useState(false);
+  const [invitationsRetryKey, setInvitationsRetryKey] = useState(0);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    fetch("/api/invitations")
+    const controller = new AbortController();
+    setInvitationsLoadError(false);
+
+    fetch("/api/invitations", { signal: controller.signal })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((body: { data?: ApiInvitationResponse[] }) => {
         if (!body?.data) return;
@@ -154,8 +158,13 @@ export function StaffManagementSettings({
           })),
         );
       })
-      .catch(() => setInvitationsLoadError(true));
-  }, []);
+      .catch((err) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setInvitationsLoadError(true);
+      });
+
+    return () => controller.abort();
+  }, [invitationsRetryKey]);
 
   const sortedStaff = useMemo(() => {
     return [...staffMembers].sort((a, b) => {
@@ -431,7 +440,14 @@ export function StaffManagementSettings({
           ) : null}
           {invitationsLoadError ? (
             <div className="classes-empty">
-              <p>招待情報の読み込みに失敗しました。ページを再読み込みしてください。</p>
+              <p>招待情報の読み込みに失敗しました。</p>
+              <button
+                className="secondary-button"
+                onClick={() => setInvitationsRetryKey((k) => k + 1)}
+                type="button"
+              >
+                再試行
+              </button>
             </div>
           ) : null}
           {staffLoading ? (

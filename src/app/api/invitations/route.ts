@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@/generated/prisma/client";
 import { getSession } from "@/lib/auth-session";
 import {
   createInvitation,
@@ -56,12 +57,16 @@ export async function POST(request: Request) {
   const payload = body as Record<string, unknown>;
   const staffId = typeof payload.staff_id === "string" ? payload.staff_id : null;
   const adminNote = typeof payload.admin_note === "string" ? payload.admin_note.trim() : "";
-  const method = typeof payload.method === "string" && VALID_METHODS.has(payload.method as InvitationMethod)
-    ? (payload.method as InvitationMethod)
-    : "url";
-  const expiryHours = typeof payload.expiry_hours === "number" && payload.expiry_hours > 0
-    ? payload.expiry_hours
-    : 168;
+  if (typeof payload.method !== "string" || !VALID_METHODS.has(payload.method as InvitationMethod)) {
+    return NextResponse.json({ error: "invalid_method" }, { status: 400 });
+  }
+  const method = payload.method as InvitationMethod;
+  const expiryHours =
+    typeof payload.expiry_hours === "number" &&
+    payload.expiry_hours > 0 &&
+    payload.expiry_hours <= 720
+      ? payload.expiry_hours
+      : 168;
 
   try {
     const nursery = await getPrimaryNursery();
@@ -74,11 +79,15 @@ export async function POST(request: Request) {
       expiryHours,
     });
 
-    const origin = process.env.NEXT_PUBLIC_BASE_URL ?? new URL(request.url).origin;
-    const inviteUrl = `${origin}/register/${invitation.token}`;
-
-    return NextResponse.json({ data: { ...invitation, inviteUrl } }, { status: 201 });
+    return NextResponse.json({ data: invitation }, { status: 201 });
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2003"
+    ) {
+      return NextResponse.json({ error: "staff_not_found" }, { status: 400 });
+    }
+
     console.error("POST /api/invitations failed:", error);
     return NextResponse.json({ error: "server_error" }, { status: 500 });
   }
