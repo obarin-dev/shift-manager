@@ -19,11 +19,9 @@ import {
   formatStaffClassLabels,
   getStaffClassAssignment,
 } from "@/lib/staff-class-assignment";
+import type { InvitationMethod as InviteMethod, InvitationStatus as InviteStatus } from "@/lib/invitation-db";
 
 type ModalState = { type: "edit"; staffId: string } | { type: "create" } | null;
-
-type InviteMethod = "qr" | "url";
-type InviteStatus = "pending" | "used" | "expired" | "disabled";
 
 type InvitationRecord = {
   id: string;
@@ -142,7 +140,7 @@ export function StaffManagementSettings({
     fetch("/api/invitations", { signal: controller.signal })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((body: { data?: ApiInvitationResponse[] }) => {
-        if (!body?.data) return;
+        if (!body.data) return;
         const origin = window.location.origin;
         setInvitations(
           body.data.map((inv) => ({
@@ -158,8 +156,8 @@ export function StaffManagementSettings({
           })),
         );
       })
-      .catch((err) => {
-        if (err instanceof DOMException && err.name === "AbortError") return;
+      .catch((err: unknown) => {
+        if ((err as { name?: string })?.name === "AbortError") return;
         setInvitationsLoadError(true);
       });
 

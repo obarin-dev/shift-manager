@@ -55,11 +55,13 @@ export async function POST(request: Request) {
   }
 
   const payload = body as Record<string, unknown>;
-  const staffId = typeof payload.staff_id === "string" ? payload.staff_id : null;
-  const adminNote = typeof payload.admin_note === "string" ? payload.admin_note.trim() : "";
+
   if (typeof payload.method !== "string" || !VALID_METHODS.has(payload.method as InvitationMethod)) {
     return NextResponse.json({ error: "invalid_method" }, { status: 400 });
   }
+
+  const staffId = typeof payload.staff_id === "string" ? payload.staff_id : null;
+  const adminNote = typeof payload.admin_note === "string" ? payload.admin_note.trim() : "";
   const method = payload.method as InvitationMethod;
   const expiryHours =
     typeof payload.expiry_hours === "number" &&
