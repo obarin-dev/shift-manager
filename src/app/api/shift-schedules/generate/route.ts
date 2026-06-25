@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateShiftScheduleWithAi } from "@/lib/shift-schedule-ai";
+import { getSession } from "@/lib/auth-session";
+import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
 
 export const runtime = "nodejs";
 
@@ -8,6 +10,10 @@ function isValidMonthKey(value: string | null) {
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role === "staff") return forbiddenResponse();
+
   const month = new URL(request.url).searchParams.get("month");
   if (!isValidMonthKey(month)) {
     return NextResponse.json({ error: "invalid_month" }, { status: 400 });

@@ -20,3 +20,16 @@ export async function requireAuth(): Promise<{
 
   return { session, account };
 }
+
+export async function requireAdminOrManager(): Promise<{
+  session: SessionData;
+  account: AuthAccount;
+}> {
+  const result = await requireAuth();
+
+  if (result.account.role === "staff") {
+    redirect("/home");
+  }
+
+  return result;
+}

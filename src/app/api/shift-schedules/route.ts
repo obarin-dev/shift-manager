@@ -5,6 +5,8 @@ import {
   getShiftScheduleByMonth,
   saveShiftSchedule,
 } from "@/lib/shift-schedule-db";
+import { getSession } from "@/lib/auth-session";
+import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
 
 export const runtime = "nodejs";
 
@@ -71,17 +73,25 @@ function normalizePayload(input: unknown): PersistedShiftSchedulePayload | null 
 }
 
 export async function GET(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+
   const params = new URL(request.url).searchParams;
   const month = params.get("month");
   if (!isValidMonthKey(month)) {
     return NextResponse.json({ error: "invalid_month" }, { status: 400 });
   }
 
+  const isPublished = params.get("published") === "true";
+
+  if (!isPublished && session.role === "staff") {
+    return forbiddenResponse();
+  }
+
   try {
-    const data =
-      params.get("published") === "true"
-        ? await getPublishedShiftScheduleByMonth(month!)
-        : await getShiftScheduleByMonth(month!);
+    const data = isPublished
+      ? await getPublishedShiftScheduleByMonth(month!)
+      : await getShiftScheduleByMonth(month!);
     return NextResponse.json({ data });
   } catch (error) {
     console.error("GET /api/shift-schedules failed:", error);
@@ -90,6 +100,10 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role === "staff") return forbiddenResponse();
+
   const month = new URL(request.url).searchParams.get("month");
   if (!isValidMonthKey(month)) {
     return NextResponse.json({ error: "invalid_month" }, { status: 400 });

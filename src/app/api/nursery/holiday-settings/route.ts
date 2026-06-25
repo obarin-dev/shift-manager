@@ -4,6 +4,8 @@ import {
   updateHolidaySettings,
 } from "@/lib/nursery-holiday-settings-db";
 import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/nursery-helpers";
+import { getSession } from "@/lib/auth-session";
+import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
 
 export const runtime = "nodejs";
 
@@ -82,6 +84,10 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role !== "admin") return forbiddenResponse();
+
   const input = parseHolidaySettingsBody(await request.json());
 
   if (!input) {

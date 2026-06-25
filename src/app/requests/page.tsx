@@ -1,16 +1,11 @@
-import { redirect } from "next/navigation";
 import { AdminRequestsPanel } from "@/components/admin/admin-requests-panel";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
-import { requireAuth } from "@/lib/page-auth";
+import { requireAdminOrManager } from "@/lib/page-auth";
 import { listAdminStaffRequestGroups } from "@/lib/staff-request-db";
 
 export default async function RequestsPage() {
-  const { account } = await requireAuth();
-
-  if (account.role !== "admin") {
-    redirect("/home");
-  }
+  const { account } = await requireAdminOrManager();
 
   const groups = await listAdminStaffRequestGroups(account.nurseryId);
 

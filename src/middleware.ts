@@ -5,6 +5,14 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth-session";
 const PUBLIC_PATHS = ["/login"];
 const PUBLIC_API_PATHS = ["/api/auth/login"];
 
+const ADMIN_MANAGER_ONLY_PATHS = ["/shifts", "/roster", "/requests", "/nursery"];
+
+function isAdminManagerOnlyPath(pathname: string) {
+  return ADMIN_MANAGER_ONLY_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
+
 // Token format: randomBytes(20).toString("hex") = 40 lowercase hex chars (see invitation-db.ts generateToken)
 function isPublicRegisterPage(pathname: string) {
   return /^\/register\/[0-9a-f]{40}$/.test(pathname);
@@ -55,6 +63,10 @@ export async function middleware(request: NextRequest) {
     }
 
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (session?.role === "staff" && isAdminManagerOnlyPath(pathname)) {
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   return NextResponse.next();

@@ -5,6 +5,8 @@ import {
   listCalendarEntries,
   type CalendarEntryWriteInput,
 } from "@/lib/calendar-entry-db";
+import { getSession } from "@/lib/auth-session";
+import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
 
 export const runtime = "nodejs";
 
@@ -47,6 +49,10 @@ function isValidDateKey(value: string | null) {
 }
 
 export async function GET(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role === "staff") return forbiddenResponse();
+
   const url = new URL(request.url);
   const from = url.searchParams.get("from");
   const to = url.searchParams.get("to");
@@ -68,6 +74,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role !== "admin") return forbiddenResponse();
+
   const input = parseCalendarEntryBody(await request.json());
   if (!input) {
     return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
