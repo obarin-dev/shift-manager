@@ -56,16 +56,21 @@ export async function POST(
 
     const registeredUser = await registerWithInvitation({ token, email, passwordHash });
 
-    const sessionToken = await createSessionToken({
-      userId: registeredUser.userId,
-      nurseryId: registeredUser.nurseryId,
-      role: "staff",
-      email: registeredUser.email,
-    });
-    const cookieStore = await cookies();
-    cookieStore.set(sessionCookieOptions(sessionToken));
-
-    return NextResponse.json({ ok: true });
+    try {
+      const sessionToken = await createSessionToken({
+        userId: registeredUser.userId,
+        nurseryId: registeredUser.nurseryId,
+        role: "staff",
+        email: registeredUser.email,
+      });
+      const cookieStore = await cookies();
+      cookieStore.set(sessionCookieOptions(sessionToken));
+      return NextResponse.json({ ok: true });
+    } catch (sessionError) {
+      // ユーザー作成は成功しているのでセッション失敗は致命的エラーにしない
+      console.error("Session creation failed after registration:", sessionError);
+      return NextResponse.json({ ok: true, autoLogin: false });
+    }
   } catch (error) {
     if (error instanceof InvitationInvalidError) {
       return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });

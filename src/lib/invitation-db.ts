@@ -144,10 +144,14 @@ export async function registerWithInvitation({
       select: { nursery_id: true, staff_id: true },
     });
 
+    if (!inv) {
+      throw new InvitationInvalidError();
+    }
+
     const user = await tx.user.create({
       data: {
-        nursery_id: inv!.nursery_id,
-        staff_id: inv!.staff_id ?? null,
+        nursery_id: inv.nursery_id,
+        staff_id: inv.staff_id ?? null,
         email,
         password_hash: passwordHash,
         role: "staff",
