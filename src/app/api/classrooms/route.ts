@@ -96,6 +96,9 @@ function parseWriteBody(body: unknown): ClassroomWriteInput | null {
 }
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+
   try {
     const classrooms = await listClassrooms();
     return NextResponse.json({ data: classrooms });

@@ -69,6 +69,9 @@ function parseHolidaySettingsBody(body: unknown): NurseryRestSettings | null {
 }
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+
   try {
     const settings = await getHolidaySettings();
 
