@@ -125,14 +125,14 @@ export async function PUT(request: Request) {
     return forbiddenResponse();
   }
 
-  if (session.role !== "admin") {
-    const existing = await getShiftScheduleByMonth(month!);
-    if (existing?.status === "published") {
-      return forbiddenResponse();
-    }
-  }
-
   try {
+    if (session.role !== "admin") {
+      const existing = await getShiftScheduleByMonth(month!);
+      if (existing?.status === "published") {
+        return forbiddenResponse();
+      }
+    }
+
     await saveShiftSchedule(month!, payload);
     return NextResponse.json({ ok: true });
   } catch (error) {

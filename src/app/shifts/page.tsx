@@ -1,4 +1,4 @@
-import { isReadOnlyRole, requireAdminOrManager } from "@/lib/page-auth";
+import { requireAdminOrManager } from "@/lib/page-auth";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { MonthlyShiftGrid } from "@/components/shifts/monthly-shift-grid";
@@ -25,7 +25,7 @@ export default async function ShiftsPage() {
       </div>
 
       <div className="scroll-panel-host shift-schedule-page">
-        <MonthlyShiftGrid nurseryName={nurseryName} readOnly={isReadOnlyRole(role)} />
+        <MonthlyShiftGrid nurseryName={nurseryName} canPublish={role === "admin"} />
       </div>
     </AdminShell>
   );
