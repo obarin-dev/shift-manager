@@ -121,6 +121,10 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
   }
 
+  if (payload.status === "published" && session.role !== "admin") {
+    return forbiddenResponse();
+  }
+
   try {
     await saveShiftSchedule(month!, payload);
     return NextResponse.json({ ok: true });
