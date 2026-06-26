@@ -64,19 +64,15 @@ export async function POST(
       });
       return NextResponse.json({ ok: true, autoLogin: true });
     } catch (sessionError) {
+      // ユーザー作成は成功済み。セッション発行失敗はフォールバック（ログインページへ誘導）
       if (sessionError instanceof AuthConfigError) {
-        throw sessionError;
+        console.error("Auth config error after registration:", sessionError);
+      } else {
+        console.error("Session creation failed after registration:", sessionError);
       }
-      // 一時的なトークン署名失敗はフォールバック（ユーザー作成は成功済み）
-      console.error("Session creation failed after registration:", sessionError);
       return NextResponse.json({ ok: true, autoLogin: false });
     }
   } catch (error) {
-    if (error instanceof AuthConfigError) {
-      console.error("Auth config error after registration:", error);
-      return NextResponse.json({ ok: true, autoLogin: false });
-    }
-
     if (error instanceof InvitationInvalidError) {
       return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });
     }

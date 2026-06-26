@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { setSessionCookie } from "@/lib/auth-session";
+import { AuthConfigError, setSessionCookie } from "@/lib/auth-session";
 import type { UserRole } from "@/lib/auth-session";
 import {
   findActiveUserByEmail,
@@ -51,7 +51,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("POST /api/auth/login failed:", error);
+    if (error instanceof AuthConfigError) {
+      console.error("Auth config error on login:", error);
+    } else {
+      console.error("POST /api/auth/login failed:", error);
+    }
     return NextResponse.json({ error: "server_error" }, { status: 500 });
   }
 }
