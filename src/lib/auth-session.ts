@@ -34,9 +34,7 @@ function getAuthSecret() {
 }
 
 export function validateAuthConfig() {
-  if (!process.env.AUTH_SECRET && process.env.NODE_ENV === "production") {
-    throw new AuthConfigError("AUTH_SECRET environment variable is required in production.");
-  }
+  getAuthSecret();
 }
 
 export async function createSessionToken(data: SessionData) {
@@ -95,6 +93,7 @@ export function sessionCookieOptions(token: string) {
 }
 
 export async function setSessionCookie(data: SessionData) {
+  validateAuthConfig();
   const token = await createSessionToken(data);
   const cookieStore = await cookies();
   cookieStore.set(sessionCookieOptions(token));

@@ -6,7 +6,7 @@ import {
   registerWithInvitation,
 } from "@/lib/invitation-db";
 import { findActiveUserByEmail, hashPassword } from "@/lib/user-db";
-import { setSessionCookie, validateAuthConfig } from "@/lib/auth-session";
+import { AuthConfigError, setSessionCookie } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
 
@@ -40,12 +40,6 @@ export async function POST(
   }
 
   try {
-    validateAuthConfig();
-  } catch {
-    return NextResponse.json({ error: "server_error" }, { status: 500 });
-  }
-
-  try {
     const invitation = await getInvitationByToken(token);
 
     if (!invitation || invitation.status !== "pending") {
@@ -70,6 +64,9 @@ export async function POST(
       });
       return NextResponse.json({ ok: true, autoLogin: true });
     } catch (sessionError) {
+      if (sessionError instanceof AuthConfigError) {
+        throw sessionError;
+      }
       // 一時的なトークン署名失敗はフォールバック（ユーザー作成は成功済み）
       console.error("Session creation failed after registration:", sessionError);
       return NextResponse.json({ ok: true, autoLogin: false });

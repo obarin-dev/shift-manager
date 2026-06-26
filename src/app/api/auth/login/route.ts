@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { setSessionCookie, validateAuthConfig } from "@/lib/auth-session";
+import { setSessionCookie } from "@/lib/auth-session";
 import type { UserRole } from "@/lib/auth-session";
 import {
   findActiveUserByEmail,
@@ -27,12 +27,6 @@ export async function POST(request: Request) {
 
   if (!email || !password) {
     return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
-  }
-
-  try {
-    validateAuthConfig();
-  } catch {
-    return NextResponse.json({ error: "server_error" }, { status: 500 });
   }
 
   try {
