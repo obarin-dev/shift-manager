@@ -33,7 +33,7 @@ function getAuthSecret() {
   );
 }
 
-export function validateAuthConfig() {
+function validateAuthConfig() {
   getAuthSecret();
 }
 

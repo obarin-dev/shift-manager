@@ -72,6 +72,11 @@ export async function POST(
       return NextResponse.json({ ok: true, autoLogin: false });
     }
   } catch (error) {
+    if (error instanceof AuthConfigError) {
+      console.error("Auth config error after registration:", error);
+      return NextResponse.json({ ok: true, autoLogin: false });
+    }
+
     if (error instanceof InvitationInvalidError) {
       return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });
     }
