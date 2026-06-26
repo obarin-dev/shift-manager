@@ -24,6 +24,8 @@ export function RegisterForm({ token, staffName }: Props) {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -80,30 +82,74 @@ export function RegisterForm({ token, staffName }: Props) {
 
       <label className="form-field" htmlFor="register-password">
         <span>パスワード（8文字以上）</span>
-        <input
-          autoComplete="new-password"
-          disabled={submitting}
-          id="register-password"
-          minLength={8}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          type="password"
-          value={password}
-        />
+        <div className="form-field__password-wrapper">
+          <input
+            autoComplete="new-password"
+            disabled={submitting}
+            id="register-password"
+            minLength={8}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            type={showPassword ? "text" : "password"}
+            value={password}
+          />
+          <button
+            aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+            className="form-field__password-toggle"
+            onClick={() => setShowPassword((v) => !v)}
+            tabIndex={-1}
+            type="button"
+          >
+            {showPassword ? (
+              <svg fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                <line x1="1" x2="23" y1="1" y2="23" />
+              </svg>
+            ) : (
+              <svg fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            )}
+          </button>
+        </div>
       </label>
 
       <label className="form-field" htmlFor="register-confirm">
         <span>パスワード（確認）</span>
-        <input
-          autoComplete="new-password"
-          disabled={submitting}
-          id="register-confirm"
-          minLength={8}
-          onChange={(e) => setConfirm(e.target.value)}
-          required
-          type="password"
-          value={confirm}
-        />
+        <div className="form-field__password-wrapper">
+          <input
+            autoComplete="new-password"
+            disabled={submitting}
+            id="register-confirm"
+            minLength={8}
+            onChange={(e) => setConfirm(e.target.value)}
+            required
+            type={showConfirm ? "text" : "password"}
+            value={confirm}
+          />
+          <button
+            aria-label={showConfirm ? "パスワードを隠す" : "パスワードを表示"}
+            className="form-field__password-toggle"
+            onClick={() => setShowConfirm((v) => !v)}
+            tabIndex={-1}
+            type="button"
+          >
+            {showConfirm ? (
+              <svg fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                <line x1="1" x2="23" y1="1" y2="23" />
+              </svg>
+            ) : (
+              <svg fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            )}
+          </button>
+        </div>
       </label>
 
       {error ? (
