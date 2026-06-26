@@ -325,7 +325,7 @@ export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean 
             </div>
           ) : null}
 
-          {!isEditingBasic ? (
+          {!isEditingBasic || readOnly ? (
             <div className="nursery-info-readonly-grid">
               <div className="nursery-info-readonly-grid__row">
                 <p className="nursery-info-readonly-grid__label">園名</p>
@@ -439,7 +439,7 @@ export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean 
             通常保育は開園〜閉園。延長保育は閉園のあと〜終了時刻までです。
           </p>
 
-          {!isEditingHours ? (
+          {!isEditingHours || readOnly ? (
             <div className="nursery-info-readonly-grid">
               <div className="nursery-info-readonly-grid__row">
                 <p className="nursery-info-readonly-grid__label">通常保育</p>

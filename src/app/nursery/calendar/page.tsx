@@ -28,7 +28,7 @@ export default async function NurseryCalendarPage() {
         title="行事カレンダー"
       />
 
-      <NurseryCalendarPanel />
+      <NurseryCalendarPanel readOnly={role === "manager"} />
     </AdminShell>
   );
 }

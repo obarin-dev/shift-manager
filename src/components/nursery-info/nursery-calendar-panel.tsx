@@ -79,7 +79,7 @@ function sortEntriesByDateAndTime(entries: NurseryCalendarEntry[]) {
   });
 }
 
-export function NurseryCalendarPanel() {
+export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean } = {}) {
   const [calendarEntries, setCalendarEntries] = useState<NurseryCalendarEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -640,7 +640,7 @@ export function NurseryCalendarPanel() {
                             <button
                               key={entry.id}
                               type="button"
-                              onClick={() => openCalendarEdit(entry.id)}
+                              onClick={readOnly ? undefined : () => openCalendarEdit(entry.id)}
                               style={{
                                 border: "1px solid rgba(217, 224, 234, 0.75)",
                                 borderRadius: 10,
@@ -694,21 +694,23 @@ export function NurseryCalendarPanel() {
                 background: "rgba(255,255,255,0.95)",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  marginBottom: 14,
-                }}
-              >
-                <button
-                  className="primary-button"
-                  type="button"
-                  onClick={() => openCalendarCreate(focusDate)}
+              {!readOnly ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginBottom: 14,
+                  }}
                 >
-                  予定を追加
-                </button>
-              </div>
+                  <button
+                    className="primary-button"
+                    type="button"
+                    onClick={() => openCalendarCreate(focusDate)}
+                  >
+                    予定を追加
+                  </button>
+                </div>
+              ) : null}
 
               {entriesForDay.length === 0 && !isFocusDateClosed ? (
                 <p style={{ margin: 0, color: "var(--muted)", fontWeight: 800 }}>
@@ -787,13 +789,15 @@ export function NurseryCalendarPanel() {
                             ) : null}
                           </div>
                         </div>
-                        <button
-                          className="secondary-button secondary-button--compact"
-                          type="button"
-                          onClick={() => openCalendarEdit(entry.id)}
-                        >
-                          編集
-                        </button>
+                        {!readOnly ? (
+                          <button
+                            className="secondary-button secondary-button--compact"
+                            type="button"
+                            onClick={() => openCalendarEdit(entry.id)}
+                          >
+                            編集
+                          </button>
+                        ) : null}
                       </div>
                     );
                   })}
