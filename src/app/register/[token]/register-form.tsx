@@ -50,7 +50,7 @@ export function RegisterForm({ token, staffName }: Props) {
         return;
       }
 
-      router.push("/login?registered=1");
+      router.push("/home");
     } catch {
       setError(ERROR_MESSAGES.server_error);
     } finally {

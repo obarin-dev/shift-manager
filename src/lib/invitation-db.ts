@@ -114,6 +114,12 @@ export class InvitationInvalidError extends Error {
   }
 }
 
+export type RegisteredUser = {
+  userId: string;
+  nurseryId: string;
+  email: string;
+};
+
 export async function registerWithInvitation({
   token,
   email,
@@ -122,8 +128,8 @@ export async function registerWithInvitation({
   token: string;
   email: string;
   passwordHash: string;
-}): Promise<void> {
-  await prisma.$transaction(async (tx) => {
+}): Promise<RegisteredUser> {
+  return prisma.$transaction(async (tx) => {
     const updated = await tx.invitation.updateMany({
       where: { token, status: "pending", expires_at: { gt: new Date() } },
       data: { status: "used" },
@@ -138,7 +144,7 @@ export async function registerWithInvitation({
       select: { nursery_id: true, staff_id: true },
     });
 
-    await tx.user.create({
+    const user = await tx.user.create({
       data: {
         nursery_id: inv!.nursery_id,
         staff_id: inv!.staff_id ?? null,
@@ -148,5 +154,7 @@ export async function registerWithInvitation({
         is_active: true,
       },
     });
+
+    return { userId: user.id, nurseryId: user.nursery_id, email: user.email };
   });
 }

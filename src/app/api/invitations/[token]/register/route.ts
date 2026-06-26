@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
 import {
@@ -6,6 +7,7 @@ import {
   registerWithInvitation,
 } from "@/lib/invitation-db";
 import { findActiveUserByEmail, hashPassword } from "@/lib/user-db";
+import { createSessionToken, sessionCookieOptions } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
 
@@ -52,7 +54,16 @@ export async function POST(
 
     const passwordHash = await hashPassword(password);
 
-    await registerWithInvitation({ token, email, passwordHash });
+    const registeredUser = await registerWithInvitation({ token, email, passwordHash });
+
+    const sessionToken = await createSessionToken({
+      userId: registeredUser.userId,
+      nurseryId: registeredUser.nurseryId,
+      role: "staff",
+      email: registeredUser.email,
+    });
+    const cookieStore = await cookies();
+    cookieStore.set(sessionCookieOptions(sessionToken));
 
     return NextResponse.json({ ok: true });
   } catch (error) {
