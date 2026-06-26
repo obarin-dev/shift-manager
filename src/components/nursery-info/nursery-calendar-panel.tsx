@@ -636,18 +636,20 @@ export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean 
                         ) : null}
                         {dayEntries.map((entry) => {
                           const { bg } = getDotColors(entry);
+                          const Tag = readOnly ? "div" : "button";
                           return (
-                            <button
+                            <Tag
                               key={entry.id}
-                              type="button"
-                              onClick={readOnly ? undefined : () => openCalendarEdit(entry.id)}
+                              {...(!readOnly
+                                ? { type: "button" as const, onClick: () => openCalendarEdit(entry.id) }
+                                : {})}
                               style={{
                                 border: "1px solid rgba(217, 224, 234, 0.75)",
                                 borderRadius: 10,
                                 padding: "6px 8px",
                                 background: "#fff",
                                 textAlign: "left",
-                                cursor: "pointer",
+                                cursor: readOnly ? "default" : "pointer",
                                 display: "flex",
                                 gap: 6,
                                 alignItems: "flex-start",
@@ -673,7 +675,7 @@ export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean 
                               >
                                 {formatCalendarEntrySummary(entry)}
                               </span>
-                            </button>
+                            </Tag>
                           );
                         })}
                       </div>

@@ -68,13 +68,20 @@ function parseWriteBody(body: unknown): StaffWriteInput | null {
 }
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+
   try {
-    const session = await getSession();
     const staff = await listStaff();
 
-    if (session?.role === "staff") {
+    if (session.role === "staff") {
       return NextResponse.json({
-        data: staff.map(({ id, staff_id, name }) => ({ id, staff_id, name })),
+        data: staff.map(({ id, staff_id, name, is_active }) => ({
+          id,
+          staff_id,
+          name,
+          is_active,
+        })),
       });
     }
 
