@@ -81,6 +81,12 @@ export function sessionCookieOptions(token: string) {
   };
 }
 
+export async function setSessionCookie(data: SessionData) {
+  const token = await createSessionToken(data);
+  const cookieStore = await cookies();
+  cookieStore.set(sessionCookieOptions(token));
+}
+
 export function clearSessionCookieOptions() {
   return {
     name: SESSION_COOKIE_NAME,

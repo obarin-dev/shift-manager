@@ -1,9 +1,5 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import {
-  createSessionToken,
-  sessionCookieOptions,
-} from "@/lib/auth-session";
+import { setSessionCookie } from "@/lib/auth-session";
 import type { UserRole } from "@/lib/auth-session";
 import {
   findActiveUserByEmail,
@@ -46,15 +42,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
     }
 
-    const token = await createSessionToken({
+    await setSessionCookie({
       userId: user.id,
       nurseryId: user.nursery_id,
       role: user.role as UserRole,
       email: user.email,
     });
-
-    const cookieStore = await cookies();
-    cookieStore.set(sessionCookieOptions(token));
 
     return NextResponse.json({ ok: true });
   } catch (error) {

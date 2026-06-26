@@ -71,7 +71,7 @@ export function RegisterForm({ token, staffName }: Props) {
         return;
       }
 
-      router.push(body.autoLogin === false ? "/login?registered=1" : "/home");
+      router.push(body.autoLogin === true ? "/home" : "/login?registered=1");
     } catch {
       setError(ERROR_MESSAGES.server_error);
     } finally {

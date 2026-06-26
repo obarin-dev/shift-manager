@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
 import {
@@ -7,7 +6,7 @@ import {
   registerWithInvitation,
 } from "@/lib/invitation-db";
 import { findActiveUserByEmail, hashPassword } from "@/lib/user-db";
-import { createSessionToken, sessionCookieOptions } from "@/lib/auth-session";
+import { setSessionCookie } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
 
@@ -57,17 +56,19 @@ export async function POST(
     const registeredUser = await registerWithInvitation({ token, email, passwordHash });
 
     try {
-      const sessionToken = await createSessionToken({
+      await setSessionCookie({
         userId: registeredUser.userId,
         nurseryId: registeredUser.nurseryId,
         role: "staff",
         email: registeredUser.email,
       });
-      const cookieStore = await cookies();
-      cookieStore.set(sessionCookieOptions(sessionToken));
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({ ok: true, autoLogin: true });
     } catch (sessionError) {
-      // ユーザー作成は成功しているのでセッション失敗は致命的エラーにしない
+      // env 設定ミス（AUTH_SECRET 未設定）は運用エラーなので再 throw して 500 を返す
+      if (sessionError instanceof Error && sessionError.message.includes("AUTH_SECRET")) {
+        throw sessionError;
+      }
+      // 一時的なトークン署名失敗はフォールバック（ユーザー作成は成功済み）
       console.error("Session creation failed after registration:", sessionError);
       return NextResponse.json({ ok: true, autoLogin: false });
     }
