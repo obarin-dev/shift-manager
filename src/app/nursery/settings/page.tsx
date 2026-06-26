@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAdminOrManager } from "@/lib/page-auth";
+import { isReadOnlyRole, requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
@@ -28,7 +28,7 @@ export default async function NurserySettingsPage() {
         title="基本設定"
       />
 
-      <NurserySettingsPanel readOnly={role === "manager"} />
+      <NurserySettingsPanel readOnly={isReadOnlyRole(role)} />
     </AdminShell>
   );
 }

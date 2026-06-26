@@ -27,9 +27,13 @@ export async function requireAdminOrManager(): Promise<{
 }> {
   const result = await requireAuth();
 
-  if (result.account.role === "staff") {
+  if (result.account.role !== "admin" && result.account.role !== "manager") {
     redirect("/home");
   }
 
   return result;
+}
+
+export function isReadOnlyRole(role: AuthAccount["role"]): boolean {
+  return role === "manager";
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAdminOrManager } from "@/lib/page-auth";
+import { isReadOnlyRole, requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
@@ -28,7 +28,7 @@ export default async function NurseryCalendarPage() {
         title="行事カレンダー"
       />
 
-      <NurseryCalendarPanel readOnly={role === "manager"} />
+      <NurseryCalendarPanel readOnly={isReadOnlyRole(role)} />
     </AdminShell>
   );
 }

@@ -636,25 +636,8 @@ export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean 
                         ) : null}
                         {dayEntries.map((entry) => {
                           const { bg } = getDotColors(entry);
-                          const Tag = readOnly ? "div" : "button";
-                          return (
-                            <Tag
-                              key={entry.id}
-                              {...(!readOnly
-                                ? { type: "button" as const, onClick: () => openCalendarEdit(entry.id) }
-                                : {})}
-                              style={{
-                                border: "1px solid rgba(217, 224, 234, 0.75)",
-                                borderRadius: 10,
-                                padding: "6px 8px",
-                                background: "#fff",
-                                textAlign: "left",
-                                cursor: readOnly ? "default" : "pointer",
-                                display: "flex",
-                                gap: 6,
-                                alignItems: "flex-start",
-                              }}
-                            >
+                          const entryContent = (
+                            <>
                               <span
                                 style={{
                                   width: 8,
@@ -675,7 +658,30 @@ export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean 
                               >
                                 {formatCalendarEntrySummary(entry)}
                               </span>
-                            </Tag>
+                            </>
+                          );
+                          const itemStyle = {
+                            border: "1px solid rgba(217, 224, 234, 0.75)",
+                            borderRadius: 10,
+                            padding: "6px 8px",
+                            background: "#fff",
+                            display: "flex",
+                            gap: 6,
+                            alignItems: "flex-start",
+                          };
+                          return !readOnly ? (
+                            <button
+                              key={entry.id}
+                              type="button"
+                              onClick={() => openCalendarEdit(entry.id)}
+                              style={{ ...itemStyle, textAlign: "left", cursor: "pointer" }}
+                            >
+                              {entryContent}
+                            </button>
+                          ) : (
+                            <div key={entry.id} style={itemStyle}>
+                              {entryContent}
+                            </div>
                           );
                         })}
                       </div>

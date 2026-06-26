@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAdminOrManager } from "@/lib/page-auth";
+import { isReadOnlyRole, requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { ClassesSettings } from "@/components/classes/classes-settings";
 import { AdminShell } from "@/components/layout/admin-shell";
@@ -34,7 +34,7 @@ export default async function NurseryClassesPage() {
       />
 
       <div className="scroll-panel-host">
-        <ClassesSettings readOnly={role === "manager"} />
+        <ClassesSettings readOnly={isReadOnlyRole(role)} />
       </div>
     </AdminShell>
   );

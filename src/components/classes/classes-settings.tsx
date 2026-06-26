@@ -20,7 +20,7 @@ type ModalState =
   | { type: "edit"; classroomId: string }
   | null;
 
-export function ClassesSettings({ readOnly = false }: { readOnly?: boolean } = {}) {
+export function ClassesSettings({ readOnly = false }: { readOnly?: boolean }) {
   const { staff, isLoading: staffLoading, getStaffName, getStaffNames } =
     useStaffList();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
