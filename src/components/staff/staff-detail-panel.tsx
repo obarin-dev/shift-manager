@@ -16,8 +16,8 @@ type StaffDetailPanelProps = {
   staff: StaffMember | null;
   classAssignment: StaffClassAssignment | null;
   onClose: () => void;
-  onEdit: () => void;
-  onToggleActive: () => void;
+  onEdit?: () => void;
+  onToggleActive?: () => void;
 };
 
 export function StaffDetailPanel({
@@ -120,18 +120,24 @@ export function StaffDetailPanel({
           </p>
         </section>
 
-        <div className="class-detail-actions">
-          <button className="primary-button" onClick={onEdit} type="button">
-            編集する
-          </button>
-          <button
-            className="danger-button danger-button--outline"
-            onClick={onToggleActive}
-            type="button"
-          >
-            {staff.is_active ? "無効化" : "有効化"}
-          </button>
-        </div>
+        {(onEdit ?? onToggleActive) ? (
+          <div className="class-detail-actions">
+            {onEdit ? (
+              <button className="primary-button" onClick={onEdit} type="button">
+                編集する
+              </button>
+            ) : null}
+            {onToggleActive ? (
+              <button
+                className="danger-button danger-button--outline"
+                onClick={onToggleActive}
+                type="button"
+              >
+                {staff.is_active ? "無効化" : "有効化"}
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );

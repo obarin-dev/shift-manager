@@ -104,8 +104,9 @@ function staffToApiPayload(values: StaffFormValues) {
 }
 
 export function StaffManagementSettings({
-  role: _role,
+  role,
 }: StaffManagementSettingsProps) {
+  const isAdmin = role === "admin";
   const {
     staff: staffMembers,
     setStaff: setStaffMembers,
@@ -419,9 +420,11 @@ export function StaffManagementSettings({
             <p className="classes-panel__count">
               職員数：{filteredStaff.length}名
             </p>
-            <button className="primary-button" onClick={openCreate} type="button">
-              職員新規登録
-            </button>
+            {isAdmin ? (
+              <button className="primary-button" onClick={openCreate} type="button">
+                職員新規登録
+              </button>
+            ) : null}
           </div>
 
           <label className="form-field" htmlFor="staff-search">
@@ -555,15 +558,15 @@ export function StaffManagementSettings({
         }
         staff={selectedStaff}
         onClose={() => setDetailId(null)}
-        onEdit={() => {
+        onEdit={isAdmin ? () => {
           if (selectedStaff) openEdit(selectedStaff);
-        }}
-        onToggleActive={() => {
+        } : undefined}
+        onToggleActive={isAdmin ? () => {
           void handleToggleActive();
-        }}
+        } : undefined}
       />
 
-      {formModalOpen ? (
+      {isAdmin && formModalOpen ? (
         <StaffFormModal
           classAssignment={
             editingStaff

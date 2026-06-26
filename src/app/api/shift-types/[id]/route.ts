@@ -9,6 +9,8 @@ import {
 } from "@/lib/shift-type-db";
 import type { ShiftTypeCode } from "@/lib/nursery-helpers";
 import { DEFAULT_SHIFT_TYPE_COLOR } from "@/lib/shift-type-colors";
+import { getSession } from "@/lib/auth-session";
+import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
 
 export const runtime = "nodejs";
 
@@ -57,6 +59,9 @@ type RouteContext = {
 };
 
 export async function GET(_request: Request, context: RouteContext) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+
   const { id } = await context.params;
 
   try {
@@ -74,6 +79,10 @@ export async function GET(_request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role !== "admin") return forbiddenResponse();
+
   const { id } = await context.params;
   const input = parseShiftTypeBody(await request.json());
 
@@ -106,6 +115,10 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role !== "admin") return forbiddenResponse();
+
   const { id } = await context.params;
 
   try {

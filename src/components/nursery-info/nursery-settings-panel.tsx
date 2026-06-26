@@ -39,7 +39,7 @@ function draftsFromShiftTypes(shiftTypes: ShiftTypeDefinition[]) {
   );
 }
 
-export function NurserySettingsPanel() {
+export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean } = {}) {
   const [profile, setProfile] = useState<NurseryProfile | null>(null);
   const [profileDraft, setProfileDraft] = useState<NurseryProfile | null>(null);
   const [profileErrors, setProfileErrors] = useState<
@@ -319,13 +319,13 @@ export function NurserySettingsPanel() {
           <span>園の基本情報</span>
         </summary>
         <section className="classes-panel" aria-label="園の基本情報">
-          {!isEditingBasic ? (
+          {!isEditingBasic && !readOnly ? (
             <div className="nursery-info-details__toolbar">
               <SectionEditPencilButton onClick={() => setIsEditingBasic(true)} />
             </div>
           ) : null}
 
-          {!isEditingBasic ? (
+          {!isEditingBasic || readOnly ? (
             <div className="nursery-info-readonly-grid">
               <div className="nursery-info-readonly-grid__row">
                 <p className="nursery-info-readonly-grid__label">園名</p>
@@ -429,7 +429,7 @@ export function NurserySettingsPanel() {
           <span>保育時間</span>
         </summary>
         <section className="classes-panel" aria-label="保育時間">
-          {!isEditingHours ? (
+          {!isEditingHours && !readOnly ? (
             <div className="nursery-info-details__toolbar">
               <SectionEditPencilButton onClick={() => setIsEditingHours(true)} />
             </div>
@@ -439,7 +439,7 @@ export function NurserySettingsPanel() {
             通常保育は開園〜閉園。延長保育は閉園のあと〜終了時刻までです。
           </p>
 
-          {!isEditingHours ? (
+          {!isEditingHours || readOnly ? (
             <div className="nursery-info-readonly-grid">
               <div className="nursery-info-readonly-grid__row">
                 <p className="nursery-info-readonly-grid__label">通常保育</p>
@@ -604,6 +604,7 @@ export function NurserySettingsPanel() {
         <NurseryRestDaysSection
           isEditing={isEditingRestDays}
           onIsEditingChange={setIsEditingRestDays}
+          readOnly={readOnly}
         />
       </details>
 
@@ -621,14 +622,16 @@ export function NurserySettingsPanel() {
             <p className="classes-panel__count">
               勤務区分：{sortedWorkShiftTypes.length}件
             </p>
-            <button
-              className="primary-button"
-              type="button"
-              disabled={newShiftTypeDraft !== null}
-              onClick={openShiftTypeCreate}
-            >
-              区分を追加
-            </button>
+            {!readOnly ? (
+              <button
+                className="primary-button"
+                type="button"
+                disabled={newShiftTypeDraft !== null}
+                onClick={openShiftTypeCreate}
+              >
+                区分を追加
+              </button>
+            ) : null}
           </div>
 
           <div style={{ display: "grid", gap: 12 }}>
@@ -642,6 +645,7 @@ export function NurserySettingsPanel() {
                   draft={draft}
                   profile={profile}
                   isSaving={savingShiftTypeId === shift.id}
+                  readOnly={readOnly}
                   onChange={(next) => updateShiftTypeDraft(shift.id, next)}
                   onSave={() => saveShiftType(draft, false)}
                 />

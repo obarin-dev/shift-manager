@@ -41,12 +41,14 @@ import { buildShiftScheduleClassSections } from "@/lib/shift-schedule-class-sect
 type MonthlyShiftGridProps = {
   nurseryName?: string;
   readOnly?: boolean;
+  canPublish?: boolean;
   className?: string;
 };
 
 export function MonthlyShiftGrid({
   nurseryName = "保育園",
   readOnly = false,
+  canPublish = true,
   className,
 }: MonthlyShiftGridProps) {
   const { staff, isLoading: isStaffLoading, error: staffError } = useStaffList();
@@ -537,15 +539,17 @@ export function MonthlyShiftGrid({
             >
               {isSaving ? "保存中..." : "保存"}
             </button>
-            <button
-              className="secondary-button secondary-button--compact"
-              type="button"
-              disabled={isSaving || isLoading || assignments.length === 0}
-              onClick={handlePublish}
-            >
-              公開
-            </button>
               </>
+            ) : null}
+            {!readOnly && canPublish ? (
+              <button
+                className="secondary-button secondary-button--compact"
+                type="button"
+                disabled={isSaving || isLoading || assignments.length === 0}
+                onClick={handlePublish}
+              >
+                公開
+              </button>
             ) : null}
             <button
               className="secondary-button secondary-button--compact"

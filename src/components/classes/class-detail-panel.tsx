@@ -9,8 +9,8 @@ type ClassDetailPanelProps = {
   getStaffName: (id: string | null | undefined) => string | null;
   getStaffNames: (ids: string[] | null | undefined) => string[];
   onClose: () => void;
-  onDelete: () => void;
-  onEdit: () => void;
+  onDelete?: () => void;
+  onEdit?: () => void;
 };
 
 export function ClassDetailPanel({
@@ -123,18 +123,24 @@ export function ClassDetailPanel({
           </section>
         ) : null}
 
-        <div className="class-detail-actions">
-          <button className="primary-button" onClick={onEdit} type="button">
-            編集する
-          </button>
-          <button
-            className="danger-button danger-button--outline"
-            onClick={onDelete}
-            type="button"
-          >
-            削除
-          </button>
-        </div>
+        {(onEdit ?? onDelete) ? (
+          <div className="class-detail-actions">
+            {onEdit ? (
+              <button className="primary-button" onClick={onEdit} type="button">
+                編集する
+              </button>
+            ) : null}
+            {onDelete ? (
+              <button
+                className="danger-button danger-button--outline"
+                onClick={onDelete}
+                type="button"
+              >
+                削除
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );

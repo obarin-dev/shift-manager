@@ -7,6 +7,8 @@ import {
   type ClassroomWriteInput,
 } from "@/lib/classroom-db";
 import type { AgeGroup, AuxiliaryStaffSlot } from "@/lib/classroom-helpers";
+import { getSession } from "@/lib/auth-session";
+import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
 
 export const runtime = "nodejs";
 
@@ -94,6 +96,9 @@ function parseWriteBody(body: unknown): ClassroomWriteInput | null {
 }
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+
   try {
     const classrooms = await listClassrooms();
     return NextResponse.json({ data: classrooms });
@@ -104,6 +109,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role !== "admin") return forbiddenResponse();
+
   const input = parseWriteBody(await request.json());
 
   if (!input) {

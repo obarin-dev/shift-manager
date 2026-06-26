@@ -1,11 +1,11 @@
-import { requireAuth } from "@/lib/page-auth";
+import { isReadOnlyRole, requireAdminOrManager } from "@/lib/page-auth";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { MonthlyShiftGrid } from "@/components/shifts/monthly-shift-grid";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
 
 export default async function ShiftsPage() {
-  const { account } = await requireAuth();
+  const { account } = await requireAdminOrManager();
   const role = account.role;
   const nurseryName = await getPrimaryNurseryName();
 
@@ -25,7 +25,7 @@ export default async function ShiftsPage() {
       </div>
 
       <div className="scroll-panel-host shift-schedule-page">
-        <MonthlyShiftGrid nurseryName={nurseryName} />
+        <MonthlyShiftGrid nurseryName={nurseryName} canPublish={!isReadOnlyRole(role)} />
       </div>
     </AdminShell>
   );

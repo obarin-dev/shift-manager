@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { listCalendarEntries, getTodaySpecialEvents, toDateKey } from "@/lib/calendar-entry-db";
-import { requireAuth } from "@/lib/page-auth";
+import { isReadOnlyRole, requireAuth } from "@/lib/page-auth";
 import { HomeFeatureCard } from "@/components/home/home-feature-card";
 import { TodayScheduleHeader } from "@/components/home/today-schedule-header";
 import { AdminShell } from "@/components/layout/admin-shell";
@@ -234,7 +234,7 @@ export default async function HomePage() {
               description={
                 role === "staff"
                   ? "希望休の入力や公開済み勤務表の確認ができます。"
-                  : role === "manager"
+                  : isReadOnlyRole(role)
                     ? "勤務表の作成・修正や希望休の確認ができます。"
                     : "勤務表・体制表の管理や園の設定を行います。"
               }

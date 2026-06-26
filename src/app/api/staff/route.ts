@@ -6,6 +6,9 @@ import {
   type StaffWriteInput,
 } from "@/lib/staff-db";
 import type { EmploymentType, JobType, StaffShiftTime } from "@/lib/staff-helpers";
+import { getSession } from "@/lib/auth-session";
+import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
+
 export const runtime = "nodejs";
 
 const EMPLOYMENT_TYPES = new Set<EmploymentType>(["seikin", "jokin", "hijokin"]);
@@ -65,6 +68,9 @@ function parseWriteBody(body: unknown): StaffWriteInput | null {
 }
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+
   try {
     const staff = await listStaff();
     return NextResponse.json({ data: staff });
@@ -75,6 +81,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) return unauthorizedResponse();
+  if (session.role !== "admin") return forbiddenResponse();
+
   const input = parseWriteBody(await request.json());
 
   if (!input) {

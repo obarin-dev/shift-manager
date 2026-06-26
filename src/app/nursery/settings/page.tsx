@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { requireAuth } from "@/lib/page-auth";
+import { isReadOnlyRole, requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { NurserySettingsPanel } from "@/components/nursery-info/nursery-settings-panel";
 
 export default async function NurserySettingsPage() {
-  const { account } = await requireAuth();
+  const { account } = await requireAdminOrManager();
   const role = account.role;
 
   return (
@@ -28,7 +28,7 @@ export default async function NurserySettingsPage() {
         title="基本設定"
       />
 
-      <NurserySettingsPanel />
+      <NurserySettingsPanel readOnly={isReadOnlyRole(role)} />
     </AdminShell>
   );
 }
