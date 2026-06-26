@@ -33,10 +33,6 @@ function getAuthSecret() {
   );
 }
 
-function validateAuthConfig() {
-  getAuthSecret();
-}
-
 export async function createSessionToken(data: SessionData) {
   return new SignJWT({ ...data })
     .setProtectedHeader({ alg: "HS256" })
@@ -93,7 +89,6 @@ export function sessionCookieOptions(token: string) {
 }
 
 export async function setSessionCookie(data: SessionData) {
-  validateAuthConfig();
   const token = await createSessionToken(data);
   const cookieStore = await cookies();
   cookieStore.set(sessionCookieOptions(token));
