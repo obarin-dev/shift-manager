@@ -73,18 +73,6 @@ export async function GET() {
 
   try {
     const staff = await listStaff();
-
-    if (session.role === "staff") {
-      return NextResponse.json({
-        data: staff.map(({ id, staff_id, name, is_active }) => ({
-          id,
-          staff_id,
-          name,
-          is_active,
-        })),
-      });
-    }
-
     return NextResponse.json({ data: staff });
   } catch (error) {
     console.error("[GET /api/staff]", error);
