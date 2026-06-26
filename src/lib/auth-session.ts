@@ -14,16 +14,27 @@ export type SessionData = {
   email: string;
 };
 
+export class AuthConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AuthConfigError";
+  }
+}
+
 function getAuthSecret() {
   const secret = process.env.AUTH_SECRET;
 
   if (!secret && process.env.NODE_ENV === "production") {
-    throw new Error("AUTH_SECRET environment variable is required in production.");
+    throw new AuthConfigError("AUTH_SECRET environment variable is required in production.");
   }
 
   return new TextEncoder().encode(
     secret ?? "dev-only-shift-manager-auth-secret",
   );
+}
+
+export function validateAuthConfig() {
+  getAuthSecret();
 }
 
 export async function createSessionToken(data: SessionData) {

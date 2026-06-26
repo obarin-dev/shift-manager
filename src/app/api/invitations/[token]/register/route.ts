@@ -6,7 +6,7 @@ import {
   registerWithInvitation,
 } from "@/lib/invitation-db";
 import { findActiveUserByEmail, hashPassword } from "@/lib/user-db";
-import { setSessionCookie } from "@/lib/auth-session";
+import { AuthConfigError, setSessionCookie, validateAuthConfig } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
 
@@ -40,6 +40,12 @@ export async function POST(
   }
 
   try {
+    validateAuthConfig();
+  } catch {
+    return NextResponse.json({ error: "server_error" }, { status: 500 });
+  }
+
+  try {
     const invitation = await getInvitationByToken(token);
 
     if (!invitation || invitation.status !== "pending") {
@@ -64,8 +70,8 @@ export async function POST(
       });
       return NextResponse.json({ ok: true, autoLogin: true });
     } catch (sessionError) {
-      // env 設定ミス（AUTH_SECRET 未設定）は運用エラーなので再 throw して 500 を返す
-      if (sessionError instanceof Error && sessionError.message.includes("AUTH_SECRET")) {
+      if (sessionError instanceof AuthConfigError) {
+        // validateAuthConfig() で事前チェック済みのはずだが念のため
         throw sessionError;
       }
       // 一時的なトークン署名失敗はフォールバック（ユーザー作成は成功済み）
