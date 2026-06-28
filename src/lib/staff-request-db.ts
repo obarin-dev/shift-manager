@@ -208,14 +208,29 @@ export async function listAdminStaffRequestGroupsForMonth(
 export async function createStaffRequest(
   owner: StaffRequestOwner,
   input: StaffRequestWriteInput,
-) {
+): Promise<StaffRequestPayload | null> {
+  const requestDate = parseDateToDb(input.date);
+  const requestType = TYPE_TO_DB[input.type];
+
+  const existing = await prisma.staffRequest.findFirst({
+    where: {
+      user_id: owner.userId,
+      request_date: requestDate,
+      request_type: requestType,
+    },
+  });
+
+  if (existing) {
+    return null;
+  }
+
   const row = await prisma.staffRequest.create({
     data: {
       nursery_id: owner.nurseryId,
       user_id: owner.userId,
       staff_id: owner.staffId ?? null,
-      request_date: parseDateToDb(input.date),
-      request_type: TYPE_TO_DB[input.type],
+      request_date: requestDate,
+      request_type: requestType,
       time_preference: input.time.trim(),
       memo: normalizeMemo(input.memo),
       status: "submitted",

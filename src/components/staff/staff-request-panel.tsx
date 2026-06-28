@@ -105,6 +105,9 @@ export function StaffRequestPanel() {
       );
 
       if (!response.ok) {
+        if (!editingId && response.status === 409) {
+          throw new Error("duplicate_request");
+        }
         throw new Error("save_failed");
       }
 
@@ -124,8 +127,12 @@ export function StaffRequestPanel() {
         setRequests((current) => [...current, body.data!]);
         showToast("提出しました。");
       }
-    } catch {
-      showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+    } catch (error) {
+      if (error instanceof Error && error.message === "duplicate_request") {
+        showToast("同じ日・種別の希望がすでに提出されています。", "error");
+      } else {
+        showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+      }
     } finally {
       setIsSaving(false);
     }

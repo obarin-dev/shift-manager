@@ -133,6 +133,9 @@ export async function POST(request: Request) {
 
   try {
     const staffRequest = await createStaffRequest(owner, input);
+    if (staffRequest === null) {
+      return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
+    }
     return NextResponse.json({ data: staffRequest }, { status: 201 });
   } catch (error) {
     console.error("[POST /api/staff-requests]", error);
