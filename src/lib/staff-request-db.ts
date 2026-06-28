@@ -208,20 +208,22 @@ export async function listAdminStaffRequestGroupsForMonth(
 export async function createStaffRequest(
   owner: StaffRequestOwner,
   input: StaffRequestWriteInput,
-): Promise<StaffRequestPayload | null> {
+): Promise<StaffRequestPayload | "duplicate"> {
   const requestDate = parseDateToDb(input.date);
   const requestType = TYPE_TO_DB[input.type];
 
-  const existing = await prisma.staffRequest.findFirst({
+  const existing = await prisma.staffRequest.findUnique({
     where: {
-      user_id: owner.userId,
-      request_date: requestDate,
-      request_type: requestType,
+      user_id_request_date_request_type: {
+        user_id: owner.userId,
+        request_date: requestDate,
+        request_type: requestType,
+      },
     },
   });
 
   if (existing) {
-    return null;
+    return "duplicate";
   }
 
   const row = await prisma.staffRequest.create({
@@ -244,7 +246,10 @@ export async function updateStaffRequest(
   owner: StaffRequestOwner,
   id: string,
   input: StaffRequestWriteInput,
-) {
+): Promise<StaffRequestPayload | "duplicate" | null> {
+  const requestDate = parseDateToDb(input.date);
+  const requestType = TYPE_TO_DB[input.type];
+
   const existing = await prisma.staffRequest.findFirst({
     where: {
       id,
@@ -257,11 +262,25 @@ export async function updateStaffRequest(
     return null;
   }
 
+  const conflict = await prisma.staffRequest.findUnique({
+    where: {
+      user_id_request_date_request_type: {
+        user_id: owner.userId,
+        request_date: requestDate,
+        request_type: requestType,
+      },
+    },
+  });
+
+  if (conflict && conflict.id !== id) {
+    return "duplicate";
+  }
+
   const row = await prisma.staffRequest.update({
     where: { id },
     data: {
-      request_date: parseDateToDb(input.date),
-      request_type: TYPE_TO_DB[input.type],
+      request_date: requestDate,
+      request_type: requestType,
       time_preference: input.time.trim(),
       memo: normalizeMemo(input.memo),
       status: "submitted",

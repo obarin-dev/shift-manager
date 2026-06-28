@@ -82,8 +82,11 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   try {
     const staffRequest = await updateStaffRequest(owner, id, input);
-    if (!staffRequest) {
+    if (staffRequest === null) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+    if (staffRequest === "duplicate") {
+      return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
     }
 
     return NextResponse.json({ data: staffRequest });

@@ -105,15 +105,19 @@ export function StaffRequestPanel() {
       );
 
       if (!response.ok) {
-        if (!editingId && response.status === 409) {
-          throw new Error("duplicate_request");
+        const errBody = (await response.json().catch(() => ({}))) as { error?: string };
+        if (errBody.error === "duplicate_request") {
+          showToast("同じ日・種別の希望がすでに提出されています。", "error");
+        } else {
+          showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         }
-        throw new Error("save_failed");
+        return;
       }
 
       const body = (await response.json()) as { data?: StaffRequest };
       if (!body.data) {
-        throw new Error("missing_data");
+        showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+        return;
       }
 
       if (editingId) {
@@ -127,12 +131,8 @@ export function StaffRequestPanel() {
         setRequests((current) => [...current, body.data!]);
         showToast("提出しました。");
       }
-    } catch (error) {
-      if (error instanceof Error && error.message === "duplicate_request") {
-        showToast("同じ日・種別の希望がすでに提出されています。", "error");
-      } else {
-        showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
-      }
+    } catch {
+      showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
     } finally {
       setIsSaving(false);
     }
