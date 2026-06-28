@@ -165,6 +165,32 @@ input {
   line-height: 1.6;
 }
 
+.form-field__password-wrapper {
+  position: relative;
+}
+
+.form-field__password-wrapper input {
+  padding-right: 48px;
+}
+
+.form-field__password-toggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-muted, #6b7280);
+  display: flex;
+  align-items: center;
+}
+
+.form-field__password-toggle:hover {
+  color: var(--text);
+}
+
 .form-field--checkbox {
   display: flex;
   flex-direction: row;

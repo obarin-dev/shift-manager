@@ -6,6 +6,7 @@ import {
   registerWithInvitation,
 } from "@/lib/invitation-db";
 import { findActiveUserByEmail, hashPassword } from "@/lib/user-db";
+import { AuthConfigError, setSessionCookie } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
 
@@ -52,9 +53,25 @@ export async function POST(
 
     const passwordHash = await hashPassword(password);
 
-    await registerWithInvitation({ token, email, passwordHash });
+    const registeredUser = await registerWithInvitation({ token, email, passwordHash });
 
-    return NextResponse.json({ ok: true });
+    try {
+      await setSessionCookie({
+        userId: registeredUser.userId,
+        nurseryId: registeredUser.nurseryId,
+        role: "staff",
+        email: registeredUser.email,
+      });
+      return NextResponse.json({ ok: true, autoLogin: true });
+    } catch (sessionError) {
+      // ユーザー作成は成功済み。AuthConfigError のみフォールバック（ログインページへ誘導）
+      // それ以外はプログラミングエラーの可能性があるため outer catch へ re-throw
+      if (!(sessionError instanceof AuthConfigError)) {
+        throw sessionError;
+      }
+      console.error("Auth config error after registration:", sessionError);
+      return NextResponse.json({ ok: true, autoLogin: false });
+    }
   } catch (error) {
     if (error instanceof InvitationInvalidError) {
       return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });

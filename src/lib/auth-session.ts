@@ -14,11 +14,18 @@ export type SessionData = {
   email: string;
 };
 
+export class AuthConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AuthConfigError";
+  }
+}
+
 function getAuthSecret() {
   const secret = process.env.AUTH_SECRET;
 
   if (!secret && process.env.NODE_ENV === "production") {
-    throw new Error("AUTH_SECRET environment variable is required in production.");
+    throw new AuthConfigError("AUTH_SECRET environment variable is required in production.");
   }
 
   return new TextEncoder().encode(
@@ -79,6 +86,12 @@ export function sessionCookieOptions(token: string) {
     path: "/",
     maxAge: SESSION_MAX_AGE_SECONDS,
   };
+}
+
+export async function setSessionCookie(data: SessionData) {
+  const token = await createSessionToken(data);
+  const cookieStore = await cookies();
+  cookieStore.set(sessionCookieOptions(token));
 }
 
 export function clearSessionCookieOptions() {
