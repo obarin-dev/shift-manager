@@ -64,12 +64,12 @@ export async function POST(
       });
       return NextResponse.json({ ok: true, autoLogin: true });
     } catch (sessionError) {
-      // ユーザー作成は成功済み。セッション発行失敗はフォールバック（ログインページへ誘導）
-      if (sessionError instanceof AuthConfigError) {
-        console.error("Auth config error after registration:", sessionError);
-      } else {
-        console.error("Session creation failed after registration:", sessionError);
+      // ユーザー作成は成功済み。AuthConfigError のみフォールバック（ログインページへ誘導）
+      // それ以外はプログラミングエラーの可能性があるため outer catch へ re-throw
+      if (!(sessionError instanceof AuthConfigError)) {
+        throw sessionError;
       }
+      console.error("Auth config error after registration:", sessionError);
       return NextResponse.json({ ok: true, autoLogin: false });
     }
   } catch (error) {

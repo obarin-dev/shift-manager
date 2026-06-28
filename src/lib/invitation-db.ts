@@ -144,6 +144,8 @@ export async function registerWithInvitation({
       select: { nursery_id: true, staff_id: true },
     });
 
+    // updateMany で count > 0 を確認済みのため実行時には到達しない。
+    // findUnique の戻り値型が T|null のため TypeScript のナローイングに必要。
     if (!inv) {
       throw new InvitationInvalidError();
     }
