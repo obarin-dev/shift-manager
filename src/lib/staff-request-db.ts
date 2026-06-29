@@ -249,7 +249,7 @@ export async function updateStaffRequest(
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") return "duplicate";
       if (error.code === "P2025") {
-        const stillExists = await prisma.staffRequest.findFirst({ where: { id }, select: { id: true } });
+        const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
         return stillExists ? "locked" : null;
       }
     }
@@ -279,7 +279,7 @@ export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
     await prisma.staffRequest.delete({ where: { id, status: "submitted" } });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
-      const stillExists = await prisma.staffRequest.findFirst({ where: { id }, select: { id: true } });
+      const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
       return stillExists ? "locked" as const : false;
     }
     throw error;

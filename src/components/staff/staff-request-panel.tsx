@@ -214,6 +214,7 @@ export function StaffRequestPanel() {
       showToast("削除しました。");
     } catch {
       showToast("削除に失敗しました。", "error");
+      setSelectedRequestId(null);
     } finally {
       setIsSaving(false);
     }
