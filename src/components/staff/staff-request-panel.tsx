@@ -94,6 +94,13 @@ export function StaffRequestPanel() {
     };
   }, []);
 
+  const resetForm = () => {
+    setDate(getTodayDateKey());
+    setType("休み希望");
+    setTime("終日");
+    setMemo("");
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
@@ -117,10 +124,7 @@ export function StaffRequestPanel() {
         }
         setEditingId(null);
         setSelectedRequestId(null);
-        setDate(getTodayDateKey());
-        setType("休み希望");
-        setTime("終日");
-        setMemo("");
+        resetForm();
         return;
       }
 
@@ -129,6 +133,7 @@ export function StaffRequestPanel() {
         showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         setEditingId(null);
         setSelectedRequestId(null);
+        resetForm();
         return;
       }
 
@@ -138,19 +143,18 @@ export function StaffRequestPanel() {
         );
         setEditingId(null);
         setSelectedRequestId(null);
+        resetForm();
         showToast("編集内容を保存しました。");
       } else {
         setRequests((current) => [...current, body.data!]);
-        setDate(getTodayDateKey());
-        setType("休み希望");
-        setTime("終日");
-        setMemo("");
+        resetForm();
         showToast("提出しました。");
       }
     } catch {
       showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
       setEditingId(null);
       setSelectedRequestId(null);
+      resetForm();
     } finally {
       setIsSaving(false);
     }
