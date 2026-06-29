@@ -137,4 +137,16 @@ describe("POST /api/staff-requests", () => {
     const res = await POST(makeRequest({ ...VALID_BODY, memo: "a".repeat(201) }));
     expect(res.status).toBe(400);
   });
+
+  it("セッションあり・アカウント取得失敗: 401 を返す", async () => {
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue(null);
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(401);
+  });
+
+  it("DB 例外: 500 を返す", async () => {
+    vi.mocked(createStaffRequest).mockRejectedValue(new Error("db error"));
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(500);
+  });
 });

@@ -151,6 +151,18 @@ describe("PATCH /api/staff-requests/[id]", () => {
     const res = await PATCH(makePatchRequest({ ...VALID_BODY, time: "xxx" }), makeRouteContext("req-1"));
     expect(res.status).toBe(400);
   });
+
+  it("セッションあり・アカウント取得失敗: 401 を返す", async () => {
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue(null);
+    const res = await PATCH(makePatchRequest(VALID_BODY), makeRouteContext("req-1"));
+    expect(res.status).toBe(401);
+  });
+
+  it("DB 例外: 500 を返す", async () => {
+    vi.mocked(updateStaffRequest).mockRejectedValue(new Error("db error"));
+    const res = await PATCH(makePatchRequest(VALID_BODY), makeRouteContext("req-1"));
+    expect(res.status).toBe(500);
+  });
 });
 
 // ─────────────────────────────────────────────
@@ -196,5 +208,17 @@ describe("DELETE /api/staff-requests/[id]", () => {
     const res = await DELETE(makeDeleteRequest(), makeRouteContext("req-1"));
     expect(res.status).toBe(404);
     expect(res.status).not.toBe(500);
+  });
+
+  it("セッションあり・アカウント取得失敗: 401 を返す", async () => {
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue(null);
+    const res = await DELETE(makeDeleteRequest(), makeRouteContext("req-1"));
+    expect(res.status).toBe(401);
+  });
+
+  it("DB 例外: 500 を返す", async () => {
+    vi.mocked(deleteStaffRequest).mockRejectedValue(new Error("db error"));
+    const res = await DELETE(makeDeleteRequest(), makeRouteContext("req-1"));
+    expect(res.status).toBe(500);
   });
 });
