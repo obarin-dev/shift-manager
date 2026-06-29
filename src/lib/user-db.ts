@@ -36,7 +36,7 @@ export async function verifyPassword(password: string, passwordHash: string) {
 }
 
 function isValidRole(role: string): role is UserRole {
-  return role in ROLE_LABELS;
+  return Object.hasOwn(ROLE_LABELS, role);
 }
 
 function toAuthAccount(user: {

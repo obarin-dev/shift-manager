@@ -1,8 +1,14 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 
-import type { UserRole } from "@/generated/prisma/client";
+import { UserRole, UserRole as UserRoleEnum } from "@/generated/prisma/client";
 export type { UserRole };
+
+const VALID_ROLES = new Set<string>(Object.values(UserRoleEnum));
+
+function isValidSessionRole(role: string): role is UserRole {
+  return VALID_ROLES.has(role);
+}
 
 export const SESSION_COOKIE_NAME = "shift_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
@@ -49,7 +55,8 @@ export async function verifySessionToken(token: string): Promise<SessionData | n
       typeof payload.userId !== "string" ||
       typeof payload.nurseryId !== "string" ||
       typeof payload.role !== "string" ||
-      typeof payload.email !== "string"
+      typeof payload.email !== "string" ||
+      !isValidSessionRole(payload.role)
     ) {
       return null;
     }
@@ -57,7 +64,7 @@ export async function verifySessionToken(token: string): Promise<SessionData | n
     return {
       userId: payload.userId,
       nurseryId: payload.nurseryId,
-      role: payload.role as UserRole,
+      role: payload.role,
       email: payload.email,
     };
   } catch {
