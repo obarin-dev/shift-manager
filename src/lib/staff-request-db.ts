@@ -107,7 +107,7 @@ function toAdminStaffRequestItem(
     userId: row.user_id,
     staffId: resolveRequestStaffId(row),
     staffName: row.staff?.name ?? row.user.staff?.name ?? row.user.email,
-    submittedAt: formatDbDate(row.created_at),
+    submittedAt: row.created_at.toISOString(),
   };
 }
 

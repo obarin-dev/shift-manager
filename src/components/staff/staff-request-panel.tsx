@@ -341,7 +341,7 @@ export function StaffRequestPanel() {
               <div className="staff-request-date">{formatShortDate(request.date)}</div>
               <div>
                 <strong>{request.type}</strong>
-                <p>{request.memo || request.time}</p>
+                <p>{request.time}{request.memo ? `　${request.memo}` : ""}</p>
               </div>
               <span className={getStatusClass(request.status)}>{request.status}</span>
             </article>

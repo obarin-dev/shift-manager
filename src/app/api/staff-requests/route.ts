@@ -57,7 +57,8 @@ function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
     !isValidCalendarDate(date) ||
     typeof type !== "string" ||
     !REQUEST_TYPES.has(type as StaffRequestTypeLabel) ||
-    !VALID_TIMES.has(time)
+    !VALID_TIMES.has(time) ||
+    memo.length > 200
   ) {
     return null;
   }
