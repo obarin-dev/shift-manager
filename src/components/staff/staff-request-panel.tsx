@@ -119,6 +119,8 @@ export function StaffRequestPanel() {
         const errBody = (await response.json().catch(() => ({}))) as { error?: string };
         if (errBody.error === "duplicate_request") {
           showToast("同じ日・種別の希望がすでに提出されています。", "error");
+        } else if (errBody.error === "request_locked") {
+          showToast("承認済みの申請は編集できません。", "error");
         } else {
           showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         }
@@ -166,6 +168,7 @@ export function StaffRequestPanel() {
     setTime(request.time);
     setMemo(request.memo);
     setEditingId(request.id);
+    setSelectedRequestId(null);
     setToast(null);
   };
 

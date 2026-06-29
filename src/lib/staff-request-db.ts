@@ -214,7 +214,7 @@ export async function updateStaffRequest(
   owner: StaffRequestOwner,
   id: string,
   input: StaffRequestWriteInput,
-): Promise<StaffRequestPayload | "duplicate" | null> {
+): Promise<StaffRequestPayload | "duplicate" | "locked" | null> {
   const requestDate = parseDateToDb(input.date);
   const requestType = TYPE_TO_DB[input.type];
 
@@ -228,6 +228,10 @@ export async function updateStaffRequest(
 
   if (!existing) {
     return null;
+  }
+
+  if (existing.status !== "submitted") {
+    return "locked";
   }
 
   try {

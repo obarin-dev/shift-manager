@@ -95,6 +95,9 @@ export async function PATCH(request: Request, context: RouteContext) {
     if (staffRequest === null) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
+    if (staffRequest === "locked") {
+      return NextResponse.json({ error: "request_locked" }, { status: 409 });
+    }
     if (staffRequest === "duplicate") {
       return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
     }
