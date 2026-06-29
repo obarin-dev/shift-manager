@@ -14,7 +14,9 @@
     "db:seed:staff": "npx tsx prisma/seed.ts",
     "db:import:shift-json": "npx tsx scripts/import-shift-schedule-from-json.ts",
     "db:seed:may-shift": "npx tsx scripts/seed-may-shift-schedule.ts",
-    "db:import:roster-json": "npx tsx scripts/import-roster-from-json.ts"
+    "db:import:roster-json": "npx tsx scripts/import-roster-from-json.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -37,7 +39,11 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/coverage-v8": "^4.1.9",
     "tsx": "^4.22.4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.9"
   }
 }
