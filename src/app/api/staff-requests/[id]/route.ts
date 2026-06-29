@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth-session";
+import { getSession, type SessionData } from "@/lib/auth-session";
 import {
   deleteStaffRequest,
   type StaffRequestOwner,
@@ -24,12 +24,7 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-async function getRequestOwner(): Promise<StaffRequestOwner | null> {
-  const session = await getSession();
-  if (!session) {
-    return null;
-  }
-
+async function getRequestOwner(session: SessionData): Promise<StaffRequestOwner | null> {
   const account = await getAuthAccountByUserId(session.userId);
   if (!account) {
     return null;
@@ -81,7 +76,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
-  const owner = await getRequestOwner();
+  const owner = await getRequestOwner(session);
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
@@ -127,7 +122,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
-  const owner = await getRequestOwner();
+  const owner = await getRequestOwner(session);
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }

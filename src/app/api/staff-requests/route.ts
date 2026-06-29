@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth-session";
+import { getSession, type SessionData } from "@/lib/auth-session";
 import {
   createStaffRequest,
   listAdminStaffRequestGroups,
@@ -23,12 +23,7 @@ const REQUEST_TYPES = new Set<StaffRequestTypeLabel>([
 
 const VALID_TIMES = new Set(["終日", "午前のみ", "午後のみ", "早番希望", "遅番不可"]);
 
-async function getRequestOwner(): Promise<StaffRequestOwner | null> {
-  const session = await getSession();
-  if (!session) {
-    return null;
-  }
-
+async function getRequestOwner(session: SessionData): Promise<StaffRequestOwner | null> {
   const account = await getAuthAccountByUserId(session.userId);
   if (!account) {
     return null;
@@ -137,7 +132,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
-  const owner = await getRequestOwner();
+  const owner = await getRequestOwner(session);
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
