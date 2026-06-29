@@ -75,7 +75,13 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const input = parseWriteBody(await request.json());
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
+  }
+  const input = parseWriteBody(body);
   if (!input) {
     return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
   }

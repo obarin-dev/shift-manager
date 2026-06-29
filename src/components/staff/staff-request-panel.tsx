@@ -190,6 +190,10 @@ export function StaffRequestPanel() {
       setRequests((current) => current.filter((request) => request.id !== selectedRequestId));
       if (editingId === selectedRequestId) {
         setEditingId(null);
+        setDate(getTodayDateKey());
+        setType("休み希望");
+        setTime("終日");
+        setMemo("");
       }
       setSelectedRequestId(null);
       showToast("削除しました。");

@@ -289,6 +289,13 @@ export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
     return false;
   }
 
-  await prisma.staffRequest.delete({ where: { id } });
+  try {
+    await prisma.staffRequest.delete({ where: { id } });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return false;
+    }
+    throw error;
+  }
   return true;
 }
