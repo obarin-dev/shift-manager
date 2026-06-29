@@ -1,4 +1,4 @@
-import { type SessionData } from "@/lib/auth-session";
+import { type SessionData, type UserRole } from "@/lib/auth-session";
 import {
   type StaffRequestOwner,
   type StaffRequestTypeLabel,
@@ -6,6 +6,8 @@ import {
 } from "@/lib/staff-request-db";
 import { getAuthAccountByUserId } from "@/lib/user-db";
 import { isValidCalendarDate } from "@/lib/nursery-time";
+
+export type RequestContext = StaffRequestOwner & { role: UserRole };
 
 export const REQUEST_TYPES = new Set<StaffRequestTypeLabel>([
   "休み希望",
@@ -53,7 +55,7 @@ export function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
 
 export async function getRequestOwner(
   session: SessionData,
-): Promise<StaffRequestOwner | null> {
+): Promise<RequestContext | null> {
   const account = await getAuthAccountByUserId(session.userId);
   if (!account) {
     return null;
@@ -63,5 +65,6 @@ export async function getRequestOwner(
     nurseryId: account.nurseryId,
     userId: account.userId,
     staffId: account.staffId,
+    role: account.role,
   };
 }

@@ -6,12 +6,11 @@ import {
   listAdminStaffRequestGroupsForMonth,
   listStaffRequests,
 } from "@/lib/staff-request-db";
-import type { UserRole } from "@/lib/auth-session";
 import { getRequestOwner, parseWriteBody } from "./_shared";
 
 export const runtime = "nodejs";
 
-function canViewAdminStaffRequests(role: UserRole) {
+function canViewAdminStaffRequests(role: string) {
   return role === "admin" || role === "manager";
 }
 
@@ -30,7 +29,7 @@ export async function GET(request: Request) {
   const scope = params.get("scope");
 
   if (scope === "admin") {
-    if (!canViewAdminStaffRequests(session.role)) {
+    if (!canViewAdminStaffRequests(owner.role)) {
       return NextResponse.json({ error: "forbidden" }, { status: 403 });
     }
 
