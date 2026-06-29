@@ -3,6 +3,7 @@ import type {
   StaffRequestStatus,
   StaffRequestType,
 } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
@@ -226,20 +227,26 @@ export async function createStaffRequest(
     return "duplicate";
   }
 
-  const row = await prisma.staffRequest.create({
-    data: {
-      nursery_id: owner.nurseryId,
-      user_id: owner.userId,
-      staff_id: owner.staffId ?? null,
-      request_date: requestDate,
-      request_type: requestType,
-      time_preference: input.time.trim(),
-      memo: normalizeMemo(input.memo),
-      status: "submitted",
-    },
-  });
-
-  return toStaffRequestPayload(row);
+  try {
+    const row = await prisma.staffRequest.create({
+      data: {
+        nursery_id: owner.nurseryId,
+        user_id: owner.userId,
+        staff_id: owner.staffId ?? null,
+        request_date: requestDate,
+        request_type: requestType,
+        time_preference: input.time.trim(),
+        memo: normalizeMemo(input.memo),
+        status: "submitted",
+      },
+    });
+    return toStaffRequestPayload(row);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return "duplicate";
+    }
+    throw error;
+  }
 }
 
 export async function updateStaffRequest(
@@ -276,18 +283,24 @@ export async function updateStaffRequest(
     return "duplicate";
   }
 
-  const row = await prisma.staffRequest.update({
-    where: { id },
-    data: {
-      request_date: requestDate,
-      request_type: requestType,
-      time_preference: input.time.trim(),
-      memo: normalizeMemo(input.memo),
-      status: "submitted",
-    },
-  });
-
-  return toStaffRequestPayload(row);
+  try {
+    const row = await prisma.staffRequest.update({
+      where: { id },
+      data: {
+        request_date: requestDate,
+        request_type: requestType,
+        time_preference: input.time.trim(),
+        memo: normalizeMemo(input.memo),
+        status: "submitted",
+      },
+    });
+    return toStaffRequestPayload(row);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return "duplicate";
+    }
+    throw error;
+  }
 }
 
 export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
