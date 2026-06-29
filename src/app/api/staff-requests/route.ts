@@ -7,10 +7,11 @@ import {
   listStaffRequests,
 } from "@/lib/staff-request-db";
 import { getRequestOwner, parseWriteBody } from "./_shared";
+import type { UserRole } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
 
-function canViewAdminStaffRequests(role: string) {
+function canViewAdminStaffRequests(role: UserRole) {
   return role === "admin" || role === "manager";
 }
 
@@ -35,8 +36,8 @@ export async function GET(request: Request) {
 
     const month = params.get("month");
     if (month) {
-      const monthNum = month ? Number(month.slice(5, 7)) : 0;
-      if (!/^\d{4}-\d{2}$/.test(month) || monthNum < 1 || monthNum > 12) {
+      const monthNum = /^\d{4}-\d{2}$/.test(month) ? Number(month.slice(5, 7)) : 0;
+      if (monthNum < 1 || monthNum > 12) {
         return NextResponse.json({ error: "invalid_query" }, { status: 400 });
       }
     }
@@ -66,13 +67,13 @@ export async function POST(request: Request) {
   if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  if (session.role !== "staff") {
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  }
 
   const owner = await getRequestOwner(session);
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (owner.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   let body: unknown;

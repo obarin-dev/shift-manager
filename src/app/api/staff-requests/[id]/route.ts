@@ -17,13 +17,13 @@ export async function PATCH(request: Request, context: RouteContext) {
   if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  if (session.role !== "staff") {
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  }
 
   const owner = await getRequestOwner(session);
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (owner.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   let body: unknown;
@@ -63,13 +63,13 @@ export async function DELETE(_request: Request, context: RouteContext) {
   if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  if (session.role !== "staff") {
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  }
 
   const owner = await getRequestOwner(session);
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (owner.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const { id } = await context.params;
