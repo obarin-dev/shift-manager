@@ -117,6 +117,10 @@ export function StaffRequestPanel() {
         }
         setEditingId(null);
         setSelectedRequestId(null);
+        setDate(getTodayDateKey());
+        setType("休み希望");
+        setTime("終日");
+        setMemo("");
         return;
       }
 
