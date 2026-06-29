@@ -35,6 +35,10 @@ export async function verifyPassword(password: string, passwordHash: string) {
   return bcrypt.compare(password, passwordHash);
 }
 
+function isValidRole(role: string): role is UserRole {
+  return role in ROLE_LABELS;
+}
+
 function toAuthAccount(user: {
   id: string;
   nursery_id: string;
@@ -43,11 +47,10 @@ function toAuthAccount(user: {
   role: string;
   staff: { name: string } | null;
 }): AuthAccount | null {
-  const VALID_ROLES: ReadonlyArray<string> = ["admin", "manager", "staff"];
-  if (!VALID_ROLES.includes(user.role)) {
+  if (!isValidRole(user.role)) {
     return null;
   }
-  const role = user.role as UserRole;
+  const role = user.role;
 
   return {
     userId: user.id,
@@ -97,8 +100,8 @@ export async function listDemoAccountsForLogin(): Promise<DemoAccountSummary[]> 
     select: { email: true, role: true },
   });
 
-  return users.map((user) => ({
-    email: user.email,
-    roleLabel: getRoleLabel(user.role as UserRole),
-  }));
+  return users.flatMap((user) => {
+    if (!isValidRole(user.role)) return [];
+    return [{ email: user.email, roleLabel: getRoleLabel(user.role) }];
+  });
 }
