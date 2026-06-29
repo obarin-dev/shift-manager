@@ -149,6 +149,19 @@ describe("POST /api/staff-requests", () => {
     expect(res.status).toBe(401);
   });
 
+  it("当日日付: 400 を返す", async () => {
+    // getTodayJst() が返す値をモックして「今日」を固定する
+    const { getTodayJst } = await import("@/lib/nursery-time");
+    const today = getTodayJst();
+    const res = await POST(makeRequest({ ...VALID_BODY, date: today }));
+    expect(res.status).toBe(400);
+  });
+
+  it("過去日: 400 を返す", async () => {
+    const res = await POST(makeRequest({ ...VALID_BODY, date: "2020-01-01" }));
+    expect(res.status).toBe(400);
+  });
+
   it("DB 例外: 500 を返す", async () => {
     vi.mocked(createStaffRequest).mockRejectedValue(new Error("db error"));
     const res = await POST(makeRequest(VALID_BODY));

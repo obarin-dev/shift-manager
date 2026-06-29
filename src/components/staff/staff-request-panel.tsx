@@ -16,11 +16,13 @@ type StaffRequest = {
 
 const requestTypes: RequestType[] = ["休み希望", "出勤希望", "時間相談"];
 
-function getTodayDateKey() {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
+function getTomorrowDateKey() {
+  // JST = UTC+9
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  now.setUTCDate(now.getUTCDate() + 1);
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(now.getUTCDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
@@ -40,7 +42,7 @@ function getStatusClass(status: RequestStatus) {
 }
 
 export function StaffRequestPanel() {
-  const [date, setDate] = useState(getTodayDateKey);
+  const [date, setDate] = useState(getTomorrowDateKey);
   const [type, setType] = useState<RequestType>("休み希望");
   const [time, setTime] = useState("終日");
   const [memo, setMemo] = useState("");
@@ -95,7 +97,7 @@ export function StaffRequestPanel() {
   }, []);
 
   const resetForm = () => {
-    setDate(getTodayDateKey());
+    setDate(getTomorrowDateKey());
     setType("休み希望");
     setTime("終日");
     setMemo("");
@@ -121,6 +123,8 @@ export function StaffRequestPanel() {
           showToast("同じ日・種別の希望がすでに提出されています。", "error");
         } else if (errBody.error === "request_locked") {
           showToast("承認済みの申請は編集できません。", "error");
+        } else if (errBody.error === "invalid_payload") {
+          showToast("翌日以降の日付を選択してください。", "error");
         } else {
           showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         }
@@ -231,7 +235,7 @@ export function StaffRequestPanel() {
         <div className="staff-request-form">
           <label className="form-field">
             対象日
-            <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+            <input type="date" value={date} min={getTomorrowDateKey()} onChange={(event) => setDate(event.target.value)} />
           </label>
 
           <div className="staff-request-field">
