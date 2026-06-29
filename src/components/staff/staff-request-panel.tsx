@@ -111,6 +111,8 @@ export function StaffRequestPanel() {
         } else {
           showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         }
+        setEditingId(null);
+        setSelectedRequestId(null);
         return;
       }
 
