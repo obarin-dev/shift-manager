@@ -151,13 +151,7 @@ export async function listAdminStaffRequestGroups(
       continue;
     }
 
-    const item: AdminStaffRequestItem = {
-      ...toStaffRequestPayload(row),
-      userId: row.user_id,
-      staffId,
-      staffName: row.staff?.name ?? row.user.staff?.name ?? row.user.email,
-      submittedAt: formatDbDate(row.created_at),
-    };
+    const item = toAdminStaffRequestItem(row);
 
     const existing = requestsByStaffId.get(staffId);
     if (existing) {
