@@ -136,7 +136,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
 
   try {
     const deleted = await deleteStaffRequest(owner, id);
-    if (deleted === null || deleted === false) {
+    if (deleted === false) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
     if (deleted === "locked") {

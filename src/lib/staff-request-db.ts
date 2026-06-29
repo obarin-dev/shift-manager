@@ -276,10 +276,11 @@ export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
   }
 
   try {
-    await prisma.staffRequest.delete({ where: { id } });
+    await prisma.staffRequest.delete({ where: { id, status: "submitted" } });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
-      return false;
+      const stillExists = await prisma.staffRequest.findFirst({ where: { id }, select: { id: true } });
+      return stillExists ? "locked" as const : false;
     }
     throw error;
   }

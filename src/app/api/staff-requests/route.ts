@@ -95,8 +95,11 @@ export async function GET(request: Request) {
     }
 
     const month = params.get("month");
-    if (month && !/^\d{4}-\d{2}$/.test(month)) {
-      return NextResponse.json({ error: "invalid_query" }, { status: 400 });
+    if (month) {
+      const monthNum = month ? Number(month.slice(5, 7)) : 0;
+      if (!/^\d{4}-\d{2}$/.test(month) || monthNum < 1 || monthNum > 12) {
+        return NextResponse.json({ error: "invalid_query" }, { status: 400 });
+      }
     }
 
     try {
