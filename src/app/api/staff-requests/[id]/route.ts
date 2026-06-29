@@ -1,71 +1,16 @@
 import { NextResponse } from "next/server";
-import { getSession, type SessionData } from "@/lib/auth-session";
+import { getSession } from "@/lib/auth-session";
 import {
   deleteStaffRequest,
-  type StaffRequestOwner,
-  type StaffRequestTypeLabel,
-  type StaffRequestWriteInput,
   updateStaffRequest,
 } from "@/lib/staff-request-db";
-import { getAuthAccountByUserId } from "@/lib/user-db";
-import { isValidCalendarDate } from "@/lib/nursery-time";
+import { getRequestOwner, parseWriteBody } from "../_shared";
 
 export const runtime = "nodejs";
-
-const REQUEST_TYPES = new Set<StaffRequestTypeLabel>([
-  "休み希望",
-  "出勤希望",
-  "時間相談",
-]);
-
-const VALID_TIMES = new Set(["終日", "午前のみ", "午後のみ", "早番希望", "遅番不可"]);
 
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
-
-async function getRequestOwner(session: SessionData): Promise<StaffRequestOwner | null> {
-  const account = await getAuthAccountByUserId(session.userId);
-  if (!account) {
-    return null;
-  }
-
-  return {
-    nurseryId: account.nurseryId,
-    userId: account.userId,
-    staffId: account.staffId,
-  };
-}
-
-function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
-  if (!body || typeof body !== "object") {
-    return null;
-  }
-
-  const payload = body as Record<string, unknown>;
-  const date = typeof payload.date === "string" ? payload.date : "";
-  const type = payload.type;
-  const time = typeof payload.time === "string" ? payload.time.trim() : "";
-  const memo = typeof payload.memo === "string" ? payload.memo : "";
-
-  if (
-    !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
-    !isValidCalendarDate(date) ||
-    typeof type !== "string" ||
-    !REQUEST_TYPES.has(type as StaffRequestTypeLabel) ||
-    !VALID_TIMES.has(time) ||
-    memo.length > 200
-  ) {
-    return null;
-  }
-
-  return {
-    date,
-    type: type as StaffRequestTypeLabel,
-    time,
-    memo,
-  };
-}
 
 export async function PATCH(request: Request, context: RouteContext) {
   const session = await getSession();
