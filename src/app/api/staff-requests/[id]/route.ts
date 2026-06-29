@@ -18,6 +18,8 @@ const REQUEST_TYPES = new Set<StaffRequestTypeLabel>([
   "時間相談",
 ]);
 
+const VALID_TIMES = new Set(["終日", "午前のみ", "午後のみ", "早番希望", "遅番不可"]);
+
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
@@ -56,7 +58,7 @@ function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
     !isValidCalendarDate(date) ||
     typeof type !== "string" ||
     !REQUEST_TYPES.has(type as StaffRequestTypeLabel) ||
-    !time
+    !VALID_TIMES.has(time)
   ) {
     return null;
   }

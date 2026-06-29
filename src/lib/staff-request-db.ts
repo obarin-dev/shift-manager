@@ -92,25 +92,6 @@ export async function listStaffRequests(owner: StaffRequestOwner) {
 }
 
 
-export async function listAdminStaffRequests(nurseryId: string) {
-  const rows = await prisma.staffRequest.findMany({
-    where: {
-      nursery_id: nurseryId,
-    },
-    include: {
-      staff: { select: { name: true } },
-      user: {
-        select: {
-          email: true,
-          staff: { select: { id: true, name: true } },
-        },
-      },
-    },
-    orderBy: [{ request_date: "asc" }, { created_at: "desc" }],
-  });
-
-  return rows.map((row) => toAdminStaffRequestItem(row));
-}
 
 function toAdminStaffRequestItem(
   row: PrismaStaffRequest & {
