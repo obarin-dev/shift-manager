@@ -8,6 +8,7 @@ import {
   updateStaffRequest,
 } from "@/lib/staff-request-db";
 import { getAuthAccountByUserId } from "@/lib/user-db";
+import { isValidCalendarDate } from "@/lib/nursery-time";
 
 export const runtime = "nodejs";
 
@@ -52,6 +53,7 @@ function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
 
   if (
     !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    !isValidCalendarDate(date) ||
     typeof type !== "string" ||
     !REQUEST_TYPES.has(type as StaffRequestTypeLabel) ||
     !time

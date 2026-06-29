@@ -133,6 +133,10 @@ export function StaffRequestPanel() {
         showToast("編集内容を保存しました。");
       } else {
         setRequests((current) => [...current, body.data!]);
+        setDate(getTodayDateKey());
+        setType("休み希望");
+        setTime("終日");
+        setMemo("");
         showToast("提出しました。");
       }
     } catch {

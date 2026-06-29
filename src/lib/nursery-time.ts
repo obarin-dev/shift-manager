@@ -23,3 +23,11 @@ export function formatDbDate(value: Date): string {
 export function parseDateToDb(date: string): Date {
   return new Date(`${date}T12:00:00.000Z`);
 }
+
+/** "YYYY-MM-DD" 文字列が暦として有効かを検証する（例: 2026-02-30 は false） */
+export function isValidCalendarDate(date: string): boolean {
+  const d = new Date(`${date}T12:00:00.000Z`);
+  if (isNaN(d.getTime())) return false;
+  const [year, month, day] = date.split("-").map(Number);
+  return d.getUTCFullYear() === year && d.getUTCMonth() + 1 === month && d.getUTCDate() === day;
+}
