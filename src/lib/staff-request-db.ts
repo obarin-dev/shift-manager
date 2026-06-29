@@ -281,8 +281,9 @@ export async function updateStaffRequest(
     });
     return toStaffRequestPayload(row);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      return "duplicate";
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") return "duplicate";
+      if (error.code === "P2025") return null;
     }
     throw error;
   }
