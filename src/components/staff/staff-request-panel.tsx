@@ -271,14 +271,25 @@ export function StaffRequestPanel() {
           </label>
 
           <div className="staff-request-actions">
-            <button
-              className="secondary-button"
-              disabled={isSaving}
-              onClick={() => showToast("下書きとして画面に残しました。")}
-              type="button"
-            >
-              下書き
-            </button>
+            {editingId ? (
+              <button
+                className="secondary-button"
+                disabled={isSaving}
+                onClick={() => { setEditingId(null); setSelectedRequestId(null); resetForm(); }}
+                type="button"
+              >
+                キャンセル
+              </button>
+            ) : (
+              <button
+                className="secondary-button"
+                disabled={isSaving}
+                onClick={() => showToast("下書きとして画面に残しました。")}
+                type="button"
+              >
+                下書き
+              </button>
+            )}
             <button className="primary-button" disabled={isSaving} type="submit">
               {isSaving ? "保存中..." : editingId ? "編集を保存" : "提出する"}
             </button>
@@ -337,6 +348,7 @@ export function StaffRequestPanel() {
               <label className="staff-request-check">
                 <input
                   checked={selectedRequestId === request.id}
+                  disabled={isSaving}
                   onChange={() =>
                     setSelectedRequestId((current) =>
                       current === request.id ? null : request.id,
