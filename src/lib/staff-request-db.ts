@@ -213,20 +213,6 @@ export async function createStaffRequest(
   const requestDate = parseDateToDb(input.date);
   const requestType = TYPE_TO_DB[input.type];
 
-  const existing = await prisma.staffRequest.findUnique({
-    where: {
-      user_id_request_date_request_type: {
-        user_id: owner.userId,
-        request_date: requestDate,
-        request_type: requestType,
-      },
-    },
-  });
-
-  if (existing) {
-    return "duplicate";
-  }
-
   try {
     const row = await prisma.staffRequest.create({
       data: {
@@ -291,7 +277,6 @@ export async function updateStaffRequest(
         request_type: requestType,
         time_preference: input.time.trim(),
         memo: normalizeMemo(input.memo),
-        status: "submitted",
       },
     });
     return toStaffRequestPayload(row);
