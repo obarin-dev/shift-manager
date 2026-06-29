@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import type { UserRole } from "@/lib/auth-session";
+import { isValidUserRole, type UserRole } from "@/lib/auth-session";
 
 const ROLE_LABELS: Record<UserRole, string> = {
   admin: "管理者",
@@ -42,8 +42,11 @@ function toAuthAccount(user: {
   email: string;
   role: string;
   staff: { name: string } | null;
-}): AuthAccount {
-  const role = user.role as UserRole;
+}): AuthAccount | null {
+  if (!isValidUserRole(user.role)) {
+    return null;
+  }
+  const role = user.role;
 
   return {
     userId: user.id,
@@ -93,8 +96,8 @@ export async function listDemoAccountsForLogin(): Promise<DemoAccountSummary[]> 
     select: { email: true, role: true },
   });
 
-  return users.map((user) => ({
-    email: user.email,
-    roleLabel: getRoleLabel(user.role as UserRole),
-  }));
+  return users.flatMap((user) => {
+    if (!isValidUserRole(user.role)) return [];
+    return [{ email: user.email, roleLabel: getRoleLabel(user.role) }];
+  });
 }
