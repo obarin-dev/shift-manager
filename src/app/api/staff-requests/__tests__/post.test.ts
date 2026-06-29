@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { SessionData } from "@/lib/auth-session";
 import type { AuthAccount } from "@/lib/user-db";
 import type { StaffRequestPayload } from "@/lib/staff-request-db";
@@ -65,9 +65,14 @@ function makeRequest(body: unknown): Request {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.spyOn(console, "error").mockImplementation(() => {});
   vi.mocked(getSession).mockResolvedValue(STAFF_SESSION);
   vi.mocked(getAuthAccountByUserId).mockResolvedValue(STAFF_ACCOUNT);
   vi.mocked(createStaffRequest).mockResolvedValue(CREATED_REQUEST);
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 describe("POST /api/staff-requests", () => {
