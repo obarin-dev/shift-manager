@@ -1,12 +1,12 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 
-import { UserRole, UserRole as UserRoleEnum } from "@/generated/prisma/client";
+import { UserRole } from "@/generated/prisma/client";
 export type { UserRole };
 
-const VALID_ROLES = new Set<string>(Object.values(UserRoleEnum));
+const VALID_ROLES = new Set<string>(Object.values(UserRole));
 
-function isValidSessionRole(role: string): role is UserRole {
+export function isValidUserRole(role: string): role is UserRole {
   return VALID_ROLES.has(role);
 }
 
@@ -56,7 +56,7 @@ export async function verifySessionToken(token: string): Promise<SessionData | n
       typeof payload.nurseryId !== "string" ||
       typeof payload.role !== "string" ||
       typeof payload.email !== "string" ||
-      !isValidSessionRole(payload.role)
+      !isValidUserRole(payload.role)
     ) {
       return null;
     }
