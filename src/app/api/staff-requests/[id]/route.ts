@@ -17,6 +17,9 @@ export async function PATCH(request: Request, context: RouteContext) {
   if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  if (session.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
 
   const owner = await getRequestOwner(session);
   if (!owner) {
@@ -62,6 +65,9 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (session.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const owner = await getRequestOwner(session);

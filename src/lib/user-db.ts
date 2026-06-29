@@ -42,7 +42,11 @@ function toAuthAccount(user: {
   email: string;
   role: string;
   staff: { name: string } | null;
-}): AuthAccount {
+}): AuthAccount | null {
+  const VALID_ROLES: ReadonlyArray<string> = ["admin", "manager", "staff"];
+  if (!VALID_ROLES.includes(user.role)) {
+    return null;
+  }
   const role = user.role as UserRole;
 
   return {
