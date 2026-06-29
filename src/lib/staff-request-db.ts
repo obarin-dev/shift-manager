@@ -261,11 +261,15 @@ export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
       nursery_id: owner.nurseryId,
       user_id: owner.userId,
     },
-    select: { id: true },
+    select: { id: true, status: true },
   });
 
   if (!existing) {
     return false;
+  }
+
+  if (existing.status !== "submitted") {
+    return "locked" as const;
   }
 
   try {

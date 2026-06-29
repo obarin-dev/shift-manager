@@ -195,7 +195,13 @@ export function StaffRequestPanel() {
       });
 
       if (!response.ok) {
-        throw new Error("delete_failed");
+        const errBody = (await response.json().catch(() => ({}))) as { error?: string };
+        if (errBody.error === "request_locked") {
+          showToast("承認済みの申請は削除できません。", "error");
+        } else {
+          showToast("削除に失敗しました。", "error");
+        }
+        return;
       }
 
       setRequests((current) => current.filter((request) => request.id !== selectedRequestId));
@@ -259,7 +265,7 @@ export function StaffRequestPanel() {
 
           <label className="form-field">
             メモ（任意）
-            <textarea value={memo} onChange={(event) => setMemo(event.target.value)} />
+            <textarea maxLength={200} value={memo} onChange={(event) => setMemo(event.target.value)} />
           </label>
 
           <div className="staff-request-actions">
@@ -285,7 +291,7 @@ export function StaffRequestPanel() {
             <button
               aria-label="チェックした希望を編集"
               className="staff-request-icon-button"
-              disabled={!selectedRequestId || isSaving}
+              disabled={!selectedRequestId || isSaving || requests.find((r) => r.id === selectedRequestId)?.status !== "提出済み"}
               onClick={handleEditSelected}
               type="button"
             >
@@ -302,7 +308,7 @@ export function StaffRequestPanel() {
             <button
               aria-label="チェックした希望を削除"
               className="staff-request-icon-button staff-request-icon-button--danger"
-              disabled={!selectedRequestId || isSaving}
+              disabled={!selectedRequestId || isSaving || requests.find((r) => r.id === selectedRequestId)?.status !== "提出済み"}
               onClick={handleDeleteSelected}
               type="button"
             >

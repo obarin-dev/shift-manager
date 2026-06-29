@@ -126,6 +126,14 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (session.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   const owner = await getRequestOwner();
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
