@@ -286,6 +286,7 @@ model StaffRequest {
   created_at      DateTime           @default(now())
   updated_at      DateTime           @updatedAt
 
+  @@unique([user_id, request_date, request_type])
   @@index([nursery_id, request_date])
   @@index([user_id])
   @@index([staff_id])

@@ -3,6 +3,7 @@ import type {
   StaffRequestStatus,
   StaffRequestType,
 } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
@@ -91,25 +92,6 @@ export async function listStaffRequests(owner: StaffRequestOwner) {
 }
 
 
-export async function listAdminStaffRequests(nurseryId: string) {
-  const rows = await prisma.staffRequest.findMany({
-    where: {
-      nursery_id: nurseryId,
-    },
-    include: {
-      staff: { select: { name: true } },
-      user: {
-        select: {
-          email: true,
-          staff: { select: { id: true, name: true } },
-        },
-      },
-    },
-    orderBy: [{ request_date: "asc" }, { created_at: "desc" }],
-  });
-
-  return rows.map((row) => toAdminStaffRequestItem(row));
-}
 
 function toAdminStaffRequestItem(
   row: PrismaStaffRequest & {
@@ -125,7 +107,7 @@ function toAdminStaffRequestItem(
     userId: row.user_id,
     staffId: resolveRequestStaffId(row),
     staffName: row.staff?.name ?? row.user.staff?.name ?? row.user.email,
-    submittedAt: formatDbDate(row.created_at),
+    submittedAt: row.created_at.toISOString(),
   };
 }
 
@@ -169,13 +151,7 @@ export async function listAdminStaffRequestGroups(
       continue;
     }
 
-    const item: AdminStaffRequestItem = {
-      ...toStaffRequestPayload(row),
-      userId: row.user_id,
-      staffId,
-      staffName: row.staff?.name ?? row.user.staff?.name ?? row.user.email,
-      submittedAt: formatDbDate(row.created_at),
-    };
+    const item = toAdminStaffRequestItem(row);
 
     const existing = requestsByStaffId.get(staffId);
     if (existing) {
@@ -208,28 +184,40 @@ export async function listAdminStaffRequestGroupsForMonth(
 export async function createStaffRequest(
   owner: StaffRequestOwner,
   input: StaffRequestWriteInput,
-) {
-  const row = await prisma.staffRequest.create({
-    data: {
-      nursery_id: owner.nurseryId,
-      user_id: owner.userId,
-      staff_id: owner.staffId ?? null,
-      request_date: parseDateToDb(input.date),
-      request_type: TYPE_TO_DB[input.type],
-      time_preference: input.time.trim(),
-      memo: normalizeMemo(input.memo),
-      status: "submitted",
-    },
-  });
+): Promise<StaffRequestPayload | "duplicate"> {
+  const requestDate = parseDateToDb(input.date);
+  const requestType = TYPE_TO_DB[input.type];
 
-  return toStaffRequestPayload(row);
+  try {
+    const row = await prisma.staffRequest.create({
+      data: {
+        nursery_id: owner.nurseryId,
+        user_id: owner.userId,
+        staff_id: owner.staffId ?? null,
+        request_date: requestDate,
+        request_type: requestType,
+        time_preference: input.time.trim(),
+        memo: normalizeMemo(input.memo),
+        status: "submitted",
+      },
+    });
+    return toStaffRequestPayload(row);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return "duplicate";
+    }
+    throw error;
+  }
 }
 
 export async function updateStaffRequest(
   owner: StaffRequestOwner,
   id: string,
   input: StaffRequestWriteInput,
-) {
+): Promise<StaffRequestPayload | "duplicate" | "locked" | null> {
+  const requestDate = parseDateToDb(input.date);
+  const requestType = TYPE_TO_DB[input.type];
+
   const existing = await prisma.staffRequest.findFirst({
     where: {
       id,
@@ -242,18 +230,31 @@ export async function updateStaffRequest(
     return null;
   }
 
-  const row = await prisma.staffRequest.update({
-    where: { id },
-    data: {
-      request_date: parseDateToDb(input.date),
-      request_type: TYPE_TO_DB[input.type],
-      time_preference: input.time.trim(),
-      memo: normalizeMemo(input.memo),
-      status: "submitted",
-    },
-  });
+  if (existing.status !== "submitted") {
+    return "locked";
+  }
 
-  return toStaffRequestPayload(row);
+  try {
+    const row = await prisma.staffRequest.update({
+      where: { id, status: "submitted" },
+      data: {
+        request_date: requestDate,
+        request_type: requestType,
+        time_preference: input.time.trim(),
+        memo: normalizeMemo(input.memo),
+      },
+    });
+    return toStaffRequestPayload(row);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") return "duplicate";
+      if (error.code === "P2025") {
+        const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
+        return stillExists ? "locked" : null;
+      }
+    }
+    throw error;
+  }
 }
 
 export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
@@ -263,13 +264,25 @@ export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
       nursery_id: owner.nurseryId,
       user_id: owner.userId,
     },
-    select: { id: true },
+    select: { id: true, status: true },
   });
 
   if (!existing) {
     return false;
   }
 
-  await prisma.staffRequest.delete({ where: { id } });
+  if (existing.status !== "submitted") {
+    return "locked" as const;
+  }
+
+  try {
+    await prisma.staffRequest.delete({ where: { id, status: "submitted" } });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
+      return stillExists ? "locked" as const : false;
+    }
+    throw error;
+  }
   return true;
 }

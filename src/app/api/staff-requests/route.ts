@@ -10,6 +10,7 @@ import {
   type StaffRequestWriteInput,
 } from "@/lib/staff-request-db";
 import { getAuthAccountByUserId } from "@/lib/user-db";
+import { isValidCalendarDate } from "@/lib/nursery-time";
 import type { UserRole } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
@@ -19,6 +20,8 @@ const REQUEST_TYPES = new Set<StaffRequestTypeLabel>([
   "出勤希望",
   "時間相談",
 ]);
+
+const VALID_TIMES = new Set(["終日", "午前のみ", "午後のみ", "早番希望", "遅番不可"]);
 
 async function getRequestOwner(): Promise<StaffRequestOwner | null> {
   const session = await getSession();
@@ -51,9 +54,11 @@ function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
 
   if (
     !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    !isValidCalendarDate(date) ||
     typeof type !== "string" ||
     !REQUEST_TYPES.has(type as StaffRequestTypeLabel) ||
-    !time
+    !VALID_TIMES.has(time) ||
+    memo.length > 200
   ) {
     return null;
   }
@@ -90,8 +95,11 @@ export async function GET(request: Request) {
     }
 
     const month = params.get("month");
-    if (month && !/^\d{4}-\d{2}$/.test(month)) {
-      return NextResponse.json({ error: "invalid_query" }, { status: 400 });
+    if (month) {
+      const monthNum = month ? Number(month.slice(5, 7)) : 0;
+      if (!/^\d{4}-\d{2}$/.test(month) || monthNum < 1 || monthNum > 12) {
+        return NextResponse.json({ error: "invalid_query" }, { status: 400 });
+      }
     }
 
     try {
@@ -121,18 +129,35 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (session.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   const owner = await getRequestOwner();
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const input = parseWriteBody(await request.json());
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
+  }
+  const input = parseWriteBody(body);
   if (!input) {
     return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
   }
 
   try {
     const staffRequest = await createStaffRequest(owner, input);
+    if (staffRequest === "duplicate") {
+      return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
+    }
     return NextResponse.json({ data: staffRequest }, { status: 201 });
   } catch (error) {
     console.error("[POST /api/staff-requests]", error);

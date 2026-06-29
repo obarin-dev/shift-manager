@@ -17,7 +17,11 @@ type StaffRequest = {
 const requestTypes: RequestType[] = ["休み希望", "出勤希望", "時間相談"];
 
 function getTodayDateKey() {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatShortDate(date: string) {
@@ -90,6 +94,13 @@ export function StaffRequestPanel() {
     };
   }, []);
 
+  const resetForm = () => {
+    setDate(getTodayDateKey());
+    setType("休み希望");
+    setTime("終日");
+    setMemo("");
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
@@ -105,12 +116,27 @@ export function StaffRequestPanel() {
       );
 
       if (!response.ok) {
-        throw new Error("save_failed");
+        const errBody = (await response.json().catch(() => ({}))) as { error?: string };
+        if (errBody.error === "duplicate_request") {
+          showToast("同じ日・種別の希望がすでに提出されています。", "error");
+        } else if (errBody.error === "request_locked") {
+          showToast("承認済みの申請は編集できません。", "error");
+        } else {
+          showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+        }
+        setEditingId(null);
+        setSelectedRequestId(null);
+        resetForm();
+        return;
       }
 
       const body = (await response.json()) as { data?: StaffRequest };
       if (!body.data) {
-        throw new Error("missing_data");
+        showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+        setEditingId(null);
+        setSelectedRequestId(null);
+        resetForm();
+        return;
       }
 
       if (editingId) {
@@ -119,13 +145,18 @@ export function StaffRequestPanel() {
         );
         setEditingId(null);
         setSelectedRequestId(null);
+        resetForm();
         showToast("編集内容を保存しました。");
       } else {
         setRequests((current) => [...current, body.data!]);
+        resetForm();
         showToast("提出しました。");
       }
     } catch {
       showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+      setEditingId(null);
+      setSelectedRequestId(null);
+      resetForm();
     } finally {
       setIsSaving(false);
     }
@@ -137,6 +168,7 @@ export function StaffRequestPanel() {
     setTime(request.time);
     setMemo(request.memo);
     setEditingId(request.id);
+    setSelectedRequestId(null);
     setToast(null);
   };
 
@@ -163,17 +195,26 @@ export function StaffRequestPanel() {
       });
 
       if (!response.ok) {
-        throw new Error("delete_failed");
+        const errBody = (await response.json().catch(() => ({}))) as { error?: string };
+        if (errBody.error === "request_locked") {
+          showToast("承認済みの申請は削除できません。", "error");
+        } else {
+          showToast("削除に失敗しました。", "error");
+        }
+        setSelectedRequestId(null);
+        return;
       }
 
       setRequests((current) => current.filter((request) => request.id !== selectedRequestId));
       if (editingId === selectedRequestId) {
         setEditingId(null);
+        resetForm();
       }
       setSelectedRequestId(null);
       showToast("削除しました。");
     } catch {
       showToast("削除に失敗しました。", "error");
+      setSelectedRequestId(null);
     } finally {
       setIsSaving(false);
     }
@@ -226,18 +267,29 @@ export function StaffRequestPanel() {
 
           <label className="form-field">
             メモ（任意）
-            <textarea value={memo} onChange={(event) => setMemo(event.target.value)} />
+            <textarea maxLength={200} value={memo} onChange={(event) => setMemo(event.target.value)} />
           </label>
 
           <div className="staff-request-actions">
-            <button
-              className="secondary-button"
-              disabled={isSaving}
-              onClick={() => showToast("下書きとして画面に残しました。")}
-              type="button"
-            >
-              下書き
-            </button>
+            {editingId ? (
+              <button
+                className="secondary-button"
+                disabled={isSaving}
+                onClick={() => { setEditingId(null); setSelectedRequestId(null); resetForm(); }}
+                type="button"
+              >
+                キャンセル
+              </button>
+            ) : (
+              <button
+                className="secondary-button"
+                disabled={isSaving}
+                onClick={() => showToast("下書きとして画面に残しました。")}
+                type="button"
+              >
+                下書き
+              </button>
+            )}
             <button className="primary-button" disabled={isSaving} type="submit">
               {isSaving ? "保存中..." : editingId ? "編集を保存" : "提出する"}
             </button>
@@ -252,7 +304,7 @@ export function StaffRequestPanel() {
             <button
               aria-label="チェックした希望を編集"
               className="staff-request-icon-button"
-              disabled={!selectedRequestId || isSaving}
+              disabled={!selectedRequestId || isSaving || requests.find((r) => r.id === selectedRequestId)?.status !== "提出済み"}
               onClick={handleEditSelected}
               type="button"
             >
@@ -269,7 +321,7 @@ export function StaffRequestPanel() {
             <button
               aria-label="チェックした希望を削除"
               className="staff-request-icon-button staff-request-icon-button--danger"
-              disabled={!selectedRequestId || isSaving}
+              disabled={!selectedRequestId || isSaving || requests.find((r) => r.id === selectedRequestId)?.status !== "提出済み"}
               onClick={handleDeleteSelected}
               type="button"
             >
@@ -296,6 +348,7 @@ export function StaffRequestPanel() {
               <label className="staff-request-check">
                 <input
                   checked={selectedRequestId === request.id}
+                  disabled={isSaving}
                   onChange={() =>
                     setSelectedRequestId((current) =>
                       current === request.id ? null : request.id,
@@ -308,7 +361,7 @@ export function StaffRequestPanel() {
               <div className="staff-request-date">{formatShortDate(request.date)}</div>
               <div>
                 <strong>{request.type}</strong>
-                <p>{request.memo || request.time}</p>
+                <p>{request.time}{request.memo ? `　${request.memo}` : ""}</p>
               </div>
               <span className={getStatusClass(request.status)}>{request.status}</span>
             </article>

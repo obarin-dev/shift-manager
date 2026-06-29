@@ -8,6 +8,7 @@ import {
   updateStaffRequest,
 } from "@/lib/staff-request-db";
 import { getAuthAccountByUserId } from "@/lib/user-db";
+import { isValidCalendarDate } from "@/lib/nursery-time";
 
 export const runtime = "nodejs";
 
@@ -16,6 +17,8 @@ const REQUEST_TYPES = new Set<StaffRequestTypeLabel>([
   "出勤希望",
   "時間相談",
 ]);
+
+const VALID_TIMES = new Set(["終日", "午前のみ", "午後のみ", "早番希望", "遅番不可"]);
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -52,9 +55,11 @@ function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
 
   if (
     !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    !isValidCalendarDate(date) ||
     typeof type !== "string" ||
     !REQUEST_TYPES.has(type as StaffRequestTypeLabel) ||
-    !time
+    !VALID_TIMES.has(time) ||
+    memo.length > 200
   ) {
     return null;
   }
@@ -68,12 +73,26 @@ function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (session.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   const owner = await getRequestOwner();
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const input = parseWriteBody(await request.json());
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
+  }
+  const input = parseWriteBody(body);
   if (!input) {
     return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
   }
@@ -82,8 +101,14 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   try {
     const staffRequest = await updateStaffRequest(owner, id, input);
-    if (!staffRequest) {
+    if (staffRequest === null) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+    if (staffRequest === "locked") {
+      return NextResponse.json({ error: "request_locked" }, { status: 409 });
+    }
+    if (staffRequest === "duplicate") {
+      return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
     }
 
     return NextResponse.json({ data: staffRequest });
@@ -94,6 +119,14 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (session.role !== "staff") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   const owner = await getRequestOwner();
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -103,8 +136,11 @@ export async function DELETE(_request: Request, context: RouteContext) {
 
   try {
     const deleted = await deleteStaffRequest(owner, id);
-    if (!deleted) {
+    if (deleted === false) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+    if (deleted === "locked") {
+      return NextResponse.json({ error: "request_locked" }, { status: 409 });
     }
 
     return NextResponse.json({ ok: true });
