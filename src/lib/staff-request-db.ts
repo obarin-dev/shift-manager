@@ -236,7 +236,7 @@ export async function updateStaffRequest(
 
   try {
     const row = await prisma.staffRequest.update({
-      where: { id },
+      where: { id, status: "submitted" },
       data: {
         request_date: requestDate,
         request_type: requestType,
@@ -248,7 +248,10 @@ export async function updateStaffRequest(
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") return "duplicate";
-      if (error.code === "P2025") return null;
+      if (error.code === "P2025") {
+        const stillExists = await prisma.staffRequest.findFirst({ where: { id }, select: { id: true } });
+        return stillExists ? "locked" : null;
+      }
     }
     throw error;
   }
