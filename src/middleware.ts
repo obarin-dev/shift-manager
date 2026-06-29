@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth-session";
+import { SESSION_COOKIE_NAME, verifySessionTokenEdge } from "@/lib/auth-edge";
 
 const PUBLIC_PATHS = ["/login"];
 const PUBLIC_API_PATHS = ["/api/auth/login"];
@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const session = token ? await verifySessionToken(token) : null;
+  const session = token ? await verifySessionTokenEdge(token) : null;
 
   if (pathname === "/login" && session) {
     return NextResponse.redirect(new URL("/home", request.url));
