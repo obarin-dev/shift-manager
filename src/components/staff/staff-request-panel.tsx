@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { getTodayJst } from "@/lib/nursery-time";
 
 type RequestType = "休み希望" | "出勤希望" | "時間相談";
 type RequestStatus = "提出済み" | "承認" | "要確認";
@@ -17,13 +18,9 @@ type StaffRequest = {
 const requestTypes: RequestType[] = ["休み希望", "出勤希望", "時間相談"];
 
 function getTomorrowDateKey() {
-  // JST = UTC+9
-  const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
-  now.setUTCDate(now.getUTCDate() + 1);
-  const year = now.getUTCFullYear();
-  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(now.getUTCDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  const [year, month, day] = getTodayJst().split("-").map(Number);
+  const d = new Date(Date.UTC(year, month - 1, day + 1));
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
 }
 
 function formatShortDate(date: string) {
