@@ -255,20 +255,6 @@ export async function updateStaffRequest(
     return null;
   }
 
-  const conflict = await prisma.staffRequest.findUnique({
-    where: {
-      user_id_request_date_request_type: {
-        user_id: owner.userId,
-        request_date: requestDate,
-        request_type: requestType,
-      },
-    },
-  });
-
-  if (conflict && conflict.id !== id) {
-    return "duplicate";
-  }
-
   try {
     const row = await prisma.staffRequest.update({
       where: { id },
