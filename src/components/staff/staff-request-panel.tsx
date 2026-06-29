@@ -17,7 +17,11 @@ type StaffRequest = {
 const requestTypes: RequestType[] = ["休み希望", "出勤希望", "時間相談"];
 
 function getTodayDateKey() {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatShortDate(date: string) {
@@ -141,6 +145,8 @@ export function StaffRequestPanel() {
       }
     } catch {
       showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+      setEditingId(null);
+      setSelectedRequestId(null);
     } finally {
       setIsSaving(false);
     }
