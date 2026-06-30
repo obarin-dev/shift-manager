@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getSession, type SessionData } from "@/lib/auth-session";
+import { getSession, isAdminOrManager, type SessionData } from "@/lib/auth-session";
 import { getAuthAccountByUserId, type AuthAccount } from "@/lib/user-db";
 
 export async function requireAuth(): Promise<{
@@ -27,7 +27,7 @@ export async function requireAdminOrManager(): Promise<{
 }> {
   const result = await requireAuth();
 
-  if (result.account.role !== "admin" && result.account.role !== "manager") {
+  if (!isAdminOrManager(result.account.role)) {
     redirect("/home");
   }
 
