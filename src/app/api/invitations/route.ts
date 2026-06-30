@@ -6,7 +6,7 @@ import {
   listPendingInvitations,
   type InvitationMethod,
 } from "@/lib/invitation-db";
-import { getPrimaryNursery, DEFAULT_NURSERY_ID } from "@/lib/nursery-db";
+import { getActiveNurseryId } from "@/lib/nursery-db";
 
 export const runtime = "nodejs";
 
@@ -23,8 +23,7 @@ export async function GET() {
   }
 
   try {
-    const nursery = await getPrimaryNursery();
-    const nurseryId = nursery?.id ?? DEFAULT_NURSERY_ID;
+    const nurseryId = await getActiveNurseryId();
     const invitations = await listPendingInvitations(nurseryId);
     return NextResponse.json({ data: invitations });
   } catch (error) {
@@ -71,8 +70,7 @@ export async function POST(request: Request) {
       : 168;
 
   try {
-    const nursery = await getPrimaryNursery();
-    const nurseryId = nursery?.id ?? DEFAULT_NURSERY_ID;
+    const nurseryId = await getActiveNurseryId();
     const invitation = await createInvitation({
       nurseryId,
       staffId,

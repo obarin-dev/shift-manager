@@ -1,7 +1,7 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { ShiftAssignment, ShiftScheduleStatus } from "@/lib/shift-helpers";
-import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
+import { resolveNurseryId } from "@/lib/nursery-db";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
 export type ShiftSchedulePayload = {
@@ -9,14 +9,6 @@ export type ShiftSchedulePayload = {
   assignments: ShiftAssignment[];
 };
 
-async function resolveNurseryId(nurseryId?: string) {
-  if (nurseryId) {
-    return nurseryId;
-  }
-
-  const nursery = await getPrimaryNursery();
-  return nursery?.id ?? DEFAULT_NURSERY_ID;
-}
 
 function toShiftAssignment(slot: {
   staff_id: string;

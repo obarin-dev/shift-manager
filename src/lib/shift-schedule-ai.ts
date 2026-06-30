@@ -13,7 +13,7 @@ import {
   type ShiftAssignment,
 } from "@/lib/shift-helpers";
 import { normalizeShiftCellValue, SHIFT_CELL_OFF } from "@/lib/shift-schedule-options";
-import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
+import { getActiveNurseryId } from "@/lib/nursery-db";
 import { listAdminStaffRequestGroupsForMonth } from "@/lib/staff-request-db";
 import { mergeStaffRequestsIntoAssignments } from "@/lib/staff-request-shift-mapper";
 import { listShiftTypes } from "@/lib/shift-type-db";
@@ -162,8 +162,7 @@ async function applyStaffRequests(
   assignments: ShiftAssignment[],
   shiftTypes: ShiftTypeDefinition[],
 ) {
-  const nursery = await getPrimaryNursery();
-  const nurseryId = nursery?.id ?? DEFAULT_NURSERY_ID;
+  const nurseryId = await getActiveNurseryId();
   const groups = await listAdminStaffRequestGroupsForMonth(nurseryId, targetMonth);
   if (groups.length === 0) {
     return assignments;

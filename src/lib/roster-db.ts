@@ -3,7 +3,7 @@ import { listClassrooms } from "@/lib/classroom-db";
 import type { Classroom } from "@/lib/classroom-helpers";
 import { sortClassrooms } from "@/lib/classroom-helpers";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
+import { resolveNurseryId } from "@/lib/nursery-db";
 import { migrateRosterAssignments, type RosterCellAssignment } from "@/lib/roster-helpers";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
@@ -20,14 +20,6 @@ export type RosterSheetPayload = {
   rowHeights: Record<string, number>;
 };
 
-async function resolveNurseryId(nurseryId?: string) {
-  if (nurseryId) {
-    return nurseryId;
-  }
-
-  const nursery = await getPrimaryNursery();
-  return nursery?.id ?? DEFAULT_NURSERY_ID;
-}
 
 function isRosterSheetPayload(value: unknown): value is RosterSheetPayload {
   if (!value || typeof value !== "object") {
