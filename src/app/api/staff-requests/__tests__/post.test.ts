@@ -89,10 +89,20 @@ describe("POST /api/staff-requests", () => {
     expect(res.status).toBe(401);
   });
 
-  it("staff 以外のロール: 403 を返す", async () => {
+  it("admin ロールでも 201 を返す", async () => {
     vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "admin" });
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "admin" });
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(201);
+  });
+
+  it("staffId なしの admin: 403 no_staff_profile を返す", async () => {
+    vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "admin" });
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "admin", staffId: undefined });
     const res = await POST(makeRequest(VALID_BODY));
     expect(res.status).toBe(403);
+    const json = await res.json();
+    expect(json.error).toBe("no_staff_profile");
   });
 
   it("重複申請: 409 を返す", async () => {
@@ -147,6 +157,19 @@ describe("POST /api/staff-requests", () => {
     vi.mocked(getAuthAccountByUserId).mockResolvedValue(null);
     const res = await POST(makeRequest(VALID_BODY));
     expect(res.status).toBe(401);
+  });
+
+  it("当日日付: 400 を返す", async () => {
+    // getTodayJst() が返す値をモックして「今日」を固定する
+    const { getTodayJst } = await import("@/lib/nursery-time");
+    const today = getTodayJst();
+    const res = await POST(makeRequest({ ...VALID_BODY, date: today }));
+    expect(res.status).toBe(400);
+  });
+
+  it("過去日: 400 を返す", async () => {
+    const res = await POST(makeRequest({ ...VALID_BODY, date: "2020-01-01" }));
+    expect(res.status).toBe(400);
   });
 
   it("DB 例外: 500 を返す", async () => {

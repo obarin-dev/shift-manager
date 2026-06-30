@@ -5,7 +5,7 @@ import {
   type StaffRequestWriteInput,
 } from "@/lib/staff-request-db";
 import { getAuthAccountByUserId } from "@/lib/user-db";
-import { isValidCalendarDate } from "@/lib/nursery-time";
+import { isValidCalendarDate, getTodayJst } from "@/lib/nursery-time";
 
 export type RequestContext = StaffRequestOwner & { role: UserRole };
 
@@ -37,6 +37,7 @@ export function parseWriteBody(body: unknown): StaffRequestWriteInput | null {
   if (
     !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
     !isValidCalendarDate(date) ||
+    date <= getTodayJst() ||
     typeof type !== "string" ||
     !REQUEST_TYPES.has(type as StaffRequestTypeLabel) ||
     !VALID_TIMES.has(time) ||

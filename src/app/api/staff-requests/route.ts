@@ -67,16 +67,12 @@ export async function POST(request: Request) {
   if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  if (session.role !== "staff") {
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  }
-
   const owner = await getRequestOwner(session);
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  if (owner.role !== "staff") {
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  if (!owner.staffId) {
+    return NextResponse.json({ error: "no_staff_profile" }, { status: 403 });
   }
 
   let body: unknown;

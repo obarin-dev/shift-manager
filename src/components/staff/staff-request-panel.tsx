@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { getTodayJst } from "@/lib/nursery-time";
 
 type RequestType = "休み希望" | "出勤希望" | "時間相談";
 type RequestStatus = "提出済み" | "承認" | "要確認";
@@ -16,12 +17,10 @@ type StaffRequest = {
 
 const requestTypes: RequestType[] = ["休み希望", "出勤希望", "時間相談"];
 
-function getTodayDateKey() {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+function getTomorrowDateKey() {
+  const [year, month, day] = getTodayJst().split("-").map(Number);
+  const d = new Date(Date.UTC(year, month - 1, day + 1));
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
 }
 
 function formatShortDate(date: string) {
@@ -40,7 +39,7 @@ function getStatusClass(status: RequestStatus) {
 }
 
 export function StaffRequestPanel() {
-  const [date, setDate] = useState(getTodayDateKey);
+  const [date, setDate] = useState(getTomorrowDateKey);
   const [type, setType] = useState<RequestType>("休み希望");
   const [time, setTime] = useState("終日");
   const [memo, setMemo] = useState("");
@@ -95,7 +94,7 @@ export function StaffRequestPanel() {
   }, []);
 
   const resetForm = () => {
-    setDate(getTodayDateKey());
+    setDate(getTomorrowDateKey());
     setType("休み希望");
     setTime("終日");
     setMemo("");
@@ -121,21 +120,29 @@ export function StaffRequestPanel() {
           showToast("同じ日・種別の希望がすでに提出されています。", "error");
         } else if (errBody.error === "request_locked") {
           showToast("承認済みの申請は編集できません。", "error");
+        } else if (errBody.error === "invalid_payload") {
+          showToast("翌日以降の日付を選択してください。", "error");
+        } else if (errBody.error === "no_staff_profile") {
+          showToast("スタッフ情報が登録されていないため提出できません。", "error");
         } else {
           showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         }
-        setEditingId(null);
         setSelectedRequestId(null);
-        resetForm();
+        if (editingId) {
+          setEditingId(null);
+          resetForm();
+        }
         return;
       }
 
       const body = (await response.json()) as { data?: StaffRequest };
       if (!body.data) {
         showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
-        setEditingId(null);
         setSelectedRequestId(null);
-        resetForm();
+        if (editingId) {
+          setEditingId(null);
+          resetForm();
+        }
         return;
       }
 
@@ -154,9 +161,11 @@ export function StaffRequestPanel() {
       }
     } catch {
       showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
-      setEditingId(null);
       setSelectedRequestId(null);
-      resetForm();
+      if (editingId) {
+        setEditingId(null);
+        resetForm();
+      }
     } finally {
       setIsSaving(false);
     }
@@ -231,7 +240,7 @@ export function StaffRequestPanel() {
         <div className="staff-request-form">
           <label className="form-field">
             対象日
-            <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+            <input type="date" value={date} min={getTomorrowDateKey()} onChange={(event) => setDate(event.target.value)} />
           </label>
 
           <div className="staff-request-field">

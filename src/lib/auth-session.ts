@@ -4,13 +4,20 @@ import { SignJWT, jwtVerify } from "jose";
 import { UserRole } from "@/generated/prisma/client";
 export type { UserRole };
 
+import {
+  SESSION_COOKIE_NAME,
+  AuthConfigError,
+  getAuthSecret,
+} from "@/lib/auth-edge";
+
+export { SESSION_COOKIE_NAME, AuthConfigError };
+
 const VALID_ROLES = new Set<string>(Object.values(UserRole));
 
 export function isValidUserRole(role: string): role is UserRole {
   return VALID_ROLES.has(role);
 }
 
-export const SESSION_COOKIE_NAME = "shift_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 
 export type SessionData = {
@@ -19,25 +26,6 @@ export type SessionData = {
   role: UserRole;
   email: string;
 };
-
-export class AuthConfigError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AuthConfigError";
-  }
-}
-
-function getAuthSecret() {
-  const secret = process.env.AUTH_SECRET;
-
-  if (!secret && process.env.NODE_ENV === "production") {
-    throw new AuthConfigError("AUTH_SECRET environment variable is required in production.");
-  }
-
-  return new TextEncoder().encode(
-    secret ?? "dev-only-shift-manager-auth-secret",
-  );
-}
 
 export async function createSessionToken(data: SessionData) {
   return new SignJWT({ ...data })
