@@ -93,7 +93,7 @@ DB操作は `src/lib/*-db.ts` の関数経由で行い、ページや API route 
 ```
 実装
  ↓
-npm test / typecheck
+npm test / typecheck（CI 整備まではローカルで実行 → #43）
  ↓
 /code-review medium（PRマージ前に1回）
  ↓
@@ -101,7 +101,7 @@ npm test / typecheck
 🟡 中 → 判断（仕様次第でスキップOK）※認証・認可・データ漏洩に関わる中は高と同扱い
 🟢 低 → スキップ（次のPRで対応）
  ↓
-npm test / typecheck（修正後の確認）
+npm test / typecheck（ローカルで実行）
  ↓
 /code-review low（修正の副作用チェック）
  ↓
