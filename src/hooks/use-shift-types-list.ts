@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
-import { apiFetch } from "@/lib/api-fetch";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 import {
   DEFAULT_SHIFT_TYPE_COLOR,
   getDefaultColorForShiftCode,
@@ -37,7 +37,8 @@ export function useShiftTypesList() {
       }
 
       setShiftTypes((body.data ?? []).map(normalizeShiftType));
-    } catch {
+    } catch (err) {
+      if (err instanceof UnauthorizedError) return;
       setError("勤務区分の取得に失敗しました。");
     } finally {
       setIsLoading(false);

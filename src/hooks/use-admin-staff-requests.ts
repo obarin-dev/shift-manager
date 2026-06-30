@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { AdminStaffRequestGroup } from "@/lib/staff-request-db";
-import { apiFetch } from "@/lib/api-fetch";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 
 export function useAdminStaffRequests(targetMonth: string, enabled = true) {
   const [groups, setGroups] = useState<AdminStaffRequestGroup[]>([]);
@@ -30,7 +30,8 @@ export function useAdminStaffRequests(targetMonth: string, enabled = true) {
           setGroups(body.data ?? []);
         }
       })
-      .catch(() => {
+      .catch((err: unknown) => {
+        if (err instanceof UnauthorizedError) return;
         if (isMounted) {
           setError("希望一覧の読み込みに失敗しました。");
           setGroups([]);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { apiFetch } from "@/lib/api-fetch";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 import {
   formatDisplayTime,
   formatExtendedCareRange,
@@ -96,6 +96,9 @@ export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean 
         setShiftTypes(loaded);
         setShiftTypeDrafts(draftsFromShiftTypes(loaded));
       }
+    } catch (err) {
+      if (err instanceof UnauthorizedError) return;
+      throw err;
     } finally {
       setIsLoading(false);
     }

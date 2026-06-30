@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Classroom } from "@/lib/classroom-helpers";
-import { apiFetch } from "@/lib/api-fetch";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 
 export function useClassroomsList() {
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
@@ -28,7 +28,8 @@ export function useClassroomsList() {
           otherStaffIds: classroom.otherStaffIds ?? [],
         })),
       );
-    } catch {
+    } catch (err) {
+      if (err instanceof UnauthorizedError) return;
       setError("クラス一覧の取得に失敗しました。");
     } finally {
       setIsLoading(false);

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useStaffList } from "@/hooks/use-staff-list";
 import type { UserRole } from "@/lib/auth-session";
@@ -21,7 +20,7 @@ import {
   getStaffClassAssignment,
 } from "@/lib/staff-class-assignment";
 import type { InvitationMethod as InviteMethod, InvitationStatus as InviteStatus } from "@/lib/invitation-db";
-import { apiFetch } from "@/lib/api-fetch";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 
 type ModalState = { type: "edit"; staffId: string } | { type: "create" } | null;
 
@@ -117,7 +116,6 @@ export function StaffManagementSettings({
     reload: reloadStaff,
   } = useStaffList();
   const { classrooms } = useClassroomsList();
-  const router = useRouter();
   const [modalState, setModalState] = useState<ModalState>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -162,13 +160,13 @@ export function StaffManagementSettings({
       })
       .catch((err: unknown) => {
         if (err instanceof Error && err.name === "AbortError") return;
-        if (err === 401) { router.push("/login"); return; }
+        if (err instanceof UnauthorizedError) return;
         if (err === 403) { setInvitationsError("forbidden"); return; }
         setInvitationsError("load_error");
       });
 
     return () => controller.abort();
-  }, [invitationsRetryKey, router]);
+  }, [invitationsRetryKey]);
 
   const sortedStaff = useMemo(() => {
     return [...staffMembers].sort((a, b) => {
