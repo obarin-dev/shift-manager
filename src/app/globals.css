@@ -3582,10 +3582,14 @@ a.home-card:hover {
   margin: 0;
   font-size: 0.92rem;
   line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
 .invite-result__line span {
   font-weight: 700;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .invite-result__actions {
@@ -3603,6 +3607,11 @@ a.home-card:hover {
 
 .invite-pending-label {
   color: var(--muted);
+  font-weight: 700;
+}
+
+.invite-done-label {
+  color: var(--success, #16a34a);
   font-weight: 700;
 }
 

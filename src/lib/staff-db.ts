@@ -1,4 +1,4 @@
-import type { Staff as PrismaStaff } from "@/generated/prisma/client";
+import type { Staff as PrismaStaff, User as PrismaUser } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
@@ -33,7 +33,7 @@ function shiftTimeToDb(time: StaffShiftTime) {
   };
 }
 
-export function toStaffMember(record: PrismaStaff): StaffMember {
+export function toStaffMember(record: PrismaStaff & { user?: PrismaUser | null }): StaffMember {
   return {
     id: record.id,
     staff_id: record.staff_login_id ?? "",
@@ -52,6 +52,7 @@ export function toStaffMember(record: PrismaStaff): StaffMember {
         : "",
     },
     is_active: record.is_active,
+    hasAccount: record.user != null,
   };
 }
 
@@ -109,13 +110,14 @@ export async function listStaff(nurseryId?: string) {
   const rows = await prisma.staff.findMany({
     where: { nursery_id: resolvedNurseryId },
     orderBy: [{ staff_login_id: "asc" }, { name: "asc" }],
+    include: { user: true },
   });
 
   return rows.map(toStaffMember);
 }
 
 export async function getStaffById(id: string) {
-  const row = await prisma.staff.findUnique({ where: { id } });
+  const row = await prisma.staff.findUnique({ where: { id }, include: { user: true } });
   return row ? toStaffMember(row) : null;
 }
 
@@ -130,6 +132,7 @@ export async function createStaff(input: StaffWriteInput, nurseryId?: string) {
         capable_class_ids: [],
         ...buildStaffData(input, staffLoginId),
       },
+      include: { user: true },
     });
 
     return toStaffMember(row);
@@ -163,6 +166,7 @@ export async function updateStaff(id: string, input: StaffWriteInput) {
     const row = await prisma.staff.update({
       where: { id },
       data: buildStaffData(input, staffLoginId),
+      include: { user: true },
     });
 
     return toStaffMember(row);

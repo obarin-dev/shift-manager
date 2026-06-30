@@ -46,12 +46,13 @@ export async function POST(
       return NextResponse.json({ error: "invitation_invalid" }, { status: 400 });
     }
 
-    const existing = await findActiveUserByEmail(email);
+    const [existing, passwordHash] = await Promise.all([
+      findActiveUserByEmail(email),
+      hashPassword(password),
+    ]);
     if (existing) {
       return NextResponse.json({ error: "email_already_used" }, { status: 409 });
     }
-
-    const passwordHash = await hashPassword(password);
 
     const registeredUser = await registerWithInvitation({ token, email, passwordHash });
 
