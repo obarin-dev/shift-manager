@@ -257,8 +257,7 @@ export async function createStaffRequest(
       error.code === "P2002" &&
       Array.isArray(error.meta?.target) &&
       (error.meta.target as string[]).includes("user_id") &&
-      (error.meta.target as string[]).includes("request_date") &&
-      (error.meta.target as string[]).includes("request_type")
+      (error.meta.target as string[]).includes("request_date")
     ) {
       return "duplicate";
     }
