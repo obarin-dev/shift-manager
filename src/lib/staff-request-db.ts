@@ -188,15 +188,10 @@ export async function listAdminStaffRequestGroupsForMonth(
         nursery_id: nurseryId,
         request_date: {
           gte: parseDateToDb(`${targetMonth}-01`),
-          lt: parseDateToDb(
-            new Date(
-              parseInt(targetMonth.slice(0, 4)),
-              parseInt(targetMonth.slice(5, 7)),
-              1,
-            )
-              .toISOString()
-              .slice(0, 10),
-          ),
+          lt: parseDateToDb((() => {
+            const [y, m] = targetMonth.split("-").map(Number);
+            return m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`;
+          })()),
         },
       },
       include: {
