@@ -80,10 +80,14 @@ function toStaffRequestPayload(row: PrismaStaffRequest): StaffRequestPayload {
 }
 
 export async function listStaffRequests(owner: StaffRequestOwner) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const rows = await prisma.staffRequest.findMany({
     where: {
       nursery_id: owner.nurseryId,
       user_id: owner.userId,
+      request_date: { gt: today },
     },
     orderBy: [{ request_date: "asc" }, { created_at: "asc" }],
   });
