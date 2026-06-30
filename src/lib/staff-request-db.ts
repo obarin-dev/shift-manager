@@ -252,7 +252,14 @@ export async function createStaffRequest(
     });
     return toStaffRequestPayload(row);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002" &&
+      Array.isArray(error.meta?.target) &&
+      (error.meta.target as string[]).includes("user_id") &&
+      (error.meta.target as string[]).includes("request_date") &&
+      (error.meta.target as string[]).includes("request_type")
+    ) {
       return "duplicate";
     }
     throw error;
@@ -296,7 +303,14 @@ export async function updateStaffRequest(
     return toStaffRequestPayload(row);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") return "duplicate";
+      if (
+        error.code === "P2002" &&
+        Array.isArray(error.meta?.target) &&
+        (error.meta.target as string[]).includes("user_id") &&
+        (error.meta.target as string[]).includes("request_date") &&
+        (error.meta.target as string[]).includes("request_type")
+      )
+        return "duplicate";
       if (error.code === "P2025") {
         const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
         return stillExists ? "locked" : null;
