@@ -1,5 +1,6 @@
 import { randomBytes } from "crypto";
 import { prisma } from "@/lib/prisma";
+import { createUserInTx } from "@/lib/user-db";
 
 export type InvitationMethod = "qr" | "url";
 export type InvitationStatus = "pending" | "used" | "expired" | "disabled";
@@ -150,15 +151,12 @@ export async function registerWithInvitation({
       throw new InvitationInvalidError();
     }
 
-    const user = await tx.user.create({
-      data: {
-        nursery_id: inv.nursery_id,
-        staff_id: inv.staff_id ?? null,
-        email,
-        password_hash: passwordHash,
-        role: "staff",
-        is_active: true,
-      },
+    const user = await createUserInTx(tx, {
+      nurseryId: inv.nursery_id,
+      staffId: inv.staff_id ?? null,
+      email,
+      passwordHash,
+      role: "staff",
     });
 
     return { userId: user.id, nurseryId: user.nursery_id, email: user.email };
