@@ -37,6 +37,33 @@ import {
   isClosedDate,
 } from "@/lib/holiday-settings";
 import { buildShiftScheduleClassSections } from "@/lib/shift-schedule-class-sections";
+import type { StaffMember } from "@/lib/staff-helpers";
+import type { Classroom } from "@/lib/classroom-helpers";
+import type { ShiftTypeDefinition, NurseryRestSettings } from "@/lib/nursery-helpers";
+import {
+  DEFAULT_SHIFT_TYPE_COLOR,
+  getDefaultColorForShiftCode,
+  normalizeShiftColor,
+} from "@/lib/shift-type-colors";
+
+type PublishedShiftScheduleData = {
+  status: ShiftScheduleStatus;
+  assignments: ShiftAssignment[];
+  staff: StaffMember[];
+  classrooms: Classroom[];
+  shiftTypes: ShiftTypeDefinition[];
+  holidaySettings: NurseryRestSettings | null;
+};
+
+function normalizeSnapshotShiftType(shift: ShiftTypeDefinition): ShiftTypeDefinition {
+  return {
+    ...shift,
+    color:
+      normalizeShiftColor(shift.color) ??
+      getDefaultColorForShiftCode(shift.code) ??
+      DEFAULT_SHIFT_TYPE_COLOR,
+  };
+}
 
 type MonthlyShiftGridProps = {
   nurseryName?: string;
@@ -51,18 +78,28 @@ export function MonthlyShiftGrid({
   canPublish = true,
   className,
 }: MonthlyShiftGridProps) {
-  const { staff, isLoading: isStaffLoading, error: staffError } = useStaffList();
+  const { staff: hookStaff, isLoading: isStaffLoading, error: staffError } = useStaffList({ enabled: !readOnly });
   const {
-    classrooms,
+    classrooms: hookClassrooms,
     isLoading: isClassroomsLoading,
     error: classroomsError,
-  } = useClassroomsList();
+  } = useClassroomsList({ enabled: !readOnly });
   const {
-    shiftTypes,
+    shiftTypes: hookShiftTypes,
     isLoading: isShiftTypesLoading,
     error: shiftTypesError,
-  } = useShiftTypesList();
-  const { settings: holidaySettings } = useHolidaySettings();
+  } = useShiftTypesList({ enabled: !readOnly });
+  const { settings: hookHolidaySettings } = useHolidaySettings({ enabled: !readOnly });
+
+  const [snapshotStaff, setSnapshotStaff] = useState<StaffMember[]>([]);
+  const [snapshotClassrooms, setSnapshotClassrooms] = useState<Classroom[]>([]);
+  const [snapshotShiftTypes, setSnapshotShiftTypes] = useState<ShiftTypeDefinition[]>([]);
+  const [snapshotHolidaySettings, setSnapshotHolidaySettings] = useState<NurseryRestSettings | null>(null);
+
+  const staff = readOnly ? snapshotStaff : hookStaff;
+  const classrooms = readOnly ? snapshotClassrooms : hookClassrooms;
+  const shiftTypes = readOnly ? snapshotShiftTypes : hookShiftTypes;
+  const holidaySettings = readOnly ? snapshotHolidaySettings : hookHolidaySettings;
   const [targetMonth, setTargetMonth] = useState(() => getCurrentTargetMonth());
   const {
     groups: staffRequestGroups,
@@ -163,7 +200,12 @@ export function MonthlyShiftGrid({
   );
 
   useEffect(() => {
-    if (shiftTypes.length === 0 || staffIds.length === 0) {
+    if (!readOnly && (shiftTypes.length === 0 || staffIds.length === 0)) {
+      return;
+    }
+
+    // For readOnly mode, avoid re-fetching when snapshot state updates trigger this effect.
+    if (readOnly && loadedMonthRef.current === targetMonth) {
       return;
     }
 
@@ -184,6 +226,31 @@ export function MonthlyShiftGrid({
         });
         if (!response.ok) {
           throw new Error("load_failed");
+        }
+
+        if (readOnly) {
+          const body = (await response.json()) as {
+            data: (PublishedShiftScheduleData) | null;
+          };
+
+          if (!active) return;
+
+          if (body.data) {
+            setSnapshotStaff(body.data.staff ?? []);
+            setSnapshotClassrooms(body.data.classrooms ?? []);
+            setSnapshotShiftTypes((body.data.shiftTypes ?? []).map(normalizeSnapshotShiftType));
+            setSnapshotHolidaySettings(body.data.holidaySettings ?? null);
+            setAssignments(body.data.assignments);
+            setScheduleStatus(body.data.status);
+            setIsSavedSchedule(true);
+            setHasDraftEdits(false);
+          } else {
+            setScheduleStatus(null);
+            setIsSavedSchedule(false);
+            setHasDraftEdits(false);
+          }
+          loadedMonthRef.current = targetMonth;
+          return;
         }
 
         const body = (await response.json()) as {
@@ -236,6 +303,10 @@ export function MonthlyShiftGrid({
     normalizeAssignments,
     applyClosedDayOff,
     readOnly,
+    setSnapshotStaff,
+    setSnapshotClassrooms,
+    setSnapshotShiftTypes,
+    setSnapshotHolidaySettings,
   ]);
 
   useEffect(() => {

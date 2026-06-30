@@ -18,9 +18,9 @@ function normalizeShiftType(shift: ShiftTypeDefinition): ShiftTypeDefinition {
   };
 }
 
-export function useShiftTypesList() {
+export function useShiftTypesList({ enabled = true }: { enabled?: boolean } = {}) {
   const [shiftTypes, setShiftTypes] = useState<ShiftTypeDefinition[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const loadShiftTypes = useCallback(async () => {
@@ -44,8 +44,9 @@ export function useShiftTypesList() {
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     void loadShiftTypes();
-  }, [loadShiftTypes]);
+  }, [loadShiftTypes, enabled]);
 
   return { shiftTypes, isLoading, error, reload: loadShiftTypes };
 }

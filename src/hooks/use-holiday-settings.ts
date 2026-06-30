@@ -7,9 +7,9 @@ type HolidaySettingsResponse = {
   data?: NurseryRestSettings;
 };
 
-export function useHolidaySettings() {
+export function useHolidaySettings({ enabled = true }: { enabled?: boolean } = {}) {
   const [settings, setSettings] = useState<NurseryRestSettings | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const loadSettings = useCallback(async () => {
@@ -36,8 +36,9 @@ export function useHolidaySettings() {
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     void loadSettings();
-  }, [loadSettings]);
+  }, [loadSettings, enabled]);
 
   return {
     settings,

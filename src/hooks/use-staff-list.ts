@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import type { StaffMember } from "@/lib/staff-helpers";
 
-export function useStaffList() {
+export function useStaffList({ enabled = true }: { enabled?: boolean } = {}) {
   const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const loadStaff = useCallback(async () => {
@@ -35,8 +35,9 @@ export function useStaffList() {
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     void loadStaff();
-  }, [loadStaff]);
+  }, [loadStaff, enabled]);
 
   const getStaffName = useCallback(
     (id: string | null | undefined) => {
