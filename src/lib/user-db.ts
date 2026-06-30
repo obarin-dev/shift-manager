@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { isValidUserRole, type UserRole } from "@/lib/auth-session";
 
@@ -88,6 +89,23 @@ export async function getAuthAccountByUserId(userId: string): Promise<AuthAccoun
   return toAuthAccount(user);
 }
 
+
+export async function createUserInTx(
+  tx: Prisma.TransactionClient,
+  data: { nurseryId: string; staffId: string | null; email: string; passwordHash: string; role: "staff" }
+): Promise<{ id: string; nursery_id: string; email: string }> {
+  return tx.user.create({
+    data: {
+      nursery_id: data.nurseryId,
+      staff_id: data.staffId,
+      email: data.email,
+      password_hash: data.passwordHash,
+      role: data.role,
+      is_active: true,
+    },
+    select: { id: true, nursery_id: true, email: true },
+  });
+}
 
 export async function listDemoAccountsForLogin(): Promise<DemoAccountSummary[]> {
   const users = await prisma.user.findMany({
