@@ -122,12 +122,14 @@ export function StaffRequestPanel() {
           showToast("承認済みの申請は編集できません。", "error");
         } else if (errBody.error === "invalid_payload") {
           showToast("翌日以降の日付を選択してください。", "error");
+        } else if (errBody.error === "no_staff_profile") {
+          showToast("スタッフ情報が登録されていないため提出できません。", "error");
         } else {
           showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         }
+        setSelectedRequestId(null);
         if (editingId) {
           setEditingId(null);
-          setSelectedRequestId(null);
           resetForm();
         }
         return;
@@ -136,9 +138,9 @@ export function StaffRequestPanel() {
       const body = (await response.json()) as { data?: StaffRequest };
       if (!body.data) {
         showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
+        setSelectedRequestId(null);
         if (editingId) {
           setEditingId(null);
-          setSelectedRequestId(null);
           resetForm();
         }
         return;
@@ -159,9 +161,11 @@ export function StaffRequestPanel() {
       }
     } catch {
       showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
-      setEditingId(null);
       setSelectedRequestId(null);
-      resetForm();
+      if (editingId) {
+        setEditingId(null);
+        resetForm();
+      }
     } finally {
       setIsSaving(false);
     }

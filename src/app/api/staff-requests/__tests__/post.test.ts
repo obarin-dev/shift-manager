@@ -96,6 +96,15 @@ describe("POST /api/staff-requests", () => {
     expect(res.status).toBe(201);
   });
 
+  it("staffId なしの admin: 403 no_staff_profile を返す", async () => {
+    vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "admin" });
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "admin", staffId: undefined });
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(403);
+    const json = await res.json();
+    expect(json.error).toBe("no_staff_profile");
+  });
+
   it("重複申請: 409 を返す", async () => {
     vi.mocked(createStaffRequest).mockResolvedValue("duplicate");
     const res = await POST(makeRequest(VALID_BODY));
