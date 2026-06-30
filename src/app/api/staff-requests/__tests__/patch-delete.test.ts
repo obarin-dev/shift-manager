@@ -117,12 +117,12 @@ describe("PATCH /api/staff-requests/[id]", () => {
     expect(res.status).toBe(404);
   });
 
-  it("承認済み申請を編集すると status が submitted にリセットされて 200 を返す", async () => {
-    vi.mocked(updateStaffRequest).mockResolvedValue({ ...UPDATED_REQUEST, status: "提出済み" });
+  it("承認済み申請 (locked): 409 を返す", async () => {
+    vi.mocked(updateStaffRequest).mockResolvedValue("locked");
     const res = await PATCH(makePatchRequest(VALID_BODY), makeRouteContext("req-1"));
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(409);
     const json = await res.json();
-    expect(json.data.status).toBe("提出済み");
+    expect(json.error).toBe("request_locked");
   });
 
   it("重複申請: 409 を返す", async () => {

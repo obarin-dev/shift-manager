@@ -230,22 +230,28 @@ export async function updateStaffRequest(
     return null;
   }
 
+  if (existing.status !== "submitted") {
+    return "locked";
+  }
+
   try {
     const row = await prisma.staffRequest.update({
-      where: { id },
+      where: { id, nursery_id: owner.nurseryId, user_id: owner.userId, status: "submitted" },
       data: {
         request_date: requestDate,
         request_type: requestType,
         time_preference: input.time.trim(),
         memo: normalizeMemo(input.memo),
-        status: "submitted",
       },
     });
     return toStaffRequestPayload(row);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") return "duplicate";
-      if (error.code === "P2025") return null;
+      if (error.code === "P2025") {
+        const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
+        return stillExists ? "locked" : null;
+      }
     }
     throw error;
   }
