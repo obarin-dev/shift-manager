@@ -191,6 +191,15 @@ describe("GET /api/staff-requests", () => {
       expect(res.status).toBe(400);
     });
 
+    it("manager ロール: 200 を返す", async () => {
+      vi.mocked(getSession).mockResolvedValue({ ...ADMIN_SESSION, role: "manager" });
+      vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...ADMIN_ACCOUNT, role: "manager" });
+      const res = await GET(
+        makeRequest("http://localhost/api/staff-requests?scope=admin"),
+      );
+      expect(res.status).toBe(200);
+    });
+
     it("staff ロール: 403 を返す", async () => {
       vi.mocked(getSession).mockResolvedValue(STAFF_SESSION);
       vi.mocked(getAuthAccountByUserId).mockResolvedValue(STAFF_ACCOUNT);
