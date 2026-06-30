@@ -125,18 +125,22 @@ export function StaffRequestPanel() {
         } else {
           showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
         }
-        setEditingId(null);
-        setSelectedRequestId(null);
-        resetForm();
+        if (editingId) {
+          setEditingId(null);
+          setSelectedRequestId(null);
+          resetForm();
+        }
         return;
       }
 
       const body = (await response.json()) as { data?: StaffRequest };
       if (!body.data) {
         showToast(editingId ? "編集の保存に失敗しました。" : "提出に失敗しました。", "error");
-        setEditingId(null);
-        setSelectedRequestId(null);
-        resetForm();
+        if (editingId) {
+          setEditingId(null);
+          setSelectedRequestId(null);
+          resetForm();
+        }
         return;
       }
 

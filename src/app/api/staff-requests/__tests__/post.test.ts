@@ -89,10 +89,11 @@ describe("POST /api/staff-requests", () => {
     expect(res.status).toBe(401);
   });
 
-  it("staff 以外のロール: 403 を返す", async () => {
+  it("admin ロールでも 201 を返す", async () => {
     vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "admin" });
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "admin" });
     const res = await POST(makeRequest(VALID_BODY));
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(201);
   });
 
   it("重複申請: 409 を返す", async () => {

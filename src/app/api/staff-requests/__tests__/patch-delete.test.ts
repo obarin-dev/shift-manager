@@ -104,10 +104,11 @@ describe("PATCH /api/staff-requests/[id]", () => {
     expect(res.status).toBe(401);
   });
 
-  it("staff 以外のロール: 403 を返す", async () => {
+  it("admin ロールでも 200 を返す", async () => {
     vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "admin" });
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "admin" });
     const res = await PATCH(makePatchRequest(VALID_BODY), makeRouteContext("req-1"));
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(200);
   });
 
   it("存在しない申請 / 他ユーザーの申請: 404 を返す", async () => {
@@ -187,10 +188,11 @@ describe("DELETE /api/staff-requests/[id]", () => {
     expect(res.status).toBe(401);
   });
 
-  it("staff 以外のロール: 403 を返す", async () => {
+  it("admin ロールでも 200 を返す", async () => {
     vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "admin" });
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "admin" });
     const res = await DELETE(makeDeleteRequest(), makeRouteContext("req-1"));
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(200);
   });
 
   it("存在しない申請: 404 を返す", async () => {
