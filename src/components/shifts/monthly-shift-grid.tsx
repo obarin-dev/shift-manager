@@ -43,7 +43,6 @@ type MonthlyShiftGridProps = {
   readOnly?: boolean;
   canPublish?: boolean;
   className?: string;
-  filterStaffId?: string;
 };
 
 export function MonthlyShiftGrid({
@@ -51,7 +50,6 @@ export function MonthlyShiftGrid({
   readOnly = false,
   canPublish = true,
   className,
-  filterStaffId,
 }: MonthlyShiftGridProps) {
   const { staff, isLoading: isStaffLoading, error: staffError } = useStaffList();
   const {
@@ -680,12 +678,6 @@ export function MonthlyShiftGrid({
             </thead>
             <tbody>
               {classSections
-                .map((section) => ({
-                  ...section,
-                  staffRows: filterStaffId
-                    ? section.staffRows.filter((row) => row.staffId === filterStaffId)
-                    : section.staffRows,
-                }))
                 .filter((section) => section.staffRows.length > 0)
                 .flatMap((section) =>
                   section.staffRows.map((row, rowIndex) => {
