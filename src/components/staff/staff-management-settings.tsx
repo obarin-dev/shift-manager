@@ -131,16 +131,14 @@ export function StaffManagementSettings({
   const [issuedInvitationId, setIssuedInvitationId] = useState<string | null>(null);
   const [copyMessage, setCopyMessage] = useState("");
   const [invitations, setInvitations] = useState<InvitationRecord[]>([]);
-  const [invitationsLoadError, setInvitationsLoadError] = useState(false);
-  const [invitationsForbidden, setInvitationsForbidden] = useState(false);
+  const [invitationsError, setInvitationsError] = useState<null | "forbidden" | "load_error">(null);
   const [invitationsRetryKey, setInvitationsRetryKey] = useState(0);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
-    setInvitationsLoadError(false);
-    setInvitationsForbidden(false);
+    setInvitationsError(null);
 
     fetch("/api/invitations", { signal: controller.signal })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
@@ -162,14 +160,14 @@ export function StaffManagementSettings({
         );
       })
       .catch((err: unknown) => {
-        if (err instanceof DOMException && err.name === "AbortError") return;
+        if (err instanceof Error && err.name === "AbortError") return;
         if (err === 401) { router.push("/login"); return; }
-        if (err === 403) { setInvitationsForbidden(true); return; }
-        setInvitationsLoadError(true);
+        if (err === 403) { setInvitationsError("forbidden"); return; }
+        setInvitationsError("load_error");
       });
 
     return () => controller.abort();
-  }, [invitationsRetryKey]);
+  }, [invitationsRetryKey, router]);
 
   const sortedStaff = useMemo(() => {
     return [...staffMembers].sort((a, b) => {
@@ -451,12 +449,12 @@ export function StaffManagementSettings({
               <p>{staffLoadError}</p>
             </div>
           ) : null}
-          {invitationsForbidden ? (
+          {invitationsError === "forbidden" ? (
             <div className="classes-empty">
               <p>招待情報を表示する権限がありません。</p>
             </div>
           ) : null}
-          {invitationsLoadError ? (
+          {invitationsError === "load_error" ? (
             <div className="classes-empty">
               <p>招待情報の読み込みに失敗しました。</p>
               <button
