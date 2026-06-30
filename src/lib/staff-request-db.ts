@@ -5,7 +5,7 @@ import type {
 } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
+import { formatDbDate, getTodayJst, parseDateToDb } from "@/lib/nursery-time";
 
 export type StaffRequestTypeLabel = "休み希望" | "出勤希望" | "時間相談";
 export type StaffRequestStatusLabel = "提出済み" | "承認" | "要確認";
@@ -80,14 +80,13 @@ function toStaffRequestPayload(row: PrismaStaffRequest): StaffRequestPayload {
 }
 
 export async function listStaffRequests(owner: StaffRequestOwner) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const todayBoundary = parseDateToDb(getTodayJst());
 
   const rows = await prisma.staffRequest.findMany({
     where: {
       nursery_id: owner.nurseryId,
       user_id: owner.userId,
-      request_date: { gt: today },
+      request_date: { gte: todayBoundary },
     },
     orderBy: [{ request_date: "asc" }, { created_at: "asc" }],
   });
