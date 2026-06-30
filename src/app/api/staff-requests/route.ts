@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth-session";
+import { getSession, isAdminOrManager } from "@/lib/auth-session";
 import {
   createStaffRequest,
   listAdminStaffRequestGroups,
@@ -7,13 +7,8 @@ import {
   listStaffRequests,
 } from "@/lib/staff-request-db";
 import { getRequestOwner, parseWriteBody } from "./_shared";
-import type { UserRole } from "@/lib/auth-session";
 
 export const runtime = "nodejs";
-
-function canViewAdminStaffRequests(role: UserRole) {
-  return role === "admin" || role === "manager";
-}
 
 export async function GET(request: Request) {
   const session = await getSession();
@@ -30,7 +25,7 @@ export async function GET(request: Request) {
   const scope = params.get("scope");
 
   if (scope === "admin") {
-    if (!canViewAdminStaffRequests(owner.role)) {
+    if (!isAdminOrManager(owner.role)) {
       return NextResponse.json({ error: "forbidden" }, { status: 403 });
     }
 

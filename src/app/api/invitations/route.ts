@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
-import { getSession } from "@/lib/auth-session";
+import { getSession, isAdminOrManager } from "@/lib/auth-session";
 import {
   createInvitation,
   listPendingInvitations,
@@ -18,7 +18,7 @@ export async function GET() {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  if (session.role !== "admin" && session.role !== "manager") {
+  if (!isAdminOrManager(session.role)) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  if (session.role !== "admin" && session.role !== "manager") {
+  if (!isAdminOrManager(session.role)) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 

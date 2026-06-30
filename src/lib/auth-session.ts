@@ -18,6 +18,10 @@ export function isValidUserRole(role: string): role is UserRole {
   return VALID_ROLES.has(role);
 }
 
+export function isAdminOrManager(role: UserRole): boolean {
+  return role === "admin" || role === "manager";
+}
+
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 
 export type SessionData = {

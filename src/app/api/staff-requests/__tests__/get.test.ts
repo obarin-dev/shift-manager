@@ -2,9 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { SessionData } from "@/lib/auth-session";
 import type { AdminStaffRequestGroup, StaffRequestPayload } from "@/lib/staff-request-db";
 
-vi.mock("@/lib/auth-session", () => ({
-  getSession: vi.fn(),
-}));
+vi.mock("@/lib/auth-session", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/auth-session")>();
+  return { ...actual, getSession: vi.fn() };
+});
 
 vi.mock("@/lib/user-db", () => ({
   getAuthAccountByUserId: vi.fn(),
