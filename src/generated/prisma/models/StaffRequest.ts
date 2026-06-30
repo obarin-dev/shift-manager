@@ -254,7 +254,7 @@ export type StaffRequestOrderByWithRelationInput = {
 
 export type StaffRequestWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  user_id_request_date_request_type?: Prisma.StaffRequestUser_idRequest_dateRequest_typeCompoundUniqueInput
+  user_id_request_date?: Prisma.StaffRequestUser_idRequest_dateCompoundUniqueInput
   AND?: Prisma.StaffRequestWhereInput | Prisma.StaffRequestWhereInput[]
   OR?: Prisma.StaffRequestWhereInput[]
   NOT?: Prisma.StaffRequestWhereInput | Prisma.StaffRequestWhereInput[]
@@ -271,7 +271,7 @@ export type StaffRequestWhereUniqueInput = Prisma.AtLeast<{
   nursery?: Prisma.XOR<Prisma.NurseryScalarRelationFilter, Prisma.NurseryWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
-}, "id" | "user_id_request_date_request_type">
+}, "id" | "user_id_request_date">
 
 export type StaffRequestOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -412,10 +412,9 @@ export type StaffRequestOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StaffRequestUser_idRequest_dateRequest_typeCompoundUniqueInput = {
+export type StaffRequestUser_idRequest_dateCompoundUniqueInput = {
   user_id: string
   request_date: Date | string
-  request_type: $Enums.StaffRequestType
 }
 
 export type StaffRequestCountOrderByAggregateInput = {
