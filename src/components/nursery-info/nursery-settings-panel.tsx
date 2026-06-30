@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 import {
   formatDisplayTime,
   formatExtendedCareRange,
@@ -74,8 +75,8 @@ export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean 
 
     try {
       const [profileResponse, shiftTypesResponse] = await Promise.all([
-        fetch("/api/nursery/profile"),
-        fetch("/api/shift-types"),
+        apiFetch("/api/nursery/profile"),
+        apiFetch("/api/shift-types"),
       ]);
 
       const profileBody = (await profileResponse.json()) as {
@@ -95,6 +96,9 @@ export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean 
         setShiftTypes(loaded);
         setShiftTypeDrafts(draftsFromShiftTypes(loaded));
       }
+    } catch (err) {
+      if (err instanceof UnauthorizedError) return;
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -130,7 +134,7 @@ export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean 
     setIsSavingProfile(true);
 
     try {
-      const response = await fetch("/api/nursery/profile", {
+      const response = await apiFetch("/api/nursery/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileDraft),
@@ -238,7 +242,7 @@ export function NurserySettingsPanel({ readOnly = false }: { readOnly?: boolean 
     setSavingShiftTypeId(draft.id);
 
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         isNew ? "/api/shift-types" : `/api/shift-types/${draft.id}`,
         {
           method: isNew ? "POST" : "PATCH",

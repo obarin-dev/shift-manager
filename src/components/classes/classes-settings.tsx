@@ -15,6 +15,7 @@ import { useStaffList } from "@/hooks/use-staff-list";
 import { ClassDeleteDialog } from "@/components/classes/class-delete-dialog";
 import { ClassDetailPanel } from "@/components/classes/class-detail-panel";
 import { ClassFormModal } from "@/components/classes/class-form-modal";
+import { apiFetch } from "@/lib/api-fetch";
 type ModalState =
   | { type: "create" }
   | { type: "edit"; classroomId: string }
@@ -36,7 +37,7 @@ export function ClassesSettings({ readOnly = false }: { readOnly?: boolean }) {
     setLoadError(null);
 
     try {
-      const response = await fetch("/api/classrooms");
+      const response = await apiFetch("/api/classrooms");
       const body = (await response.json()) as { data?: Classroom[]; error?: string };
 
       if (!response.ok) {
@@ -90,7 +91,7 @@ export function ClassesSettings({ readOnly = false }: { readOnly?: boolean }) {
     const method = isEdit ? "PATCH" : "POST";
 
     try {
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -148,7 +149,7 @@ export function ClassesSettings({ readOnly = false }: { readOnly?: boolean }) {
     }
 
     try {
-      const response = await fetch(`/api/classrooms/${deleteTarget.id}`, {
+      const response = await apiFetch(`/api/classrooms/${deleteTarget.id}`, {
         method: "DELETE",
       });
 

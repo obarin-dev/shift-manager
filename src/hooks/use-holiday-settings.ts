@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { NurseryRestSettings } from "@/lib/nursery-helpers";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 
 type HolidaySettingsResponse = {
   data?: NurseryRestSettings;
@@ -17,7 +18,7 @@ export function useHolidaySettings() {
     setError(null);
 
     try {
-      const response = await fetch("/api/nursery/holiday-settings", {
+      const response = await apiFetch("/api/nursery/holiday-settings", {
         cache: "no-store",
       });
       const body = (await response.json()) as HolidaySettingsResponse;
@@ -27,7 +28,8 @@ export function useHolidaySettings() {
       }
 
       setSettings(body.data);
-    } catch {
+    } catch (err) {
+      if (err instanceof UnauthorizedError) return;
       setError("休日設定の読み込みに失敗しました。");
       setSettings(null);
     } finally {

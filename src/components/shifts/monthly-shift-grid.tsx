@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { apiFetch } from "@/lib/api-fetch";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useShiftTypesList } from "@/hooks/use-shift-types-list";
 import { useStaffList } from "@/hooks/use-staff-list";
@@ -179,7 +180,7 @@ export function MonthlyShiftGrid({
           params.set("published", "true");
         }
 
-        const response = await fetch(`/api/shift-schedules?${params.toString()}`, {
+        const response = await apiFetch(`/api/shift-schedules?${params.toString()}`, {
           cache: "no-store",
         });
         if (!response.ok) {
@@ -297,7 +298,7 @@ export function MonthlyShiftGrid({
     setIsGenerating(true);
 
     try {
-      const response = await fetch(`/api/shift-schedules/generate?month=${targetMonth}`, {
+      const response = await apiFetch(`/api/shift-schedules/generate?month=${targetMonth}`, {
         method: "POST",
       });
       const body = (await response.json()) as {
@@ -339,7 +340,7 @@ export function MonthlyShiftGrid({
     setIsSaving(true);
     setSaveMessage("");
     try {
-      const response = await fetch(`/api/shift-schedules?month=${targetMonth}`, {
+      const response = await apiFetch(`/api/shift-schedules?month=${targetMonth}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

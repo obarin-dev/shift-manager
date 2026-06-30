@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { StaffMember } from "@/lib/staff-helpers";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 
 export function useStaffList() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
@@ -13,7 +14,7 @@ export function useStaffList() {
     setError(null);
 
     try {
-      const response = await fetch("/api/staff");
+      const response = await apiFetch("/api/staff");
       const body = (await response.json()) as { data?: StaffMember[] };
 
       if (!response.ok) {
@@ -27,7 +28,8 @@ export function useStaffList() {
           work_availability: member.work_availability ?? { start: "", end: "" },
         })),
       );
-    } catch {
+    } catch (err) {
+      if (err instanceof UnauthorizedError) return;
       setError("職員一覧の取得に失敗しました。");
     } finally {
       setIsLoading(false);
