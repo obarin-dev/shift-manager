@@ -117,7 +117,7 @@ export async function listStaff(nurseryId?: string) {
 }
 
 export async function getStaffById(id: string) {
-  const row = await prisma.staff.findUnique({ where: { id } });
+  const row = await prisma.staff.findUnique({ where: { id }, include: { user: true } });
   return row ? toStaffMember(row) : null;
 }
 
@@ -132,6 +132,7 @@ export async function createStaff(input: StaffWriteInput, nurseryId?: string) {
         capable_class_ids: [],
         ...buildStaffData(input, staffLoginId),
       },
+      include: { user: true },
     });
 
     return toStaffMember(row);
@@ -165,6 +166,7 @@ export async function updateStaff(id: string, input: StaffWriteInput) {
     const row = await prisma.staff.update({
       where: { id },
       data: buildStaffData(input, staffLoginId),
+      include: { user: true },
     });
 
     return toStaffMember(row);
