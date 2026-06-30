@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { apiFetch } from "@/lib/api-fetch";
 import {
   addDaysToDateKey,
   buildMonthGrid,
@@ -113,7 +114,7 @@ export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean 
     });
 
     try {
-      const response = await fetch(`/api/calendar-entries?${params.toString()}`, {
+      const response = await apiFetch(`/api/calendar-entries?${params.toString()}`, {
         cache: "no-store",
       });
       const body = (await response.json()) as { data?: NurseryCalendarEntry[] };
@@ -229,7 +230,7 @@ export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean 
     setSaveError(null);
     try {
       const isEdit = calendarModalState?.type === "edit";
-      const response = await fetch(
+      const response = await apiFetch(
         isEdit ? `/api/calendar-entries/${nextEntry.id}` : "/api/calendar-entries",
         {
           method: isEdit ? "PATCH" : "POST",
@@ -257,7 +258,7 @@ export function NurseryCalendarPanel({ readOnly = false }: { readOnly?: boolean 
   const handleCalendarDelete = async (entryId: string) => {
     setSaveError(null);
     try {
-      const response = await fetch(`/api/calendar-entries/${entryId}`, {
+      const response = await apiFetch(`/api/calendar-entries/${entryId}`, {
         method: "DELETE",
       });
       if (!response.ok) {

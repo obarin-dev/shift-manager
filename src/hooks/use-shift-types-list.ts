@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 import { normalizeShiftType } from "@/lib/shift-type-colors";
 
 export function useShiftTypesList({ enabled = true }: { enabled?: boolean } = {}) {
@@ -14,7 +15,7 @@ export function useShiftTypesList({ enabled = true }: { enabled?: boolean } = {}
     setError(null);
 
     try {
-      const response = await fetch("/api/shift-types");
+      const response = await apiFetch("/api/shift-types");
       const body = (await response.json()) as { data?: ShiftTypeDefinition[] };
 
       if (!response.ok) {
@@ -22,7 +23,8 @@ export function useShiftTypesList({ enabled = true }: { enabled?: boolean } = {}
       }
 
       setShiftTypes((body.data ?? []).map(normalizeShiftType));
-    } catch {
+    } catch (err) {
+      if (err instanceof UnauthorizedError) return;
       setError("勤務区分の取得に失敗しました。");
     } finally {
       setIsLoading(false);

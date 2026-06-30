@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useStaffList } from "@/hooks/use-staff-list";
 import type { UserRole } from "@/lib/auth-session";
@@ -21,6 +20,7 @@ import {
   getStaffClassAssignment,
 } from "@/lib/staff-class-assignment";
 import type { InvitationMethod as InviteMethod, InvitationStatus as InviteStatus } from "@/lib/invitation-db";
+import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 
 type ModalState = { type: "edit"; staffId: string } | { type: "create" } | null;
 
@@ -116,7 +116,6 @@ export function StaffManagementSettings({
     reload: reloadStaff,
   } = useStaffList();
   const { classrooms } = useClassroomsList();
-  const router = useRouter();
   const [modalState, setModalState] = useState<ModalState>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -140,7 +139,7 @@ export function StaffManagementSettings({
     const controller = new AbortController();
     setInvitationsError(null);
 
-    fetch("/api/invitations", { signal: controller.signal })
+    apiFetch("/api/invitations", { signal: controller.signal })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((body: { data?: ApiInvitationResponse[] }) => {
         if (!body.data) return;
@@ -161,13 +160,13 @@ export function StaffManagementSettings({
       })
       .catch((err: unknown) => {
         if (err instanceof Error && err.name === "AbortError") return;
-        if (err === 401) { router.push("/login"); return; }
+        if (err instanceof UnauthorizedError) return;
         if (err === 403) { setInvitationsError("forbidden"); return; }
         setInvitationsError("load_error");
       });
 
     return () => controller.abort();
-  }, [invitationsRetryKey, router]);
+  }, [invitationsRetryKey]);
 
   const sortedStaff = useMemo(() => {
     return [...staffMembers].sort((a, b) => {
@@ -271,7 +270,7 @@ export function StaffManagementSettings({
     const payload = staffToApiPayload(values);
 
     try {
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -323,7 +322,7 @@ export function StaffManagementSettings({
     payload.is_active = !selectedStaff.is_active;
 
     try {
-      const response = await fetch(`/api/staff/${selectedStaff.id}`, {
+      const response = await apiFetch(`/api/staff/${selectedStaff.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -361,7 +360,7 @@ export function StaffManagementSettings({
 
     void (async () => {
       try {
-        const response = await fetch("/api/invitations", {
+        const response = await apiFetch("/api/invitations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
