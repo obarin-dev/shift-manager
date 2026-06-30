@@ -94,14 +94,16 @@ export async function GET(request: Request) {
 
   try {
     if (isPublished) {
-      const [schedule, staff, classrooms, shiftTypes, holidaySettings] = await Promise.all([
-        getPublishedShiftScheduleByMonth(month!),
+      const schedule = await getPublishedShiftScheduleByMonth(month!);
+      if (!schedule) return NextResponse.json({ data: null });
+
+      const [staff, classrooms, shiftTypes, holidaySettings] = await Promise.all([
         listStaff(),
         listClassrooms(),
         listShiftTypes(),
         getHolidaySettings(),
       ]);
-      return NextResponse.json({ data: schedule ? { ...schedule, staff, classrooms, shiftTypes, holidaySettings } : null });
+      return NextResponse.json({ data: { ...schedule, staff, classrooms, shiftTypes, holidaySettings } });
     }
 
     const data = await getShiftScheduleByMonth(month!);

@@ -2,21 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
-import {
-  DEFAULT_SHIFT_TYPE_COLOR,
-  getDefaultColorForShiftCode,
-  normalizeShiftColor,
-} from "@/lib/shift-type-colors";
-
-function normalizeShiftType(shift: ShiftTypeDefinition): ShiftTypeDefinition {
-  return {
-    ...shift,
-    color:
-      normalizeShiftColor(shift.color) ??
-      getDefaultColorForShiftCode(shift.code) ??
-      DEFAULT_SHIFT_TYPE_COLOR,
-  };
-}
+import { normalizeShiftType } from "@/lib/shift-type-colors";
 
 export function useShiftTypesList({ enabled = true }: { enabled?: boolean } = {}) {
   const [shiftTypes, setShiftTypes] = useState<ShiftTypeDefinition[]>([]);

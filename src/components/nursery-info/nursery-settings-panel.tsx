@@ -15,22 +15,13 @@ import {
   DEFAULT_SHIFT_TYPE_COLOR,
   getDefaultColorForShiftCode,
   normalizeShiftColor,
+  normalizeShiftType,
 } from "@/lib/shift-type-colors";
 import { NurseryRestDaysSection } from "@/components/nursery-info/nursery-rest-days-section";
 import { SectionEditPencilButton } from "@/components/nursery-info/section-edit-pencil-button";
 
 function toTimeInputValue(time: string) {
   return time;
-}
-
-function normalizeShiftType(shift: ShiftTypeDefinition): ShiftTypeDefinition {
-  return {
-    ...shift,
-    color:
-      normalizeShiftColor(shift.color) ??
-      getDefaultColorForShiftCode(shift.code) ??
-      DEFAULT_SHIFT_TYPE_COLOR,
-  };
 }
 
 function draftsFromShiftTypes(shiftTypes: ShiftTypeDefinition[]) {

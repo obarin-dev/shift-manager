@@ -40,30 +40,8 @@ import { buildShiftScheduleClassSections } from "@/lib/shift-schedule-class-sect
 import type { StaffMember } from "@/lib/staff-helpers";
 import type { Classroom } from "@/lib/classroom-helpers";
 import type { ShiftTypeDefinition, NurseryRestSettings } from "@/lib/nursery-helpers";
-import {
-  DEFAULT_SHIFT_TYPE_COLOR,
-  getDefaultColorForShiftCode,
-  normalizeShiftColor,
-} from "@/lib/shift-type-colors";
-
-type PublishedShiftScheduleData = {
-  status: ShiftScheduleStatus;
-  assignments: ShiftAssignment[];
-  staff: StaffMember[];
-  classrooms: Classroom[];
-  shiftTypes: ShiftTypeDefinition[];
-  holidaySettings: NurseryRestSettings | null;
-};
-
-function normalizeSnapshotShiftType(shift: ShiftTypeDefinition): ShiftTypeDefinition {
-  return {
-    ...shift,
-    color:
-      normalizeShiftColor(shift.color) ??
-      getDefaultColorForShiftCode(shift.code) ??
-      DEFAULT_SHIFT_TYPE_COLOR,
-  };
-}
+import { normalizeShiftType } from "@/lib/shift-type-colors";
+import type { PublishedShiftScheduleData } from "@/lib/shift-schedule-db";
 
 type MonthlyShiftGridProps = {
   nurseryName?: string;
@@ -238,13 +216,14 @@ export function MonthlyShiftGrid({
           if (body.data) {
             setSnapshotStaff(body.data.staff ?? []);
             setSnapshotClassrooms(body.data.classrooms ?? []);
-            setSnapshotShiftTypes((body.data.shiftTypes ?? []).map(normalizeSnapshotShiftType));
+            setSnapshotShiftTypes((body.data.shiftTypes ?? []).map(normalizeShiftType));
             setSnapshotHolidaySettings(body.data.holidaySettings ?? null);
             setAssignments(body.data.assignments);
             setScheduleStatus(body.data.status);
             setIsSavedSchedule(true);
             setHasDraftEdits(false);
           } else {
+            setAssignments([]);
             setScheduleStatus(null);
             setIsSavedSchedule(false);
             setHasDraftEdits(false);
@@ -303,10 +282,6 @@ export function MonthlyShiftGrid({
     normalizeAssignments,
     applyClosedDayOff,
     readOnly,
-    setSnapshotStaff,
-    setSnapshotClassrooms,
-    setSnapshotShiftTypes,
-    setSnapshotHolidaySettings,
   ]);
 
   useEffect(() => {
