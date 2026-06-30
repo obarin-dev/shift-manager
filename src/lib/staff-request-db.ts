@@ -125,6 +125,8 @@ function resolveRequestStaffId(
 export async function listAdminStaffRequestGroups(
   nurseryId: string,
 ): Promise<AdminStaffRequestGroup[]> {
+  const todayBoundary = parseDateToDb(getTodayJst());
+
   const [staffRows, requestRows] = await Promise.all([
     prisma.staff.findMany({
       where: { nursery_id: nurseryId, is_active: true },
@@ -132,7 +134,7 @@ export async function listAdminStaffRequestGroups(
       select: { id: true, name: true },
     }),
     prisma.staffRequest.findMany({
-      where: { nursery_id: nurseryId },
+      where: { nursery_id: nurseryId, request_date: { gte: todayBoundary } },
       include: {
         staff: { select: { name: true } },
         user: {
@@ -174,12 +176,56 @@ export async function listAdminStaffRequestGroups(
 export async function listAdminStaffRequestGroupsForMonth(
   nurseryId: string,
   targetMonth: string,
-) {
-  const groups = await listAdminStaffRequestGroups(nurseryId);
-  return groups
-    .map((group) => ({
-      ...group,
-      requests: group.requests.filter((request) => request.date.startsWith(`${targetMonth}-`)),
+): Promise<AdminStaffRequestGroup[]> {
+  const [staffRows, requestRows] = await Promise.all([
+    prisma.staff.findMany({
+      where: { nursery_id: nurseryId, is_active: true },
+      orderBy: [{ name: "asc" }],
+      select: { id: true, name: true },
+    }),
+    prisma.staffRequest.findMany({
+      where: {
+        nursery_id: nurseryId,
+        request_date: {
+          gte: parseDateToDb(`${targetMonth}-01`),
+          lt: parseDateToDb((() => {
+            const [y, m] = targetMonth.split("-").map(Number);
+            return m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`;
+          })()),
+        },
+      },
+      include: {
+        staff: { select: { name: true } },
+        user: {
+          select: {
+            email: true,
+            staff: { select: { id: true, name: true } },
+          },
+        },
+      },
+      orderBy: [{ request_date: "asc" }, { created_at: "desc" }],
+    }),
+  ]);
+
+  const requestsByStaffId = new Map<string, AdminStaffRequestItem[]>();
+
+  for (const row of requestRows) {
+    const staffId = resolveRequestStaffId(row);
+    if (!staffId) continue;
+    const item = toAdminStaffRequestItem(row);
+    const existing = requestsByStaffId.get(staffId);
+    if (existing) {
+      existing.push(item);
+    } else {
+      requestsByStaffId.set(staffId, [item]);
+    }
+  }
+
+  return staffRows
+    .map((staff) => ({
+      staffId: staff.id,
+      staffName: staff.name,
+      requests: requestsByStaffId.get(staff.id) ?? [],
     }))
     .filter((group) => group.requests.length > 0);
 }
