@@ -1,8 +1,7 @@
 import bcrypt from "bcryptjs";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { isValidUserRole, type UserRole } from "@/lib/auth-session";
-
-type PrismaTransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
 
 const ROLE_LABELS: Record<UserRole, string> = {
   admin: "管理者",
@@ -92,9 +91,9 @@ export async function getAuthAccountByUserId(userId: string): Promise<AuthAccoun
 
 
 export async function createUserInTx(
-  tx: PrismaTransactionClient,
-  data: { nurseryId: string; staffId: string | null; email: string; passwordHash: string; role: UserRole }
-) {
+  tx: Prisma.TransactionClient,
+  data: { nurseryId: string; staffId: string | null; email: string; passwordHash: string; role: "staff" }
+): Promise<{ id: string; nursery_id: string; email: string }> {
   return tx.user.create({
     data: {
       nursery_id: data.nurseryId,
@@ -104,6 +103,7 @@ export async function createUserInTx(
       role: data.role,
       is_active: true,
     },
+    select: { id: true, nursery_id: true, email: true },
   });
 }
 
