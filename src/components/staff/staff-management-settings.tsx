@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { useClassroomsList } from "@/hooks/use-classrooms-list";
 import { useStaffList } from "@/hooks/use-staff-list";
 import type { UserRole } from "@/lib/auth-session";
@@ -115,6 +116,7 @@ export function StaffManagementSettings({
     reload: reloadStaff,
   } = useStaffList();
   const { classrooms } = useClassroomsList();
+  const router = useRouter();
   const [modalState, setModalState] = useState<ModalState>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -130,6 +132,7 @@ export function StaffManagementSettings({
   const [copyMessage, setCopyMessage] = useState("");
   const [invitations, setInvitations] = useState<InvitationRecord[]>([]);
   const [invitationsLoadError, setInvitationsLoadError] = useState(false);
+  const [invitationsForbidden, setInvitationsForbidden] = useState(false);
   const [invitationsRetryKey, setInvitationsRetryKey] = useState(0);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -137,6 +140,7 @@ export function StaffManagementSettings({
   useEffect(() => {
     const controller = new AbortController();
     setInvitationsLoadError(false);
+    setInvitationsForbidden(false);
 
     fetch("/api/invitations", { signal: controller.signal })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
@@ -158,7 +162,9 @@ export function StaffManagementSettings({
         );
       })
       .catch((err: unknown) => {
-        if ((err as { name?: string })?.name === "AbortError") return;
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        if (err === 401) { router.push("/login"); return; }
+        if (err === 403) { setInvitationsForbidden(true); return; }
         setInvitationsLoadError(true);
       });
 
@@ -443,6 +449,11 @@ export function StaffManagementSettings({
           {staffLoadError ? (
             <div className="classes-empty">
               <p>{staffLoadError}</p>
+            </div>
+          ) : null}
+          {invitationsForbidden ? (
+            <div className="classes-empty">
+              <p>招待情報を表示する権限がありません。</p>
             </div>
           ) : null}
           {invitationsLoadError ? (
