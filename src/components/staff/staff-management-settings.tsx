@@ -522,7 +522,9 @@ export function StaffManagementSettings({
                       )}
                     </td>
                     <td>
-                      {pendingInvite ? (
+                      {staff.hasAccount ? (
+                        <span className="invite-done-label">登録済み</span>
+                      ) : pendingInvite ? (
                         <span className="invite-pending-label">招待中</span>
                       ) : (
                         <button

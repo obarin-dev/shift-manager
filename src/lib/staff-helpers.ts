@@ -79,6 +79,7 @@ export type StaffMember = {
   has_nursery_teacher_license: boolean;
   work_availability: StaffShiftTime;
   is_active: boolean;
+  hasAccount: boolean;
 };
 
 export function formatStaffShiftTimeRange(time: StaffShiftTime) {
