@@ -1,6 +1,6 @@
 import { ShiftTypeCode as ShiftTypeCodeValues, type ShiftType as PrismaShiftType } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getActiveNurseryId } from "@/lib/nursery-db";
+import { resolveNurseryId } from "@/lib/nursery-db";
 import type { ShiftTypeCode, ShiftTypeDefinition } from "@/lib/nursery-helpers";
 import {
   DEFAULT_SHIFT_TYPE_COLOR,
@@ -51,9 +51,6 @@ export function isShiftTypeSchemaError(error: unknown) {
   );
 }
 
-async function resolveNurseryId(nurseryId?: string) {
-  return nurseryId ?? getActiveNurseryId();
-}
 
 export function isValidShiftTypeCode(code: string): code is ShiftTypeCode {
   return SHIFT_TYPE_CODES.has(code as ShiftTypeCode);

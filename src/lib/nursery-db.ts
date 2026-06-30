@@ -29,6 +29,10 @@ export async function getActiveNurseryId(): Promise<string> {
   return nursery?.id ?? DEFAULT_NURSERY_ID;
 }
 
+export async function resolveNurseryId(nurseryId?: string): Promise<string> {
+  return nurseryId ?? getActiveNurseryId();
+}
+
 export async function getPrimaryNurseryName(): Promise<string> {
   const nursery = await getPrimaryNursery();
   return nursery?.name ?? "保育園";

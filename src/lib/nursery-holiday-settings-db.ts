@@ -1,6 +1,6 @@
 import type { CalendarEntry } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getActiveNurseryId } from "@/lib/nursery-db";
+import { resolveNurseryId } from "@/lib/nursery-db";
 import type { NurseryClosedDay, NurseryRestSettings } from "@/lib/nursery-helpers";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
@@ -13,9 +13,6 @@ function toClosedDay(record: CalendarEntry): NurseryClosedDay {
   };
 }
 
-async function resolveNurseryId(nurseryId?: string) {
-  return nurseryId ?? getActiveNurseryId();
-}
 
 export async function getHolidaySettings(nurseryId?: string): Promise<NurseryRestSettings | null> {
   const resolvedNurseryId = await resolveNurseryId(nurseryId);

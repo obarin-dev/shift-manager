@@ -3,7 +3,7 @@ import type {
   CalendarEntryType,
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getActiveNurseryId } from "@/lib/nursery-db";
+import { resolveNurseryId } from "@/lib/nursery-db";
 import {
   getEntriesForDate,
   formatDisplayTime,
@@ -59,9 +59,6 @@ function toCalendarEntry(record: PrismaCalendarEntry): NurseryCalendarEntry {
   };
 }
 
-async function resolveNurseryId(nurseryId?: string) {
-  return nurseryId ?? getActiveNurseryId();
-}
 
 export async function listCalendarEntries(params: ListCalendarEntriesParams = {}) {
   const nurseryId = await resolveNurseryId(params.nurseryId);
