@@ -209,25 +209,21 @@ export function MonthlyShiftGrid({
 
         if (readOnly) {
           const body = (await response.json()) as {
-            data: (PublishedShiftScheduleData) | null;
+            data: PublishedShiftScheduleData | null;
           };
 
           if (!active) return;
 
           if (body.data) {
-            setSnapshotStaff(body.data.staff ?? []);
-            setSnapshotClassrooms(body.data.classrooms ?? []);
-            setSnapshotShiftTypes((body.data.shiftTypes ?? []).map(normalizeShiftType));
-            setSnapshotHolidaySettings(body.data.holidaySettings ?? null);
+            setSnapshotStaff(body.data.staff);
+            setSnapshotClassrooms(body.data.classrooms);
+            setSnapshotShiftTypes(body.data.shiftTypes.map(normalizeShiftType));
+            setSnapshotHolidaySettings(body.data.holidaySettings);
             setAssignments(body.data.assignments);
             setScheduleStatus(body.data.status);
-            setIsSavedSchedule(true);
-            setHasDraftEdits(false);
           } else {
             setAssignments([]);
             setScheduleStatus(null);
-            setIsSavedSchedule(false);
-            setHasDraftEdits(false);
           }
           loadedMonthRef.current = targetMonth;
           return;
@@ -261,7 +257,10 @@ export function MonthlyShiftGrid({
         setScheduleStatus(null);
         setIsSavedSchedule(false);
         setHasDraftEdits(false);
-        loadedMonthRef.current = targetMonth;
+        // readOnly 時は ref をセットしない — 同じ月で再試行できるようにする
+        if (!readOnly) {
+          loadedMonthRef.current = targetMonth;
+        }
         setSaveMessage("読込に失敗しました");
       } finally {
         if (active) {
