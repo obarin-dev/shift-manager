@@ -1,7 +1,7 @@
 import type { Classroom as PrismaClassroom } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
+import { getActiveNurseryId } from "@/lib/nursery-db";
 import type { AgeGroup, AuxiliaryStaffSlot, Classroom } from "@/lib/classroom-helpers";
 
 export type ClassroomWriteInput = {
@@ -61,12 +61,7 @@ export function toClassroom(record: PrismaClassroom): Classroom {
 }
 
 async function resolveNurseryId(nurseryId?: string) {
-  if (nurseryId) {
-    return nurseryId;
-  }
-
-  const nursery = await getPrimaryNursery();
-  return nursery?.id ?? DEFAULT_NURSERY_ID;
+  return nurseryId ?? getActiveNurseryId();
 }
 
 async function resolveStaffAssignment(

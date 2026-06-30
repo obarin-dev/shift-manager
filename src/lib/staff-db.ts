@@ -1,7 +1,7 @@
 import type { Staff as PrismaStaff, User as PrismaUser } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_NURSERY_ID, getPrimaryNursery } from "@/lib/nursery-db";
+import { getActiveNurseryId } from "@/lib/nursery-db";
 import type { EmploymentType, JobType, StaffMember, StaffShiftTime } from "@/lib/staff-helpers";
 import { getJobTypeLabel } from "@/lib/staff-helpers";
 import { formatDbTime, parseTimeToDate } from "@/lib/nursery-time";
@@ -57,12 +57,7 @@ export function toStaffMember(record: PrismaStaff & { user?: PrismaUser | null }
 }
 
 async function resolveNurseryId(nurseryId?: string) {
-  if (nurseryId) {
-    return nurseryId;
-  }
-
-  const nursery = await getPrimaryNursery();
-  return nursery?.id ?? DEFAULT_NURSERY_ID;
+  return nurseryId ?? getActiveNurseryId();
 }
 
 function buildStaffData(input: StaffWriteInput, staffLoginId: string | null) {

@@ -24,6 +24,11 @@ export async function getPrimaryNursery() {
   });
 }
 
+export async function getActiveNurseryId(): Promise<string> {
+  const nursery = await getPrimaryNursery();
+  return nursery?.id ?? DEFAULT_NURSERY_ID;
+}
+
 export async function getPrimaryNurseryName(): Promise<string> {
   const nursery = await getPrimaryNursery();
   return nursery?.name ?? "保育園";
