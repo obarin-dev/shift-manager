@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Classroom } from "@/lib/classroom-helpers";
+import { apiFetch } from "@/lib/api-fetch";
 
 export function useClassroomsList() {
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
@@ -13,7 +14,7 @@ export function useClassroomsList() {
     setError(null);
 
     try {
-      const response = await fetch("/api/classrooms");
+      const response = await apiFetch("/api/classrooms");
       const body = (await response.json()) as { data?: Classroom[] };
 
       if (!response.ok) {

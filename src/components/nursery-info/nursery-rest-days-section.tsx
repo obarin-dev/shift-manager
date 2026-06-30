@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { apiFetch } from "@/lib/api-fetch";
 import { SectionEditPencilButton } from "@/components/nursery-info/section-edit-pencil-button";
 import {
   INITIAL_NURSERY_REST,
@@ -71,7 +72,7 @@ export function NurseryRestDaysSection({
     setLoadError(null);
 
     try {
-      const response = await fetch("/api/nursery/holiday-settings");
+      const response = await apiFetch("/api/nursery/holiday-settings");
       const body = (await response.json()) as { data?: NurseryRestSettings };
 
       if (response.ok && body.data) {
@@ -176,7 +177,7 @@ export function NurseryRestDaysSection({
     };
 
     try {
-      const response = await fetch("/api/nursery/holiday-settings", {
+      const response = await apiFetch("/api/nursery/holiday-settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

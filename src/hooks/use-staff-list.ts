@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { StaffMember } from "@/lib/staff-helpers";
+import { apiFetch } from "@/lib/api-fetch";
 
 export function useStaffList() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
@@ -13,7 +14,7 @@ export function useStaffList() {
     setError(null);
 
     try {
-      const response = await fetch("/api/staff");
+      const response = await apiFetch("/api/staff");
       const body = (await response.json()) as { data?: StaffMember[] };
 
       if (!response.ok) {

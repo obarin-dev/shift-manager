@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { getTodayJst } from "@/lib/nursery-time";
+import { apiFetch } from "@/lib/api-fetch";
 
 type RequestType = "休み希望" | "出勤希望" | "時間相談";
 type RequestStatus = "提出済み" | "承認" | "要確認";
@@ -67,7 +68,7 @@ export function StaffRequestPanel() {
 
     async function loadRequests() {
       try {
-        const response = await fetch("/api/staff-requests");
+        const response = await apiFetch("/api/staff-requests");
         if (!response.ok) {
           throw new Error("load_failed");
         }
@@ -105,7 +106,7 @@ export function StaffRequestPanel() {
     setIsSaving(true);
 
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         editingId ? `/api/staff-requests/${editingId}` : "/api/staff-requests",
         {
           method: editingId ? "PATCH" : "POST",
@@ -199,7 +200,7 @@ export function StaffRequestPanel() {
     setIsSaving(true);
 
     try {
-      const response = await fetch(`/api/staff-requests/${selectedRequestId}`, {
+      const response = await apiFetch(`/api/staff-requests/${selectedRequestId}`, {
         method: "DELETE",
       });
 

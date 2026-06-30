@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { AdminStaffRequestGroup } from "@/lib/staff-request-db";
+import { apiFetch } from "@/lib/api-fetch";
 
 export function useAdminStaffRequests(targetMonth: string, enabled = true) {
   const [groups, setGroups] = useState<AdminStaffRequestGroup[]>([]);
@@ -19,7 +20,7 @@ export function useAdminStaffRequests(targetMonth: string, enabled = true) {
     setIsLoading(true);
     setError("");
 
-    void fetch(`/api/staff-requests?scope=admin&month=${targetMonth}`)
+    void apiFetch(`/api/staff-requests?scope=admin&month=${targetMonth}`)
       .then(async (response) => {
         if (!response.ok) {
           throw new Error("load_failed");

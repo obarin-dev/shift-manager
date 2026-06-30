@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
+import { apiFetch } from "@/lib/api-fetch";
 import {
   DEFAULT_SHIFT_TYPE_COLOR,
   getDefaultColorForShiftCode,
@@ -28,7 +29,7 @@ export function useShiftTypesList() {
     setError(null);
 
     try {
-      const response = await fetch("/api/shift-types");
+      const response = await apiFetch("/api/shift-types");
       const body = (await response.json()) as { data?: ShiftTypeDefinition[] };
 
       if (!response.ok) {

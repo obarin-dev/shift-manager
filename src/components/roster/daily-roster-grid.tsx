@@ -17,6 +17,7 @@ import {
 } from "@/lib/nursery-helpers";
 import { RosterClassColumnHeader } from "@/components/roster/roster-class-column-header";
 import { RosterStaffSelect } from "@/components/roster/roster-staff-select";
+import { apiFetch } from "@/lib/api-fetch";
 import {
   addDaysToDateKey,
   buildMockRosterAssignments,
@@ -137,7 +138,7 @@ export function DailyRosterGrid({
           from: focusDate,
           to: focusDate,
         });
-        const response = await fetch(`/api/calendar-entries?${params.toString()}`, {
+        const response = await apiFetch(`/api/calendar-entries?${params.toString()}`, {
           cache: "no-store",
         });
         const body = (await response.json()) as { data?: NurseryCalendarEntry[] };
@@ -281,7 +282,7 @@ export function DailyRosterGrid({
     setIsSaving(true);
     setSaveMessage("");
     try {
-      const response = await fetch(`/api/roster?date=${focusDate}`, {
+      const response = await apiFetch(`/api/roster?date=${focusDate}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(buildPersistencePayload()),
@@ -445,7 +446,7 @@ export function DailyRosterGrid({
       setIsLoadingRoster(true);
       setSaveMessage("");
       try {
-        const response = await fetch(`/api/roster?date=${focusDate}`, {
+        const response = await apiFetch(`/api/roster?date=${focusDate}`, {
           method: "GET",
           cache: "no-store",
         });
