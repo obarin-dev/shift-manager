@@ -104,11 +104,13 @@ export async function getPublishedShiftScheduleByMonth(
     return null;
   }
 
+  if (!schedule.published_payload && schedule.status !== "published") {
+    return null;
+  }
+
   const assignments = schedule.published_payload
     ? parsePublishedAssignments(schedule.published_payload)
-    : schedule.status === "published"
-      ? schedule.slots.map(toShiftAssignment)
-      : [];
+    : schedule.slots.map(toShiftAssignment);
 
   return {
     status: "published",

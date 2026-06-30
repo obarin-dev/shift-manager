@@ -31,7 +31,11 @@ export default async function StaffShiftPage() {
       </div>
 
       <div className="scroll-panel-host shift-schedule-page">
-        <MonthlyShiftGrid nurseryName={nurseryName} readOnly />
+        <MonthlyShiftGrid
+          nurseryName={nurseryName}
+          readOnly
+          filterStaffId={account.staffId}
+        />
       </div>
     </AdminShell>
   );
