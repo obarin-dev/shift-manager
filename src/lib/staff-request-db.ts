@@ -63,6 +63,16 @@ const STATUS_FROM_DB: Record<StaffRequestStatus, StaffRequestStatusLabel> = {
   needs_review: "要確認",
 };
 
+function isStaffRequestDuplicateError(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2002" &&
+    Array.isArray(error.meta?.target) &&
+    (error.meta.target as string[]).includes("user_id") &&
+    (error.meta.target as string[]).includes("request_date")
+  );
+}
+
 function normalizeMemo(memo?: string) {
   const trimmed = memo?.trim() ?? "";
   return trimmed ? trimmed : null;
@@ -252,9 +262,7 @@ export async function createStaffRequest(
     });
     return toStaffRequestPayload(row);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      return "duplicate";
-    }
+    if (isStaffRequestDuplicateError(error)) return "duplicate";
     throw error;
   }
 }
@@ -296,7 +304,7 @@ export async function updateStaffRequest(
     return toStaffRequestPayload(row);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") return "duplicate";
+      if (isStaffRequestDuplicateError(error)) return "duplicate";
       if (error.code === "P2025") {
         const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
         return stillExists ? "locked" : null;
