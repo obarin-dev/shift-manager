@@ -1,12 +1,22 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { ShiftAssignment, ShiftScheduleStatus } from "@/lib/shift-helpers";
+import type { StaffMember } from "@/lib/staff-helpers";
+import type { Classroom } from "@/lib/classroom-helpers";
+import type { ShiftTypeDefinition, NurseryRestSettings } from "@/lib/nursery-helpers";
 import { resolveNurseryId } from "@/lib/nursery-db";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
 export type ShiftSchedulePayload = {
   status: ShiftScheduleStatus;
   assignments: ShiftAssignment[];
+};
+
+export type PublishedShiftScheduleData = ShiftSchedulePayload & {
+  staff: StaffMember[];
+  classrooms: Classroom[];
+  shiftTypes: ShiftTypeDefinition[];
+  holidaySettings: NurseryRestSettings | null;
 };
 
 

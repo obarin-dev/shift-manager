@@ -5,6 +5,10 @@ import {
   getShiftScheduleByMonth,
   saveShiftSchedule,
 } from "@/lib/shift-schedule-db";
+import { listStaff } from "@/lib/staff-db";
+import { listClassrooms } from "@/lib/classroom-db";
+import { listShiftTypes } from "@/lib/shift-type-db";
+import { getHolidaySettings } from "@/lib/nursery-holiday-settings-db";
 import { getSession } from "@/lib/auth-session";
 import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
 
@@ -89,9 +93,20 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = isPublished
-      ? await getPublishedShiftScheduleByMonth(month!)
-      : await getShiftScheduleByMonth(month!);
+    if (isPublished) {
+      const schedule = await getPublishedShiftScheduleByMonth(month!);
+      if (!schedule) return NextResponse.json({ data: null });
+
+      const [staff, classrooms, shiftTypes, holidaySettings] = await Promise.all([
+        listStaff(),
+        listClassrooms(),
+        listShiftTypes(),
+        getHolidaySettings(),
+      ]);
+      return NextResponse.json({ data: { ...schedule, staff, classrooms, shiftTypes, holidaySettings } });
+    }
+
+    const data = await getShiftScheduleByMonth(month!);
     return NextResponse.json({ data });
   } catch (error) {
     console.error("GET /api/shift-schedules failed:", error);

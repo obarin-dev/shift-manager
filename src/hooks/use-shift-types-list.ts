@@ -3,25 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ShiftTypeDefinition } from "@/lib/nursery-helpers";
 import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
-import {
-  DEFAULT_SHIFT_TYPE_COLOR,
-  getDefaultColorForShiftCode,
-  normalizeShiftColor,
-} from "@/lib/shift-type-colors";
+import { normalizeShiftType } from "@/lib/shift-type-colors";
 
-function normalizeShiftType(shift: ShiftTypeDefinition): ShiftTypeDefinition {
-  return {
-    ...shift,
-    color:
-      normalizeShiftColor(shift.color) ??
-      getDefaultColorForShiftCode(shift.code) ??
-      DEFAULT_SHIFT_TYPE_COLOR,
-  };
-}
-
-export function useShiftTypesList() {
+export function useShiftTypesList({ enabled = true }: { enabled?: boolean } = {}) {
   const [shiftTypes, setShiftTypes] = useState<ShiftTypeDefinition[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const loadShiftTypes = useCallback(async () => {
@@ -46,8 +32,9 @@ export function useShiftTypesList() {
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     void loadShiftTypes();
-  }, [loadShiftTypes]);
+  }, [loadShiftTypes, enabled]);
 
   return { shiftTypes, isLoading, error, reload: loadShiftTypes };
 }

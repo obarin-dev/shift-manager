@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import type { Classroom } from "@/lib/classroom-helpers";
 import { apiFetch, UnauthorizedError } from "@/lib/api-fetch";
 
-export function useClassroomsList() {
+export function useClassroomsList({ enabled = true }: { enabled?: boolean } = {}) {
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const loadClassrooms = useCallback(async () => {
@@ -37,8 +37,9 @@ export function useClassroomsList() {
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     void loadClassrooms();
-  }, [loadClassrooms]);
+  }, [loadClassrooms, enabled]);
 
   return { classrooms, isLoading, error, reload: loadClassrooms };
 }

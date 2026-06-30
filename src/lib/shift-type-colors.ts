@@ -22,6 +22,16 @@ export function getDefaultColorForShiftCode(code: string) {
   return CODE_DEFAULT_COLORS[code] ?? DEFAULT_SHIFT_TYPE_COLOR;
 }
 
+export function normalizeShiftType<T extends { color: string | null | undefined; code: string }>(shift: T): T {
+  return {
+    ...shift,
+    color:
+      normalizeShiftColor(shift.color) ??
+      getDefaultColorForShiftCode(shift.code) ??
+      DEFAULT_SHIFT_TYPE_COLOR,
+  };
+}
+
 export function normalizeShiftColor(value: string | null | undefined) {
   const trimmed = (value ?? "").trim();
   if (!/^#[0-9A-Fa-f]{6}$/.test(trimmed)) {
