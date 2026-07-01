@@ -5,37 +5,38 @@ vi.mock("bcryptjs", () => ({ default: {} }));
 
 import { createUserInTx } from "@/lib/user-db";
 
+const mockUpdate = vi.fn();
 const mockCreate = vi.fn();
-const mockTx = { user: { create: mockCreate } } as never;
+const mockTx = {
+  staff: { update: mockUpdate, create: mockCreate },
+} as never;
 
 describe("createUserInTx", () => {
-  it("camelCase 引数を snake_case DB フィールドに正しくマッピングして user.create を呼ぶ", async () => {
-    mockCreate.mockResolvedValue({ id: "user-1", nursery_id: "n-1", email: "a@b.com" });
+  it("staffId が指定されているとき Staff を UPDATE してログイン情報を設定する", async () => {
+    mockUpdate.mockResolvedValue({ id: "staff-1", nursery_id: "n-1", email: "a@b.com" });
 
     const result = await createUserInTx(mockTx, {
       nurseryId: "n-1",
-      staffId: "s-1",
+      staffId: "staff-1",
       email: "a@b.com",
       passwordHash: "hashed",
       role: "staff",
     });
 
-    expect(mockCreate).toHaveBeenCalledWith({
+    expect(mockUpdate).toHaveBeenCalledWith({
+      where: { id: "staff-1" },
       data: {
-        nursery_id: "n-1",
-        staff_id: "s-1",
         email: "a@b.com",
         password_hash: "hashed",
         role: "staff",
-        is_active: true,
       },
       select: { id: true, nursery_id: true, email: true },
     });
-    expect(result).toEqual({ id: "user-1", nursery_id: "n-1", email: "a@b.com" });
+    expect(result).toEqual({ id: "staff-1", nursery_id: "n-1", email: "a@b.com" });
   });
 
-  it("staffId が null のとき staff_id: null を渡す", async () => {
-    mockCreate.mockResolvedValue({ id: "user-2", nursery_id: "n-1", email: "b@c.com" });
+  it("staffId が null のとき 新規 Staff を CREATE する", async () => {
+    mockCreate.mockResolvedValue({ id: "new-staff", nursery_id: "n-1", email: "b@c.com" });
 
     await createUserInTx(mockTx, {
       nurseryId: "n-1",
@@ -46,23 +47,15 @@ describe("createUserInTx", () => {
     });
 
     expect(mockCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ data: expect.objectContaining({ staff_id: null }) })
-    );
-  });
-
-  it("is_active は常に true になる", async () => {
-    mockCreate.mockResolvedValue({ id: "user-3", nursery_id: "n-1", email: "c@d.com" });
-
-    await createUserInTx(mockTx, {
-      nurseryId: "n-1",
-      staffId: null,
-      email: "c@d.com",
-      passwordHash: "hashed",
-      role: "staff",
-    });
-
-    expect(mockCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ data: expect.objectContaining({ is_active: true }) })
+      expect.objectContaining({
+        data: expect.objectContaining({
+          nursery_id: "n-1",
+          email: "b@c.com",
+          password_hash: "hashed",
+          role: "staff",
+          is_active: true,
+        }),
+      })
     );
   });
 });

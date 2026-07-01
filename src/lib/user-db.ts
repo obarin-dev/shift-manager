@@ -36,86 +36,91 @@ export async function verifyPassword(password: string, passwordHash: string) {
   return bcrypt.compare(password, passwordHash);
 }
 
-function toAuthAccount(user: {
+function toAuthAccount(staff: {
   id: string;
   nursery_id: string;
-  staff_id: string | null;
-  email: string;
-  role: string;
-  staff: { name: string } | null;
+  name: string;
+  email: string | null;
+  role: string | null;
 }): AuthAccount | null {
-  if (!isValidUserRole(user.role)) {
+  if (!staff.email || !staff.role || !isValidUserRole(staff.role)) {
     return null;
   }
-  const role = user.role;
-
   return {
-    userId: user.id,
-    nurseryId: user.nursery_id,
-    staffId: user.staff_id ?? undefined,
-    role,
-    roleLabel: getRoleLabel(role),
-    email: user.email,
-    displayName: user.staff?.name ?? user.email.split("@")[0] ?? user.email,
+    userId: staff.id,
+    nurseryId: staff.nursery_id,
+    staffId: staff.id,
+    role: staff.role,
+    roleLabel: getRoleLabel(staff.role),
+    email: staff.email,
+    displayName: staff.name,
   };
 }
 
 export async function findActiveUserByEmail(email: string) {
   const normalized = email.trim().toLowerCase();
-
-  return prisma.user.findFirst({
+  return prisma.staff.findFirst({
     where: {
       email: { equals: normalized, mode: "insensitive" },
       is_active: true,
-    },
-    include: {
-      staff: { select: { name: true } },
+      password_hash: { not: null },
+      role: { not: null },
     },
   });
 }
 
-export async function getAuthAccountByUserId(userId: string): Promise<AuthAccount | null> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: {
-      staff: { select: { name: true } },
-    },
+export async function getAuthAccountByUserId(staffId: string): Promise<AuthAccount | null> {
+  const staff = await prisma.staff.findUnique({
+    where: { id: staffId },
+    select: { id: true, nursery_id: true, name: true, email: true, role: true, is_active: true },
   });
 
-  if (!user || !user.is_active) {
+  if (!staff || !staff.is_active) {
     return null;
   }
 
-  return toAuthAccount(user);
+  return toAuthAccount(staff);
 }
-
 
 export async function createUserInTx(
   tx: Prisma.TransactionClient,
   data: { nurseryId: string; staffId: string | null; email: string; passwordHash: string; role: "staff" }
 ): Promise<{ id: string; nursery_id: string; email: string }> {
-  return tx.user.create({
+  if (data.staffId) {
+    return tx.staff.update({
+      where: { id: data.staffId },
+      data: {
+        email: data.email,
+        password_hash: data.passwordHash,
+        role: data.role,
+      },
+      select: { id: true, nursery_id: true, email: true },
+    }) as Promise<{ id: string; nursery_id: string; email: string }>;
+  }
+
+  return tx.staff.create({
     data: {
       nursery_id: data.nurseryId,
-      staff_id: data.staffId,
+      name: data.email.split("@")[0] ?? data.email,
       email: data.email,
       password_hash: data.passwordHash,
       role: data.role,
       is_active: true,
+      capable_class_ids: [],
     },
     select: { id: true, nursery_id: true, email: true },
-  });
+  }) as Promise<{ id: string; nursery_id: string; email: string }>;
 }
 
 export async function listDemoAccountsForLogin(): Promise<DemoAccountSummary[]> {
-  const users = await prisma.user.findMany({
-    where: { is_active: true },
+  const rows = await prisma.staff.findMany({
+    where: { is_active: true, email: { not: null }, role: { not: null } },
     orderBy: [{ role: "asc" }, { email: "asc" }],
     select: { email: true, role: true },
   });
 
-  return users.flatMap((user) => {
-    if (!isValidUserRole(user.role)) return [];
-    return [{ email: user.email, roleLabel: getRoleLabel(user.role) }];
+  return rows.flatMap((row) => {
+    if (!row.email || !row.role || !isValidUserRole(row.role)) return [];
+    return [{ email: row.email, roleLabel: getRoleLabel(row.role) }];
   });
 }

@@ -30,23 +30,23 @@ export async function POST(request: Request) {
   }
 
   try {
-    const user = await findActiveUserByEmail(email);
+    const staff = await findActiveUserByEmail(email);
 
-    if (!user) {
+    if (!staff || !staff.password_hash || !staff.role) {
       return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
     }
 
-    const passwordMatches = await verifyPassword(password, user.password_hash);
+    const passwordMatches = await verifyPassword(password, staff.password_hash);
 
     if (!passwordMatches) {
       return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
     }
 
     await setSessionCookie({
-      userId: user.id,
-      nurseryId: user.nursery_id,
-      role: user.role as UserRole,
-      email: user.email,
+      userId: staff.id,
+      nurseryId: staff.nursery_id,
+      role: staff.role as UserRole,
+      email: staff.email ?? email,
     });
 
     return NextResponse.json({ ok: true });

@@ -90,7 +90,6 @@ model Nursery {
   updated_at               DateTime        @updatedAt
   classrooms               Classroom[]
   staffs                   Staff[]
-  users                    User[]
   shift_types              ShiftType[]
   calendar_entries         CalendarEntry[]
   shift_schedules          ShiftSchedule[]
@@ -157,32 +156,35 @@ model Classroom {
 }
 
 model Staff {
-  id                          String         @id @default(cuid())
+  id                          String          @id @default(cuid())
   nursery_id                  String
-  nursery                     Nursery        @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  nursery                     Nursery         @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
   name                        String
   name_kana                   String?
   phone_number                String?
-  employment_type             EmploymentType
-  job_type                    JobType
-  has_nursery_teacher_license Boolean        @default(false)
-  capable_class_ids           String[]       @default([])
+  employment_type             EmploymentType?
+  job_type                    JobType?
+  has_nursery_teacher_license Boolean         @default(false)
+  capable_class_ids           String[]        @default([])
   staff_login_id              String?
-  work_availability_start     DateTime?      @db.Time
-  work_availability_end       DateTime?      @db.Time
-  can_work_early_shift        Boolean        @default(false)
-  can_work_late_shift         Boolean        @default(false)
-  can_work_extended_care      Boolean        @default(false)
-  is_active                   Boolean        @default(true)
-  created_at                  DateTime       @default(now())
-  updated_at                  DateTime       @updatedAt
-  main_staff_for              Classroom[]    @relation("MainStaff")
-  user                        User?
+  work_availability_start     DateTime?       @db.Time
+  work_availability_end       DateTime?       @db.Time
+  can_work_early_shift        Boolean         @default(false)
+  can_work_late_shift         Boolean         @default(false)
+  can_work_extended_care      Boolean         @default(false)
+  is_active                   Boolean         @default(true)
+  email                       String?
+  password_hash               String?
+  role                        UserRole?
+  created_at                  DateTime        @default(now())
+  updated_at                  DateTime        @updatedAt
+  main_staff_for              Classroom[]     @relation("MainStaff")
   shift_slots                 ShiftSlot[]
   staff_requests              StaffRequest[]
   invitations                 Invitation[]
 
   @@unique([nursery_id, staff_login_id])
+  @@unique([nursery_id, email])
   @@index([nursery_id])
 }
 
@@ -234,24 +236,6 @@ model RosterSheet {
   @@index([nursery_id])
 }
 
-model User {
-  id             String         @id @default(cuid())
-  nursery_id     String
-  nursery        Nursery        @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
-  staff_id       String?        @unique
-  staff          Staff?         @relation(fields: [staff_id], references: [id], onDelete: SetNull)
-  email          String
-  password_hash  String
-  role           UserRole
-  is_active      Boolean        @default(true)
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
-  staff_requests StaffRequest[]
-
-  @@unique([nursery_id, email])
-  @@index([nursery_id])
-}
-
 model Invitation {
   id         String   @id @default(cuid())
   nursery_id String
@@ -274,10 +258,8 @@ model StaffRequest {
   id              String             @id @default(cuid())
   nursery_id      String
   nursery         Nursery            @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
-  user_id         String
-  user            User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  staff_id        String?
-  staff           Staff?             @relation(fields: [staff_id], references: [id], onDelete: SetNull)
+  staff_id        String
+  staff           Staff              @relation(fields: [staff_id], references: [id], onDelete: Cascade)
   request_date    DateTime           @db.Date
   request_type    StaffRequestType
   time_preference String
@@ -286,8 +268,7 @@ model StaffRequest {
   created_at      DateTime           @default(now())
   updated_at      DateTime           @updatedAt
 
-  @@unique([user_id, request_date])
+  @@unique([staff_id, request_date])
   @@index([nursery_id, request_date])
-  @@index([user_id])
   @@index([staff_id])
 }

@@ -73,7 +73,6 @@ const SAMPLE_GROUPS: AdminStaffRequestGroup[] = [
         memo: "",
         status: "提出済み",
         staffName: "山田太郎",
-        userId: "user-staff-1",
         staffId: "staff-1",
         submittedAt: "2026-06-30T00:00:00.000Z",
       },

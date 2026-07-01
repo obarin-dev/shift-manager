@@ -40,6 +40,9 @@ export type StaffMinAggregateOutputType = {
   can_work_late_shift: boolean | null
   can_work_extended_care: boolean | null
   is_active: boolean | null
+  email: string | null
+  password_hash: string | null
+  role: $Enums.UserRole | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -60,6 +63,9 @@ export type StaffMaxAggregateOutputType = {
   can_work_late_shift: boolean | null
   can_work_extended_care: boolean | null
   is_active: boolean | null
+  email: string | null
+  password_hash: string | null
+  role: $Enums.UserRole | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -81,6 +87,9 @@ export type StaffCountAggregateOutputType = {
   can_work_late_shift: number
   can_work_extended_care: number
   is_active: number
+  email: number
+  password_hash: number
+  role: number
   created_at: number
   updated_at: number
   _all: number
@@ -103,6 +112,9 @@ export type StaffMinAggregateInputType = {
   can_work_late_shift?: true
   can_work_extended_care?: true
   is_active?: true
+  email?: true
+  password_hash?: true
+  role?: true
   created_at?: true
   updated_at?: true
 }
@@ -123,6 +135,9 @@ export type StaffMaxAggregateInputType = {
   can_work_late_shift?: true
   can_work_extended_care?: true
   is_active?: true
+  email?: true
+  password_hash?: true
+  role?: true
   created_at?: true
   updated_at?: true
 }
@@ -144,6 +159,9 @@ export type StaffCountAggregateInputType = {
   can_work_late_shift?: true
   can_work_extended_care?: true
   is_active?: true
+  email?: true
+  password_hash?: true
+  role?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -227,8 +245,8 @@ export type StaffGroupByOutputType = {
   name: string
   name_kana: string | null
   phone_number: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type: $Enums.EmploymentType | null
+  job_type: $Enums.JobType | null
   has_nursery_teacher_license: boolean
   capable_class_ids: string[]
   staff_login_id: string | null
@@ -238,6 +256,9 @@ export type StaffGroupByOutputType = {
   can_work_late_shift: boolean
   can_work_extended_care: boolean
   is_active: boolean
+  email: string | null
+  password_hash: string | null
+  role: $Enums.UserRole | null
   created_at: Date
   updated_at: Date
   _count: StaffCountAggregateOutputType | null
@@ -269,8 +290,8 @@ export type StaffWhereInput = {
   name?: Prisma.StringFilter<"Staff"> | string
   name_kana?: Prisma.StringNullableFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableFilter<"Staff"> | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFilter<"Staff"> | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFilter<"Staff"> | $Enums.JobType
+  employment_type?: Prisma.EnumEmploymentTypeNullableFilter<"Staff"> | $Enums.EmploymentType | null
+  job_type?: Prisma.EnumJobTypeNullableFilter<"Staff"> | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFilter<"Staff"> | boolean
   capable_class_ids?: Prisma.StringNullableListFilter<"Staff">
   staff_login_id?: Prisma.StringNullableFilter<"Staff"> | string | null
@@ -280,11 +301,13 @@ export type StaffWhereInput = {
   can_work_late_shift?: Prisma.BoolFilter<"Staff"> | boolean
   can_work_extended_care?: Prisma.BoolFilter<"Staff"> | boolean
   is_active?: Prisma.BoolFilter<"Staff"> | boolean
+  email?: Prisma.StringNullableFilter<"Staff"> | string | null
+  password_hash?: Prisma.StringNullableFilter<"Staff"> | string | null
+  role?: Prisma.EnumUserRoleNullableFilter<"Staff"> | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFilter<"Staff"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Staff"> | Date | string
   nursery?: Prisma.XOR<Prisma.NurseryScalarRelationFilter, Prisma.NurseryWhereInput>
   main_staff_for?: Prisma.ClassroomListRelationFilter
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   shift_slots?: Prisma.ShiftSlotListRelationFilter
   staff_requests?: Prisma.StaffRequestListRelationFilter
   invitations?: Prisma.InvitationListRelationFilter
@@ -296,8 +319,8 @@ export type StaffOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   name_kana?: Prisma.SortOrderInput | Prisma.SortOrder
   phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
-  employment_type?: Prisma.SortOrder
-  job_type?: Prisma.SortOrder
+  employment_type?: Prisma.SortOrderInput | Prisma.SortOrder
+  job_type?: Prisma.SortOrderInput | Prisma.SortOrder
   has_nursery_teacher_license?: Prisma.SortOrder
   capable_class_ids?: Prisma.SortOrder
   staff_login_id?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -307,11 +330,13 @@ export type StaffOrderByWithRelationInput = {
   can_work_late_shift?: Prisma.SortOrder
   can_work_extended_care?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   nursery?: Prisma.NurseryOrderByWithRelationInput
   main_staff_for?: Prisma.ClassroomOrderByRelationAggregateInput
-  user?: Prisma.UserOrderByWithRelationInput
   shift_slots?: Prisma.ShiftSlotOrderByRelationAggregateInput
   staff_requests?: Prisma.StaffRequestOrderByRelationAggregateInput
   invitations?: Prisma.InvitationOrderByRelationAggregateInput
@@ -320,6 +345,7 @@ export type StaffOrderByWithRelationInput = {
 export type StaffWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   nursery_id_staff_login_id?: Prisma.StaffNursery_idStaff_login_idCompoundUniqueInput
+  nursery_id_email?: Prisma.StaffNursery_idEmailCompoundUniqueInput
   AND?: Prisma.StaffWhereInput | Prisma.StaffWhereInput[]
   OR?: Prisma.StaffWhereInput[]
   NOT?: Prisma.StaffWhereInput | Prisma.StaffWhereInput[]
@@ -327,8 +353,8 @@ export type StaffWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Staff"> | string
   name_kana?: Prisma.StringNullableFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableFilter<"Staff"> | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFilter<"Staff"> | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFilter<"Staff"> | $Enums.JobType
+  employment_type?: Prisma.EnumEmploymentTypeNullableFilter<"Staff"> | $Enums.EmploymentType | null
+  job_type?: Prisma.EnumJobTypeNullableFilter<"Staff"> | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFilter<"Staff"> | boolean
   capable_class_ids?: Prisma.StringNullableListFilter<"Staff">
   staff_login_id?: Prisma.StringNullableFilter<"Staff"> | string | null
@@ -338,15 +364,17 @@ export type StaffWhereUniqueInput = Prisma.AtLeast<{
   can_work_late_shift?: Prisma.BoolFilter<"Staff"> | boolean
   can_work_extended_care?: Prisma.BoolFilter<"Staff"> | boolean
   is_active?: Prisma.BoolFilter<"Staff"> | boolean
+  email?: Prisma.StringNullableFilter<"Staff"> | string | null
+  password_hash?: Prisma.StringNullableFilter<"Staff"> | string | null
+  role?: Prisma.EnumUserRoleNullableFilter<"Staff"> | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFilter<"Staff"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Staff"> | Date | string
   nursery?: Prisma.XOR<Prisma.NurseryScalarRelationFilter, Prisma.NurseryWhereInput>
   main_staff_for?: Prisma.ClassroomListRelationFilter
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   shift_slots?: Prisma.ShiftSlotListRelationFilter
   staff_requests?: Prisma.StaffRequestListRelationFilter
   invitations?: Prisma.InvitationListRelationFilter
-}, "id" | "nursery_id_staff_login_id">
+}, "id" | "nursery_id_staff_login_id" | "nursery_id_email">
 
 export type StaffOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -354,8 +382,8 @@ export type StaffOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   name_kana?: Prisma.SortOrderInput | Prisma.SortOrder
   phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
-  employment_type?: Prisma.SortOrder
-  job_type?: Prisma.SortOrder
+  employment_type?: Prisma.SortOrderInput | Prisma.SortOrder
+  job_type?: Prisma.SortOrderInput | Prisma.SortOrder
   has_nursery_teacher_license?: Prisma.SortOrder
   capable_class_ids?: Prisma.SortOrder
   staff_login_id?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -365,6 +393,9 @@ export type StaffOrderByWithAggregationInput = {
   can_work_late_shift?: Prisma.SortOrder
   can_work_extended_care?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.StaffCountOrderByAggregateInput
@@ -381,8 +412,8 @@ export type StaffScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Staff"> | string
   name_kana?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
-  employment_type?: Prisma.EnumEmploymentTypeWithAggregatesFilter<"Staff"> | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeWithAggregatesFilter<"Staff"> | $Enums.JobType
+  employment_type?: Prisma.EnumEmploymentTypeNullableWithAggregatesFilter<"Staff"> | $Enums.EmploymentType | null
+  job_type?: Prisma.EnumJobTypeNullableWithAggregatesFilter<"Staff"> | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolWithAggregatesFilter<"Staff"> | boolean
   capable_class_ids?: Prisma.StringNullableListFilter<"Staff">
   staff_login_id?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
@@ -392,6 +423,9 @@ export type StaffScalarWhereWithAggregatesInput = {
   can_work_late_shift?: Prisma.BoolWithAggregatesFilter<"Staff"> | boolean
   can_work_extended_care?: Prisma.BoolWithAggregatesFilter<"Staff"> | boolean
   is_active?: Prisma.BoolWithAggregatesFilter<"Staff"> | boolean
+  email?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
+  password_hash?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
+  role?: Prisma.EnumUserRoleNullableWithAggregatesFilter<"Staff"> | $Enums.UserRole | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Staff"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Staff"> | Date | string
 }
@@ -401,8 +435,8 @@ export type StaffCreateInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -412,11 +446,13 @@ export type StaffCreateInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutStaffsInput
   main_staff_for?: Prisma.ClassroomCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutStaffInput
@@ -428,8 +464,8 @@ export type StaffUncheckedCreateInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -439,10 +475,12 @@ export type StaffUncheckedCreateInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   main_staff_for?: Prisma.ClassroomUncheckedCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotUncheckedCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutStaffInput
@@ -453,8 +491,8 @@ export type StaffUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -464,11 +502,13 @@ export type StaffUpdateInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaffsNestedInput
   main_staff_for?: Prisma.ClassroomUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutStaffNestedInput
@@ -480,8 +520,8 @@ export type StaffUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -491,10 +531,12 @@ export type StaffUncheckedUpdateInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   main_staff_for?: Prisma.ClassroomUncheckedUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUncheckedUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUncheckedUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutStaffNestedInput
@@ -506,8 +548,8 @@ export type StaffCreateManyInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -517,6 +559,9 @@ export type StaffCreateManyInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -526,8 +571,8 @@ export type StaffUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -537,6 +582,9 @@ export type StaffUpdateManyMutationInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -547,8 +595,8 @@ export type StaffUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -558,6 +606,9 @@ export type StaffUncheckedUpdateManyInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -582,6 +633,11 @@ export type StaffNursery_idStaff_login_idCompoundUniqueInput = {
   staff_login_id: string
 }
 
+export type StaffNursery_idEmailCompoundUniqueInput = {
+  nursery_id: string
+  email: string
+}
+
 export type StaffCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
@@ -599,6 +655,9 @@ export type StaffCountOrderByAggregateInput = {
   can_work_late_shift?: Prisma.SortOrder
   can_work_extended_care?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  password_hash?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -619,6 +678,9 @@ export type StaffMaxOrderByAggregateInput = {
   can_work_late_shift?: Prisma.SortOrder
   can_work_extended_care?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  password_hash?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -639,6 +701,9 @@ export type StaffMinOrderByAggregateInput = {
   can_work_late_shift?: Prisma.SortOrder
   can_work_extended_care?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  password_hash?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -710,17 +775,21 @@ export type StaffCreatecapable_class_idsInput = {
   set: string[]
 }
 
-export type EnumEmploymentTypeFieldUpdateOperationsInput = {
-  set?: $Enums.EmploymentType
+export type NullableEnumEmploymentTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EmploymentType | null
 }
 
-export type EnumJobTypeFieldUpdateOperationsInput = {
-  set?: $Enums.JobType
+export type NullableEnumJobTypeFieldUpdateOperationsInput = {
+  set?: $Enums.JobType | null
 }
 
 export type StaffUpdatecapable_class_idsInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type NullableEnumUserRoleFieldUpdateOperationsInput = {
+  set?: $Enums.UserRole | null
 }
 
 export type StaffCreateNestedOneWithoutShift_slotsInput = {
@@ -735,22 +804,6 @@ export type StaffUpdateOneRequiredWithoutShift_slotsNestedInput = {
   upsert?: Prisma.StaffUpsertWithoutShift_slotsInput
   connect?: Prisma.StaffWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutShift_slotsInput, Prisma.StaffUpdateWithoutShift_slotsInput>, Prisma.StaffUncheckedUpdateWithoutShift_slotsInput>
-}
-
-export type StaffCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.StaffCreateWithoutUserInput, Prisma.StaffUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutUserInput
-  connect?: Prisma.StaffWhereUniqueInput
-}
-
-export type StaffUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.StaffCreateWithoutUserInput, Prisma.StaffUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutUserInput
-  upsert?: Prisma.StaffUpsertWithoutUserInput
-  disconnect?: Prisma.StaffWhereInput | boolean
-  delete?: Prisma.StaffWhereInput | boolean
-  connect?: Prisma.StaffWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutUserInput, Prisma.StaffUpdateWithoutUserInput>, Prisma.StaffUncheckedUpdateWithoutUserInput>
 }
 
 export type StaffCreateNestedOneWithoutInvitationsInput = {
@@ -775,12 +828,10 @@ export type StaffCreateNestedOneWithoutStaff_requestsInput = {
   connect?: Prisma.StaffWhereUniqueInput
 }
 
-export type StaffUpdateOneWithoutStaff_requestsNestedInput = {
+export type StaffUpdateOneRequiredWithoutStaff_requestsNestedInput = {
   create?: Prisma.XOR<Prisma.StaffCreateWithoutStaff_requestsInput, Prisma.StaffUncheckedCreateWithoutStaff_requestsInput>
   connectOrCreate?: Prisma.StaffCreateOrConnectWithoutStaff_requestsInput
   upsert?: Prisma.StaffUpsertWithoutStaff_requestsInput
-  disconnect?: Prisma.StaffWhereInput | boolean
-  delete?: Prisma.StaffWhereInput | boolean
   connect?: Prisma.StaffWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutStaff_requestsInput, Prisma.StaffUpdateWithoutStaff_requestsInput>, Prisma.StaffUncheckedUpdateWithoutStaff_requestsInput>
 }
@@ -790,8 +841,8 @@ export type StaffCreateWithoutNurseryInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -801,10 +852,12 @@ export type StaffCreateWithoutNurseryInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   main_staff_for?: Prisma.ClassroomCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutStaffInput
@@ -815,8 +868,8 @@ export type StaffUncheckedCreateWithoutNurseryInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -826,10 +879,12 @@ export type StaffUncheckedCreateWithoutNurseryInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   main_staff_for?: Prisma.ClassroomUncheckedCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotUncheckedCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutStaffInput
@@ -870,8 +925,8 @@ export type StaffScalarWhereInput = {
   name?: Prisma.StringFilter<"Staff"> | string
   name_kana?: Prisma.StringNullableFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableFilter<"Staff"> | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFilter<"Staff"> | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFilter<"Staff"> | $Enums.JobType
+  employment_type?: Prisma.EnumEmploymentTypeNullableFilter<"Staff"> | $Enums.EmploymentType | null
+  job_type?: Prisma.EnumJobTypeNullableFilter<"Staff"> | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFilter<"Staff"> | boolean
   capable_class_ids?: Prisma.StringNullableListFilter<"Staff">
   staff_login_id?: Prisma.StringNullableFilter<"Staff"> | string | null
@@ -881,6 +936,9 @@ export type StaffScalarWhereInput = {
   can_work_late_shift?: Prisma.BoolFilter<"Staff"> | boolean
   can_work_extended_care?: Prisma.BoolFilter<"Staff"> | boolean
   is_active?: Prisma.BoolFilter<"Staff"> | boolean
+  email?: Prisma.StringNullableFilter<"Staff"> | string | null
+  password_hash?: Prisma.StringNullableFilter<"Staff"> | string | null
+  role?: Prisma.EnumUserRoleNullableFilter<"Staff"> | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFilter<"Staff"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Staff"> | Date | string
 }
@@ -890,8 +948,8 @@ export type StaffCreateWithoutMain_staff_forInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -901,10 +959,12 @@ export type StaffCreateWithoutMain_staff_forInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutStaffsInput
-  user?: Prisma.UserCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutStaffInput
@@ -916,8 +976,8 @@ export type StaffUncheckedCreateWithoutMain_staff_forInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -927,9 +987,11 @@ export type StaffUncheckedCreateWithoutMain_staff_forInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotUncheckedCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutStaffInput
@@ -956,8 +1018,8 @@ export type StaffUpdateWithoutMain_staff_forInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -967,10 +1029,12 @@ export type StaffUpdateWithoutMain_staff_forInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaffsNestedInput
-  user?: Prisma.UserUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutStaffNestedInput
@@ -982,8 +1046,8 @@ export type StaffUncheckedUpdateWithoutMain_staff_forInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -993,9 +1057,11 @@ export type StaffUncheckedUpdateWithoutMain_staff_forInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUncheckedUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutStaffNestedInput
@@ -1006,8 +1072,8 @@ export type StaffCreateWithoutShift_slotsInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -1017,11 +1083,13 @@ export type StaffCreateWithoutShift_slotsInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutStaffsInput
   main_staff_for?: Prisma.ClassroomCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserCreateNestedOneWithoutStaffInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutStaffInput
 }
@@ -1032,8 +1100,8 @@ export type StaffUncheckedCreateWithoutShift_slotsInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -1043,10 +1111,12 @@ export type StaffUncheckedCreateWithoutShift_slotsInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   main_staff_for?: Prisma.ClassroomUncheckedCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutStaffInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutStaffInput
 }
@@ -1072,8 +1142,8 @@ export type StaffUpdateWithoutShift_slotsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1083,11 +1153,13 @@ export type StaffUpdateWithoutShift_slotsInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaffsNestedInput
   main_staff_for?: Prisma.ClassroomUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUpdateOneWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutStaffNestedInput
 }
@@ -1098,8 +1170,8 @@ export type StaffUncheckedUpdateWithoutShift_slotsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1109,126 +1181,12 @@ export type StaffUncheckedUpdateWithoutShift_slotsInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   main_staff_for?: Prisma.ClassroomUncheckedUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUncheckedUpdateOneWithoutStaffNestedInput
-  staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutStaffNestedInput
-  invitations?: Prisma.InvitationUncheckedUpdateManyWithoutStaffNestedInput
-}
-
-export type StaffCreateWithoutUserInput = {
-  id?: string
-  name: string
-  name_kana?: string | null
-  phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
-  has_nursery_teacher_license?: boolean
-  capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
-  staff_login_id?: string | null
-  work_availability_start?: Date | string | null
-  work_availability_end?: Date | string | null
-  can_work_early_shift?: boolean
-  can_work_late_shift?: boolean
-  can_work_extended_care?: boolean
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
-  nursery: Prisma.NurseryCreateNestedOneWithoutStaffsInput
-  main_staff_for?: Prisma.ClassroomCreateNestedManyWithoutMain_staffInput
-  shift_slots?: Prisma.ShiftSlotCreateNestedManyWithoutStaffInput
-  staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutStaffInput
-  invitations?: Prisma.InvitationCreateNestedManyWithoutStaffInput
-}
-
-export type StaffUncheckedCreateWithoutUserInput = {
-  id?: string
-  nursery_id: string
-  name: string
-  name_kana?: string | null
-  phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
-  has_nursery_teacher_license?: boolean
-  capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
-  staff_login_id?: string | null
-  work_availability_start?: Date | string | null
-  work_availability_end?: Date | string | null
-  can_work_early_shift?: boolean
-  can_work_late_shift?: boolean
-  can_work_extended_care?: boolean
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
-  main_staff_for?: Prisma.ClassroomUncheckedCreateNestedManyWithoutMain_staffInput
-  shift_slots?: Prisma.ShiftSlotUncheckedCreateNestedManyWithoutStaffInput
-  staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutStaffInput
-  invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutStaffInput
-}
-
-export type StaffCreateOrConnectWithoutUserInput = {
-  where: Prisma.StaffWhereUniqueInput
-  create: Prisma.XOR<Prisma.StaffCreateWithoutUserInput, Prisma.StaffUncheckedCreateWithoutUserInput>
-}
-
-export type StaffUpsertWithoutUserInput = {
-  update: Prisma.XOR<Prisma.StaffUpdateWithoutUserInput, Prisma.StaffUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.StaffCreateWithoutUserInput, Prisma.StaffUncheckedCreateWithoutUserInput>
-  where?: Prisma.StaffWhereInput
-}
-
-export type StaffUpdateToOneWithWhereWithoutUserInput = {
-  where?: Prisma.StaffWhereInput
-  data: Prisma.XOR<Prisma.StaffUpdateWithoutUserInput, Prisma.StaffUncheckedUpdateWithoutUserInput>
-}
-
-export type StaffUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-  has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
-  staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  work_availability_start?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  work_availability_end?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  can_work_early_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaffsNestedInput
-  main_staff_for?: Prisma.ClassroomUpdateManyWithoutMain_staffNestedInput
-  shift_slots?: Prisma.ShiftSlotUpdateManyWithoutStaffNestedInput
-  staff_requests?: Prisma.StaffRequestUpdateManyWithoutStaffNestedInput
-  invitations?: Prisma.InvitationUpdateManyWithoutStaffNestedInput
-}
-
-export type StaffUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-  has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
-  staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  work_availability_start?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  work_availability_end?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  can_work_early_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  main_staff_for?: Prisma.ClassroomUncheckedUpdateManyWithoutMain_staffNestedInput
-  shift_slots?: Prisma.ShiftSlotUncheckedUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutStaffNestedInput
 }
@@ -1238,8 +1196,8 @@ export type StaffCreateWithoutInvitationsInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -1249,11 +1207,13 @@ export type StaffCreateWithoutInvitationsInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutStaffsInput
   main_staff_for?: Prisma.ClassroomCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutStaffInput
 }
@@ -1264,8 +1224,8 @@ export type StaffUncheckedCreateWithoutInvitationsInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -1275,10 +1235,12 @@ export type StaffUncheckedCreateWithoutInvitationsInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   main_staff_for?: Prisma.ClassroomUncheckedCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotUncheckedCreateNestedManyWithoutStaffInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutStaffInput
 }
@@ -1304,8 +1266,8 @@ export type StaffUpdateWithoutInvitationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1315,11 +1277,13 @@ export type StaffUpdateWithoutInvitationsInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaffsNestedInput
   main_staff_for?: Prisma.ClassroomUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutStaffNestedInput
 }
@@ -1330,8 +1294,8 @@ export type StaffUncheckedUpdateWithoutInvitationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1341,10 +1305,12 @@ export type StaffUncheckedUpdateWithoutInvitationsInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   main_staff_for?: Prisma.ClassroomUncheckedUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUncheckedUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUncheckedUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutStaffNestedInput
 }
@@ -1354,8 +1320,8 @@ export type StaffCreateWithoutStaff_requestsInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -1365,11 +1331,13 @@ export type StaffCreateWithoutStaff_requestsInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutStaffsInput
   main_staff_for?: Prisma.ClassroomCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutStaffInput
 }
@@ -1380,8 +1348,8 @@ export type StaffUncheckedCreateWithoutStaff_requestsInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -1391,10 +1359,12 @@ export type StaffUncheckedCreateWithoutStaff_requestsInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
   main_staff_for?: Prisma.ClassroomUncheckedCreateNestedManyWithoutMain_staffInput
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutStaffInput
   shift_slots?: Prisma.ShiftSlotUncheckedCreateNestedManyWithoutStaffInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutStaffInput
 }
@@ -1420,8 +1390,8 @@ export type StaffUpdateWithoutStaff_requestsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1431,11 +1401,13 @@ export type StaffUpdateWithoutStaff_requestsInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaffsNestedInput
   main_staff_for?: Prisma.ClassroomUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutStaffNestedInput
 }
@@ -1446,8 +1418,8 @@ export type StaffUncheckedUpdateWithoutStaff_requestsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1457,10 +1429,12 @@ export type StaffUncheckedUpdateWithoutStaff_requestsInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   main_staff_for?: Prisma.ClassroomUncheckedUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUncheckedUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUncheckedUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutStaffNestedInput
 }
@@ -1470,8 +1444,8 @@ export type StaffCreateManyNurseryInput = {
   name: string
   name_kana?: string | null
   phone_number?: string | null
-  employment_type: $Enums.EmploymentType
-  job_type: $Enums.JobType
+  employment_type?: $Enums.EmploymentType | null
+  job_type?: $Enums.JobType | null
   has_nursery_teacher_license?: boolean
   capable_class_ids?: Prisma.StaffCreatecapable_class_idsInput | string[]
   staff_login_id?: string | null
@@ -1481,6 +1455,9 @@ export type StaffCreateManyNurseryInput = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1490,8 +1467,8 @@ export type StaffUpdateWithoutNurseryInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1501,10 +1478,12 @@ export type StaffUpdateWithoutNurseryInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   main_staff_for?: Prisma.ClassroomUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutStaffNestedInput
@@ -1515,8 +1494,8 @@ export type StaffUncheckedUpdateWithoutNurseryInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1526,10 +1505,12 @@ export type StaffUncheckedUpdateWithoutNurseryInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   main_staff_for?: Prisma.ClassroomUncheckedUpdateManyWithoutMain_staffNestedInput
-  user?: Prisma.UserUncheckedUpdateOneWithoutStaffNestedInput
   shift_slots?: Prisma.ShiftSlotUncheckedUpdateManyWithoutStaffNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutStaffNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutStaffNestedInput
@@ -1540,8 +1521,8 @@ export type StaffUncheckedUpdateManyWithoutNurseryInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  employment_type?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
-  job_type?: Prisma.EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+  employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  job_type?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
   has_nursery_teacher_license?: Prisma.BoolFieldUpdateOperationsInput | boolean
   capable_class_ids?: Prisma.StaffUpdatecapable_class_idsInput | string[]
   staff_login_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1551,6 +1532,9 @@ export type StaffUncheckedUpdateManyWithoutNurseryInput = {
   can_work_late_shift?: Prisma.BoolFieldUpdateOperationsInput | boolean
   can_work_extended_care?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1630,11 +1614,13 @@ export type StaffSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: boolean
+  password_hash?: boolean
+  role?: boolean
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
   main_staff_for?: boolean | Prisma.Staff$main_staff_forArgs<ExtArgs>
-  user?: boolean | Prisma.Staff$userArgs<ExtArgs>
   shift_slots?: boolean | Prisma.Staff$shift_slotsArgs<ExtArgs>
   staff_requests?: boolean | Prisma.Staff$staff_requestsArgs<ExtArgs>
   invitations?: boolean | Prisma.Staff$invitationsArgs<ExtArgs>
@@ -1658,6 +1644,9 @@ export type StaffSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: boolean
+  password_hash?: boolean
+  role?: boolean
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
@@ -1680,6 +1669,9 @@ export type StaffSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: boolean
+  password_hash?: boolean
+  role?: boolean
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
@@ -1702,15 +1694,17 @@ export type StaffSelectScalar = {
   can_work_late_shift?: boolean
   can_work_extended_care?: boolean
   is_active?: boolean
+  email?: boolean
+  password_hash?: boolean
+  role?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type StaffOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "name" | "name_kana" | "phone_number" | "employment_type" | "job_type" | "has_nursery_teacher_license" | "capable_class_ids" | "staff_login_id" | "work_availability_start" | "work_availability_end" | "can_work_early_shift" | "can_work_late_shift" | "can_work_extended_care" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["staff"]>
+export type StaffOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "name" | "name_kana" | "phone_number" | "employment_type" | "job_type" | "has_nursery_teacher_license" | "capable_class_ids" | "staff_login_id" | "work_availability_start" | "work_availability_end" | "can_work_early_shift" | "can_work_late_shift" | "can_work_extended_care" | "is_active" | "email" | "password_hash" | "role" | "created_at" | "updated_at", ExtArgs["result"]["staff"]>
 export type StaffInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
   main_staff_for?: boolean | Prisma.Staff$main_staff_forArgs<ExtArgs>
-  user?: boolean | Prisma.Staff$userArgs<ExtArgs>
   shift_slots?: boolean | Prisma.Staff$shift_slotsArgs<ExtArgs>
   staff_requests?: boolean | Prisma.Staff$staff_requestsArgs<ExtArgs>
   invitations?: boolean | Prisma.Staff$invitationsArgs<ExtArgs>
@@ -1728,7 +1722,6 @@ export type $StaffPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     nursery: Prisma.$NurseryPayload<ExtArgs>
     main_staff_for: Prisma.$ClassroomPayload<ExtArgs>[]
-    user: Prisma.$UserPayload<ExtArgs> | null
     shift_slots: Prisma.$ShiftSlotPayload<ExtArgs>[]
     staff_requests: Prisma.$StaffRequestPayload<ExtArgs>[]
     invitations: Prisma.$InvitationPayload<ExtArgs>[]
@@ -1739,8 +1732,8 @@ export type $StaffPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     name: string
     name_kana: string | null
     phone_number: string | null
-    employment_type: $Enums.EmploymentType
-    job_type: $Enums.JobType
+    employment_type: $Enums.EmploymentType | null
+    job_type: $Enums.JobType | null
     has_nursery_teacher_license: boolean
     capable_class_ids: string[]
     staff_login_id: string | null
@@ -1750,6 +1743,9 @@ export type $StaffPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     can_work_late_shift: boolean
     can_work_extended_care: boolean
     is_active: boolean
+    email: string | null
+    password_hash: string | null
+    role: $Enums.UserRole | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["staff"]>
@@ -2148,7 +2144,6 @@ export interface Prisma__StaffClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   nursery<T extends Prisma.NurseryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NurseryDefaultArgs<ExtArgs>>): Prisma.Prisma__NurseryClient<runtime.Types.Result.GetResult<Prisma.$NurseryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   main_staff_for<T extends Prisma.Staff$main_staff_forArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$main_staff_forArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassroomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  user<T extends Prisma.Staff$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   shift_slots<T extends Prisma.Staff$shift_slotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$shift_slotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   staff_requests<T extends Prisma.Staff$staff_requestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$staff_requestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invitations<T extends Prisma.Staff$invitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2197,6 +2192,9 @@ export interface StaffFieldRefs {
   readonly can_work_late_shift: Prisma.FieldRef<"Staff", 'Boolean'>
   readonly can_work_extended_care: Prisma.FieldRef<"Staff", 'Boolean'>
   readonly is_active: Prisma.FieldRef<"Staff", 'Boolean'>
+  readonly email: Prisma.FieldRef<"Staff", 'String'>
+  readonly password_hash: Prisma.FieldRef<"Staff", 'String'>
+  readonly role: Prisma.FieldRef<"Staff", 'UserRole'>
   readonly created_at: Prisma.FieldRef<"Staff", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Staff", 'DateTime'>
 }
@@ -2621,25 +2619,6 @@ export type Staff$main_staff_forArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ClassroomScalarFieldEnum | Prisma.ClassroomScalarFieldEnum[]
-}
-
-/**
- * Staff.user
- */
-export type Staff$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
 }
 
 /**

@@ -28,14 +28,12 @@ export type StaffRequestWriteInput = {
 
 export type StaffRequestOwner = {
   nurseryId: string;
-  userId: string;
-  staffId?: string;
+  staffId: string;
 };
 
 export type AdminStaffRequestItem = StaffRequestPayload & {
   staffName: string;
-  userId: string;
-  staffId: string | null;
+  staffId: string;
   submittedAt: string;
 };
 
@@ -68,7 +66,7 @@ function isStaffRequestDuplicateError(error: unknown): boolean {
     error instanceof Prisma.PrismaClientKnownRequestError &&
     error.code === "P2002" &&
     Array.isArray(error.meta?.target) &&
-    (error.meta.target as string[]).includes("user_id") &&
+    (error.meta.target as string[]).includes("staff_id") &&
     (error.meta.target as string[]).includes("request_date")
   );
 }
@@ -95,7 +93,7 @@ export async function listStaffRequests(owner: StaffRequestOwner) {
   const rows = await prisma.staffRequest.findMany({
     where: {
       nursery_id: owner.nurseryId,
-      user_id: owner.userId,
+      staff_id: owner.staffId,
       request_date: { gte: todayBoundary },
     },
     orderBy: [{ request_date: "asc" }, { created_at: "asc" }],
@@ -104,32 +102,17 @@ export async function listStaffRequests(owner: StaffRequestOwner) {
   return rows.map(toStaffRequestPayload);
 }
 
-
-
 function toAdminStaffRequestItem(
   row: PrismaStaffRequest & {
-    staff: { name: string } | null;
-    user: {
-      email: string;
-      staff: { id: string; name: string } | null;
-    };
+    staff: { name: string };
   },
 ): AdminStaffRequestItem {
   return {
     ...toStaffRequestPayload(row),
-    userId: row.user_id,
-    staffId: resolveRequestStaffId(row),
-    staffName: row.staff?.name ?? row.user.staff?.name ?? row.user.email,
+    staffId: row.staff_id,
+    staffName: row.staff.name,
     submittedAt: row.created_at.toISOString(),
   };
-}
-
-function resolveRequestStaffId(
-  row: PrismaStaffRequest & {
-    user: { staff: { id: string } | null };
-  },
-) {
-  return row.staff_id ?? row.user.staff?.id ?? null;
 }
 
 export async function listAdminStaffRequestGroups(
@@ -147,12 +130,6 @@ export async function listAdminStaffRequestGroups(
       where: { nursery_id: nurseryId, request_date: { gte: todayBoundary } },
       include: {
         staff: { select: { name: true } },
-        user: {
-          select: {
-            email: true,
-            staff: { select: { id: true, name: true } },
-          },
-        },
       },
       orderBy: [{ request_date: "asc" }, { created_at: "desc" }],
     }),
@@ -161,18 +138,12 @@ export async function listAdminStaffRequestGroups(
   const requestsByStaffId = new Map<string, AdminStaffRequestItem[]>();
 
   for (const row of requestRows) {
-    const staffId = resolveRequestStaffId(row);
-    if (!staffId) {
-      continue;
-    }
-
     const item = toAdminStaffRequestItem(row);
-
-    const existing = requestsByStaffId.get(staffId);
+    const existing = requestsByStaffId.get(row.staff_id);
     if (existing) {
       existing.push(item);
     } else {
-      requestsByStaffId.set(staffId, [item]);
+      requestsByStaffId.set(row.staff_id, [item]);
     }
   }
 
@@ -206,12 +177,6 @@ export async function listAdminStaffRequestGroupsForMonth(
       },
       include: {
         staff: { select: { name: true } },
-        user: {
-          select: {
-            email: true,
-            staff: { select: { id: true, name: true } },
-          },
-        },
       },
       orderBy: [{ request_date: "asc" }, { created_at: "desc" }],
     }),
@@ -220,14 +185,12 @@ export async function listAdminStaffRequestGroupsForMonth(
   const requestsByStaffId = new Map<string, AdminStaffRequestItem[]>();
 
   for (const row of requestRows) {
-    const staffId = resolveRequestStaffId(row);
-    if (!staffId) continue;
     const item = toAdminStaffRequestItem(row);
-    const existing = requestsByStaffId.get(staffId);
+    const existing = requestsByStaffId.get(row.staff_id);
     if (existing) {
       existing.push(item);
     } else {
-      requestsByStaffId.set(staffId, [item]);
+      requestsByStaffId.set(row.staff_id, [item]);
     }
   }
 
@@ -251,8 +214,7 @@ export async function createStaffRequest(
     const row = await prisma.staffRequest.create({
       data: {
         nursery_id: owner.nurseryId,
-        user_id: owner.userId,
-        staff_id: owner.staffId ?? null,
+        staff_id: owner.staffId,
         request_date: requestDate,
         request_type: requestType,
         time_preference: input.time.trim(),
@@ -279,7 +241,7 @@ export async function updateStaffRequest(
     where: {
       id,
       nursery_id: owner.nurseryId,
-      user_id: owner.userId,
+      staff_id: owner.staffId,
     },
   });
 
@@ -293,7 +255,7 @@ export async function updateStaffRequest(
 
   try {
     const row = await prisma.staffRequest.update({
-      where: { id, nursery_id: owner.nurseryId, user_id: owner.userId, status: "submitted" },
+      where: { id, nursery_id: owner.nurseryId, staff_id: owner.staffId, status: "submitted" },
       data: {
         request_date: requestDate,
         request_type: requestType,
@@ -306,7 +268,10 @@ export async function updateStaffRequest(
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (isStaffRequestDuplicateError(error)) return "duplicate";
       if (error.code === "P2025") {
-        const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
+        const stillExists = await prisma.staffRequest.findFirst({
+          where: { id, nursery_id: owner.nurseryId, staff_id: owner.staffId },
+          select: { id: true },
+        });
         return stillExists ? "locked" : null;
       }
     }
@@ -319,7 +284,7 @@ export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
     where: {
       id,
       nursery_id: owner.nurseryId,
-      user_id: owner.userId,
+      staff_id: owner.staffId,
     },
     select: { id: true, status: true },
   });
@@ -336,7 +301,10 @@ export async function deleteStaffRequest(owner: StaffRequestOwner, id: string) {
     await prisma.staffRequest.delete({ where: { id, status: "submitted" } });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
-      const stillExists = await prisma.staffRequest.findFirst({ where: { id, nursery_id: owner.nurseryId, user_id: owner.userId }, select: { id: true } });
+      const stillExists = await prisma.staffRequest.findFirst({
+        where: { id, nursery_id: owner.nurseryId, staff_id: owner.staffId },
+        select: { id: true },
+      });
       return stillExists ? "locked" as const : false;
     }
     throw error;

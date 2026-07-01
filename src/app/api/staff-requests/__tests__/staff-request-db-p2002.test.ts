@@ -20,7 +20,7 @@ vi.mock("@/lib/nursery-time", () => ({
 import { prisma } from "@/lib/prisma";
 import { createStaffRequest, updateStaffRequest } from "@/lib/staff-request-db";
 
-const OWNER = { nurseryId: "nursery-hoshinoko", userId: "user-1", staffId: "staff-1" };
+const OWNER = { nurseryId: "nursery-hoshinoko", staffId: "staff-1" };
 const INPUT = { date: "2026-07-10", type: "休み希望" as const, time: "終日" };
 
 function makeP2002(target: string[]) {
@@ -37,9 +37,9 @@ beforeEach(() => {
 });
 
 describe("createStaffRequest — P2002 判定", () => {
-  it("(user_id, request_date) 違反は 'duplicate' を返す", async () => {
+  it("(staff_id, request_date) 違反は 'duplicate' を返す", async () => {
     vi.mocked(prisma.staffRequest.create).mockRejectedValue(
-      makeP2002(["user_id", "request_date"]),
+      makeP2002(["staff_id", "request_date"]),
     );
     const result = await createStaffRequest(OWNER, INPUT);
     expect(result).toBe("duplicate");
@@ -58,7 +58,7 @@ describe("createStaffRequest — P2002 判定", () => {
     const err = new Prisma.PrismaClientKnownRequestError("Unique constraint failed", {
       code: "P2002",
       clientVersion: "5.0.0",
-      meta: { target: "StaffRequest_user_id_request_date_key" },
+      meta: { target: "StaffRequest_staff_id_request_date_key" },
     });
     vi.mocked(prisma.staffRequest.create).mockRejectedValue(err);
     await expect(createStaffRequest(OWNER, INPUT)).rejects.toBeInstanceOf(
@@ -72,7 +72,6 @@ describe("updateStaffRequest — P2002 判定", () => {
     vi.mocked(prisma.staffRequest.findFirst).mockResolvedValue({
       id: "req-1",
       nursery_id: "nursery-hoshinoko",
-      user_id: "user-1",
       staff_id: "staff-1",
       request_date: new Date("2026-07-10"),
       request_type: "day_off",
@@ -84,9 +83,9 @@ describe("updateStaffRequest — P2002 判定", () => {
     });
   });
 
-  it("(user_id, request_date) 違反は 'duplicate' を返す", async () => {
+  it("(staff_id, request_date) 違反は 'duplicate' を返す", async () => {
     vi.mocked(prisma.staffRequest.update).mockRejectedValue(
-      makeP2002(["user_id", "request_date"]),
+      makeP2002(["staff_id", "request_date"]),
     );
     const result = await updateStaffRequest(OWNER, "req-1", INPUT);
     expect(result).toBe("duplicate");

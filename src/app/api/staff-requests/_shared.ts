@@ -64,8 +64,7 @@ export async function getRequestOwner(
 
   return {
     nurseryId: account.nurseryId,
-    userId: account.userId,
-    staffId: account.staffId,
+    staffId: account.staffId ?? account.userId,
     role: account.role,
   };
 }

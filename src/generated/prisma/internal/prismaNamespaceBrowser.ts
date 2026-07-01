@@ -59,7 +59,6 @@ export const ModelName = {
   ShiftSchedule: 'ShiftSchedule',
   ShiftSlot: 'ShiftSlot',
   RosterSheet: 'RosterSheet',
-  User: 'User',
   Invitation: 'Invitation',
   StaffRequest: 'StaffRequest'
 } as const
@@ -168,6 +167,9 @@ export const StaffScalarFieldEnum = {
   can_work_late_shift: 'can_work_late_shift',
   can_work_extended_care: 'can_work_extended_care',
   is_active: 'is_active',
+  email: 'email',
+  password_hash: 'password_hash',
+  role: 'role',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -214,21 +216,6 @@ export const RosterSheetScalarFieldEnum = {
 export type RosterSheetScalarFieldEnum = (typeof RosterSheetScalarFieldEnum)[keyof typeof RosterSheetScalarFieldEnum]
 
 
-export const UserScalarFieldEnum = {
-  id: 'id',
-  nursery_id: 'nursery_id',
-  staff_id: 'staff_id',
-  email: 'email',
-  password_hash: 'password_hash',
-  role: 'role',
-  is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
-
-
 export const InvitationScalarFieldEnum = {
   id: 'id',
   nursery_id: 'nursery_id',
@@ -248,7 +235,6 @@ export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof
 export const StaffRequestScalarFieldEnum = {
   id: 'id',
   nursery_id: 'nursery_id',
-  user_id: 'user_id',
   staff_id: 'staff_id',
   request_date: 'request_date',
   request_type: 'request_type',
