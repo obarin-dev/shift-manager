@@ -70,7 +70,6 @@ function parseWriteBody(body: unknown): StaffWriteInput | null {
 export async function GET() {
   const session = await getSession();
   if (!session) return unauthorizedResponse();
-  if (session.role === "staff") return forbiddenResponse();
 
   try {
     const staff = await listStaff();
