@@ -60,8 +60,9 @@ WHERE u.id = sr.user_id
 DELETE FROM "StaffRequest" WHERE staff_id IS NULL;
 
 -- Step 7: StaffRequest から user_id カラムを削除
+-- （ユニーク制約は CREATE UNIQUE INDEX で作成されているため DROP INDEX で削除）
 ALTER TABLE "StaffRequest" DROP CONSTRAINT "StaffRequest_user_id_fkey";
-ALTER TABLE "StaffRequest" DROP CONSTRAINT "StaffRequest_user_id_request_date_key";
+DROP INDEX "StaffRequest_user_id_request_date_key";
 DROP INDEX "StaffRequest_user_id_idx";
 ALTER TABLE "StaffRequest" DROP COLUMN "user_id";
 
