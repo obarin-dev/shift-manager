@@ -27,7 +27,8 @@ INSERT INTO "Staff" (
   "email", "password_hash", "role",
   "is_active", "capable_class_ids",
   "has_nursery_teacher_license",
-  "can_work_early_shift", "can_work_late_shift", "can_work_extended_care"
+  "can_work_early_shift", "can_work_late_shift", "can_work_extended_care",
+  "created_at", "updated_at"
 )
 SELECT
   gen_random_uuid(),
@@ -38,7 +39,8 @@ SELECT
   u.role,
   u.is_active,
   '{}'::TEXT[],
-  false, false, false, false
+  false, false, false, false,
+  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 FROM "User" u
 WHERE u.staff_id IS NULL;
 
