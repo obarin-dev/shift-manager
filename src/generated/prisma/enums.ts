@@ -97,3 +97,11 @@ export const StaffRequestStatus = {
 } as const
 
 export type StaffRequestStatus = (typeof StaffRequestStatus)[keyof typeof StaffRequestStatus]
+
+
+export const ClassroomStaffRole = {
+  main: 'main',
+  sub: 'sub'
+} as const
+
+export type ClassroomStaffRole = (typeof ClassroomStaffRole)[keyof typeof ClassroomStaffRole]
