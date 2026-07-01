@@ -73,6 +73,11 @@ export async function GET() {
 
   try {
     const staff = await listStaff();
+    if (session.role === "staff") {
+      return NextResponse.json({
+        data: staff.map((s) => ({ id: s.id, name: s.name })),
+      });
+    }
     return NextResponse.json({ data: staff });
   } catch (error) {
     console.error("[GET /api/staff]", error);

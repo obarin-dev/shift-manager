@@ -35,7 +35,7 @@ const STAFF_SESSION: SessionData = {
   email: "staff@example.com",
 };
 
-const MOCK_STAFF = [{ id: "s1", name: "田中花子", staff_id: "ST001" }];
+const MOCK_STAFF = [{ id: "s1", name: "田中花子", employment_type: "full_time", is_active: true }];
 
 beforeEach(() => {
   vi.resetAllMocks();
@@ -61,11 +61,17 @@ describe("GET /api/staff", () => {
     expect(res.status).toBe(200);
   });
 
-  it("staff も職員一覧を取得できる", async () => {
+  it("staff は id と display_name のみ取得できる", async () => {
     vi.mocked(getSession).mockResolvedValue(STAFF_SESSION);
+    vi.mocked(listStaff).mockResolvedValue(MOCK_STAFF as never);
 
     const res = await GET();
+    const body = await res.json();
+
     expect(res.status).toBe(200);
+    expect(body.data).toEqual([{ id: "s1", name: "田中花子" }]);
+    expect(body.data[0]).not.toHaveProperty("employment_type");
+    expect(body.data[0]).not.toHaveProperty("is_active");
   });
 
   it("未認証は 401 が返る", async () => {
