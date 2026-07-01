@@ -27,7 +27,6 @@ export type AggregateStaffRequest = {
 export type StaffRequestMinAggregateOutputType = {
   id: string | null
   nursery_id: string | null
-  user_id: string | null
   staff_id: string | null
   request_date: Date | null
   request_type: $Enums.StaffRequestType | null
@@ -41,7 +40,6 @@ export type StaffRequestMinAggregateOutputType = {
 export type StaffRequestMaxAggregateOutputType = {
   id: string | null
   nursery_id: string | null
-  user_id: string | null
   staff_id: string | null
   request_date: Date | null
   request_type: $Enums.StaffRequestType | null
@@ -55,7 +53,6 @@ export type StaffRequestMaxAggregateOutputType = {
 export type StaffRequestCountAggregateOutputType = {
   id: number
   nursery_id: number
-  user_id: number
   staff_id: number
   request_date: number
   request_type: number
@@ -71,7 +68,6 @@ export type StaffRequestCountAggregateOutputType = {
 export type StaffRequestMinAggregateInputType = {
   id?: true
   nursery_id?: true
-  user_id?: true
   staff_id?: true
   request_date?: true
   request_type?: true
@@ -85,7 +81,6 @@ export type StaffRequestMinAggregateInputType = {
 export type StaffRequestMaxAggregateInputType = {
   id?: true
   nursery_id?: true
-  user_id?: true
   staff_id?: true
   request_date?: true
   request_type?: true
@@ -99,7 +94,6 @@ export type StaffRequestMaxAggregateInputType = {
 export type StaffRequestCountAggregateInputType = {
   id?: true
   nursery_id?: true
-  user_id?: true
   staff_id?: true
   request_date?: true
   request_type?: true
@@ -186,8 +180,7 @@ export type StaffRequestGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type StaffRequestGroupByOutputType = {
   id: string
   nursery_id: string
-  user_id: string
-  staff_id: string | null
+  staff_id: string
   request_date: Date
   request_type: $Enums.StaffRequestType
   time_preference: string
@@ -221,8 +214,7 @@ export type StaffRequestWhereInput = {
   NOT?: Prisma.StaffRequestWhereInput | Prisma.StaffRequestWhereInput[]
   id?: Prisma.StringFilter<"StaffRequest"> | string
   nursery_id?: Prisma.StringFilter<"StaffRequest"> | string
-  user_id?: Prisma.StringFilter<"StaffRequest"> | string
-  staff_id?: Prisma.StringNullableFilter<"StaffRequest"> | string | null
+  staff_id?: Prisma.StringFilter<"StaffRequest"> | string
   request_date?: Prisma.DateTimeFilter<"StaffRequest"> | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFilter<"StaffRequest"> | $Enums.StaffRequestType
   time_preference?: Prisma.StringFilter<"StaffRequest"> | string
@@ -231,15 +223,13 @@ export type StaffRequestWhereInput = {
   created_at?: Prisma.DateTimeFilter<"StaffRequest"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"StaffRequest"> | Date | string
   nursery?: Prisma.XOR<Prisma.NurseryScalarRelationFilter, Prisma.NurseryWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
+  staff?: Prisma.XOR<Prisma.StaffScalarRelationFilter, Prisma.StaffWhereInput>
 }
 
 export type StaffRequestOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
-  user_id?: Prisma.SortOrder
-  staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  staff_id?: Prisma.SortOrder
   request_date?: Prisma.SortOrder
   request_type?: Prisma.SortOrder
   time_preference?: Prisma.SortOrder
@@ -248,19 +238,17 @@ export type StaffRequestOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   nursery?: Prisma.NurseryOrderByWithRelationInput
-  user?: Prisma.UserOrderByWithRelationInput
   staff?: Prisma.StaffOrderByWithRelationInput
 }
 
 export type StaffRequestWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  user_id_request_date?: Prisma.StaffRequestUser_idRequest_dateCompoundUniqueInput
+  staff_id_request_date?: Prisma.StaffRequestStaff_idRequest_dateCompoundUniqueInput
   AND?: Prisma.StaffRequestWhereInput | Prisma.StaffRequestWhereInput[]
   OR?: Prisma.StaffRequestWhereInput[]
   NOT?: Prisma.StaffRequestWhereInput | Prisma.StaffRequestWhereInput[]
   nursery_id?: Prisma.StringFilter<"StaffRequest"> | string
-  user_id?: Prisma.StringFilter<"StaffRequest"> | string
-  staff_id?: Prisma.StringNullableFilter<"StaffRequest"> | string | null
+  staff_id?: Prisma.StringFilter<"StaffRequest"> | string
   request_date?: Prisma.DateTimeFilter<"StaffRequest"> | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFilter<"StaffRequest"> | $Enums.StaffRequestType
   time_preference?: Prisma.StringFilter<"StaffRequest"> | string
@@ -269,15 +257,13 @@ export type StaffRequestWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"StaffRequest"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"StaffRequest"> | Date | string
   nursery?: Prisma.XOR<Prisma.NurseryScalarRelationFilter, Prisma.NurseryWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
-}, "id" | "user_id_request_date">
+  staff?: Prisma.XOR<Prisma.StaffScalarRelationFilter, Prisma.StaffWhereInput>
+}, "id" | "staff_id_request_date">
 
 export type StaffRequestOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
-  user_id?: Prisma.SortOrder
-  staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  staff_id?: Prisma.SortOrder
   request_date?: Prisma.SortOrder
   request_type?: Prisma.SortOrder
   time_preference?: Prisma.SortOrder
@@ -296,8 +282,7 @@ export type StaffRequestScalarWhereWithAggregatesInput = {
   NOT?: Prisma.StaffRequestScalarWhereWithAggregatesInput | Prisma.StaffRequestScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"StaffRequest"> | string
   nursery_id?: Prisma.StringWithAggregatesFilter<"StaffRequest"> | string
-  user_id?: Prisma.StringWithAggregatesFilter<"StaffRequest"> | string
-  staff_id?: Prisma.StringNullableWithAggregatesFilter<"StaffRequest"> | string | null
+  staff_id?: Prisma.StringWithAggregatesFilter<"StaffRequest"> | string
   request_date?: Prisma.DateTimeWithAggregatesFilter<"StaffRequest"> | Date | string
   request_type?: Prisma.EnumStaffRequestTypeWithAggregatesFilter<"StaffRequest"> | $Enums.StaffRequestType
   time_preference?: Prisma.StringWithAggregatesFilter<"StaffRequest"> | string
@@ -317,15 +302,13 @@ export type StaffRequestCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutStaff_requestsInput
-  user: Prisma.UserCreateNestedOneWithoutStaff_requestsInput
-  staff?: Prisma.StaffCreateNestedOneWithoutStaff_requestsInput
+  staff: Prisma.StaffCreateNestedOneWithoutStaff_requestsInput
 }
 
 export type StaffRequestUncheckedCreateInput = {
   id?: string
   nursery_id: string
-  user_id: string
-  staff_id?: string | null
+  staff_id: string
   request_date: Date | string
   request_type: $Enums.StaffRequestType
   time_preference: string
@@ -345,15 +328,13 @@ export type StaffRequestUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaff_requestsNestedInput
-  user?: Prisma.UserUpdateOneRequiredWithoutStaff_requestsNestedInput
-  staff?: Prisma.StaffUpdateOneWithoutStaff_requestsNestedInput
+  staff?: Prisma.StaffUpdateOneRequiredWithoutStaff_requestsNestedInput
 }
 
 export type StaffRequestUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  user_id?: Prisma.StringFieldUpdateOperationsInput | string
-  staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
   time_preference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -366,8 +347,7 @@ export type StaffRequestUncheckedUpdateInput = {
 export type StaffRequestCreateManyInput = {
   id?: string
   nursery_id: string
-  user_id: string
-  staff_id?: string | null
+  staff_id: string
   request_date: Date | string
   request_type: $Enums.StaffRequestType
   time_preference: string
@@ -391,8 +371,7 @@ export type StaffRequestUpdateManyMutationInput = {
 export type StaffRequestUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  user_id?: Prisma.StringFieldUpdateOperationsInput | string
-  staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
   time_preference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -412,15 +391,14 @@ export type StaffRequestOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StaffRequestUser_idRequest_dateCompoundUniqueInput = {
-  user_id: string
+export type StaffRequestStaff_idRequest_dateCompoundUniqueInput = {
+  staff_id: string
   request_date: Date | string
 }
 
 export type StaffRequestCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
-  user_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   request_date?: Prisma.SortOrder
   request_type?: Prisma.SortOrder
@@ -434,7 +412,6 @@ export type StaffRequestCountOrderByAggregateInput = {
 export type StaffRequestMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
-  user_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   request_date?: Prisma.SortOrder
   request_type?: Prisma.SortOrder
@@ -448,7 +425,6 @@ export type StaffRequestMaxOrderByAggregateInput = {
 export type StaffRequestMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
-  user_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   request_date?: Prisma.SortOrder
   request_type?: Prisma.SortOrder
@@ -543,48 +519,6 @@ export type StaffRequestUncheckedUpdateManyWithoutStaffNestedInput = {
   deleteMany?: Prisma.StaffRequestScalarWhereInput | Prisma.StaffRequestScalarWhereInput[]
 }
 
-export type StaffRequestCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.StaffRequestCreateWithoutUserInput, Prisma.StaffRequestUncheckedCreateWithoutUserInput> | Prisma.StaffRequestCreateWithoutUserInput[] | Prisma.StaffRequestUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.StaffRequestCreateOrConnectWithoutUserInput | Prisma.StaffRequestCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.StaffRequestCreateManyUserInputEnvelope
-  connect?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-}
-
-export type StaffRequestUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.StaffRequestCreateWithoutUserInput, Prisma.StaffRequestUncheckedCreateWithoutUserInput> | Prisma.StaffRequestCreateWithoutUserInput[] | Prisma.StaffRequestUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.StaffRequestCreateOrConnectWithoutUserInput | Prisma.StaffRequestCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.StaffRequestCreateManyUserInputEnvelope
-  connect?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-}
-
-export type StaffRequestUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.StaffRequestCreateWithoutUserInput, Prisma.StaffRequestUncheckedCreateWithoutUserInput> | Prisma.StaffRequestCreateWithoutUserInput[] | Prisma.StaffRequestUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.StaffRequestCreateOrConnectWithoutUserInput | Prisma.StaffRequestCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.StaffRequestUpsertWithWhereUniqueWithoutUserInput | Prisma.StaffRequestUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.StaffRequestCreateManyUserInputEnvelope
-  set?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  disconnect?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  delete?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  connect?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  update?: Prisma.StaffRequestUpdateWithWhereUniqueWithoutUserInput | Prisma.StaffRequestUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.StaffRequestUpdateManyWithWhereWithoutUserInput | Prisma.StaffRequestUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.StaffRequestScalarWhereInput | Prisma.StaffRequestScalarWhereInput[]
-}
-
-export type StaffRequestUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.StaffRequestCreateWithoutUserInput, Prisma.StaffRequestUncheckedCreateWithoutUserInput> | Prisma.StaffRequestCreateWithoutUserInput[] | Prisma.StaffRequestUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.StaffRequestCreateOrConnectWithoutUserInput | Prisma.StaffRequestCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.StaffRequestUpsertWithWhereUniqueWithoutUserInput | Prisma.StaffRequestUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.StaffRequestCreateManyUserInputEnvelope
-  set?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  disconnect?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  delete?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  connect?: Prisma.StaffRequestWhereUniqueInput | Prisma.StaffRequestWhereUniqueInput[]
-  update?: Prisma.StaffRequestUpdateWithWhereUniqueWithoutUserInput | Prisma.StaffRequestUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.StaffRequestUpdateManyWithWhereWithoutUserInput | Prisma.StaffRequestUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.StaffRequestScalarWhereInput | Prisma.StaffRequestScalarWhereInput[]
-}
-
 export type EnumStaffRequestTypeFieldUpdateOperationsInput = {
   set?: $Enums.StaffRequestType
 }
@@ -602,14 +536,12 @@ export type StaffRequestCreateWithoutNurseryInput = {
   status?: $Enums.StaffRequestStatus
   created_at?: Date | string
   updated_at?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutStaff_requestsInput
-  staff?: Prisma.StaffCreateNestedOneWithoutStaff_requestsInput
+  staff: Prisma.StaffCreateNestedOneWithoutStaff_requestsInput
 }
 
 export type StaffRequestUncheckedCreateWithoutNurseryInput = {
   id?: string
-  user_id: string
-  staff_id?: string | null
+  staff_id: string
   request_date: Date | string
   request_type: $Enums.StaffRequestType
   time_preference: string
@@ -651,8 +583,7 @@ export type StaffRequestScalarWhereInput = {
   NOT?: Prisma.StaffRequestScalarWhereInput | Prisma.StaffRequestScalarWhereInput[]
   id?: Prisma.StringFilter<"StaffRequest"> | string
   nursery_id?: Prisma.StringFilter<"StaffRequest"> | string
-  user_id?: Prisma.StringFilter<"StaffRequest"> | string
-  staff_id?: Prisma.StringNullableFilter<"StaffRequest"> | string | null
+  staff_id?: Prisma.StringFilter<"StaffRequest"> | string
   request_date?: Prisma.DateTimeFilter<"StaffRequest"> | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFilter<"StaffRequest"> | $Enums.StaffRequestType
   time_preference?: Prisma.StringFilter<"StaffRequest"> | string
@@ -672,13 +603,11 @@ export type StaffRequestCreateWithoutStaffInput = {
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutStaff_requestsInput
-  user: Prisma.UserCreateNestedOneWithoutStaff_requestsInput
 }
 
 export type StaffRequestUncheckedCreateWithoutStaffInput = {
   id?: string
   nursery_id: string
-  user_id: string
   request_date: Date | string
   request_type: $Enums.StaffRequestType
   time_preference: string
@@ -714,62 +643,9 @@ export type StaffRequestUpdateManyWithWhereWithoutStaffInput = {
   data: Prisma.XOR<Prisma.StaffRequestUpdateManyMutationInput, Prisma.StaffRequestUncheckedUpdateManyWithoutStaffInput>
 }
 
-export type StaffRequestCreateWithoutUserInput = {
-  id?: string
-  request_date: Date | string
-  request_type: $Enums.StaffRequestType
-  time_preference: string
-  memo?: string | null
-  status?: $Enums.StaffRequestStatus
-  created_at?: Date | string
-  updated_at?: Date | string
-  nursery: Prisma.NurseryCreateNestedOneWithoutStaff_requestsInput
-  staff?: Prisma.StaffCreateNestedOneWithoutStaff_requestsInput
-}
-
-export type StaffRequestUncheckedCreateWithoutUserInput = {
-  id?: string
-  nursery_id: string
-  staff_id?: string | null
-  request_date: Date | string
-  request_type: $Enums.StaffRequestType
-  time_preference: string
-  memo?: string | null
-  status?: $Enums.StaffRequestStatus
-  created_at?: Date | string
-  updated_at?: Date | string
-}
-
-export type StaffRequestCreateOrConnectWithoutUserInput = {
-  where: Prisma.StaffRequestWhereUniqueInput
-  create: Prisma.XOR<Prisma.StaffRequestCreateWithoutUserInput, Prisma.StaffRequestUncheckedCreateWithoutUserInput>
-}
-
-export type StaffRequestCreateManyUserInputEnvelope = {
-  data: Prisma.StaffRequestCreateManyUserInput | Prisma.StaffRequestCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
-export type StaffRequestUpsertWithWhereUniqueWithoutUserInput = {
-  where: Prisma.StaffRequestWhereUniqueInput
-  update: Prisma.XOR<Prisma.StaffRequestUpdateWithoutUserInput, Prisma.StaffRequestUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.StaffRequestCreateWithoutUserInput, Prisma.StaffRequestUncheckedCreateWithoutUserInput>
-}
-
-export type StaffRequestUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.StaffRequestWhereUniqueInput
-  data: Prisma.XOR<Prisma.StaffRequestUpdateWithoutUserInput, Prisma.StaffRequestUncheckedUpdateWithoutUserInput>
-}
-
-export type StaffRequestUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.StaffRequestScalarWhereInput
-  data: Prisma.XOR<Prisma.StaffRequestUpdateManyMutationInput, Prisma.StaffRequestUncheckedUpdateManyWithoutUserInput>
-}
-
 export type StaffRequestCreateManyNurseryInput = {
   id?: string
-  user_id: string
-  staff_id?: string | null
+  staff_id: string
   request_date: Date | string
   request_type: $Enums.StaffRequestType
   time_preference: string
@@ -788,14 +664,12 @@ export type StaffRequestUpdateWithoutNurseryInput = {
   status?: Prisma.EnumStaffRequestStatusFieldUpdateOperationsInput | $Enums.StaffRequestStatus
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutStaff_requestsNestedInput
-  staff?: Prisma.StaffUpdateOneWithoutStaff_requestsNestedInput
+  staff?: Prisma.StaffUpdateOneRequiredWithoutStaff_requestsNestedInput
 }
 
 export type StaffRequestUncheckedUpdateWithoutNurseryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  user_id?: Prisma.StringFieldUpdateOperationsInput | string
-  staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
   time_preference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -807,8 +681,7 @@ export type StaffRequestUncheckedUpdateWithoutNurseryInput = {
 
 export type StaffRequestUncheckedUpdateManyWithoutNurseryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  user_id?: Prisma.StringFieldUpdateOperationsInput | string
-  staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
   time_preference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -821,7 +694,6 @@ export type StaffRequestUncheckedUpdateManyWithoutNurseryInput = {
 export type StaffRequestCreateManyStaffInput = {
   id?: string
   nursery_id: string
-  user_id: string
   request_date: Date | string
   request_type: $Enums.StaffRequestType
   time_preference: string
@@ -841,13 +713,11 @@ export type StaffRequestUpdateWithoutStaffInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaff_requestsNestedInput
-  user?: Prisma.UserUpdateOneRequiredWithoutStaff_requestsNestedInput
 }
 
 export type StaffRequestUncheckedUpdateWithoutStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  user_id?: Prisma.StringFieldUpdateOperationsInput | string
   request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
   time_preference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -860,59 +730,6 @@ export type StaffRequestUncheckedUpdateWithoutStaffInput = {
 export type StaffRequestUncheckedUpdateManyWithoutStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  user_id?: Prisma.StringFieldUpdateOperationsInput | string
-  request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
-  time_preference?: Prisma.StringFieldUpdateOperationsInput | string
-  memo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumStaffRequestStatusFieldUpdateOperationsInput | $Enums.StaffRequestStatus
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type StaffRequestCreateManyUserInput = {
-  id?: string
-  nursery_id: string
-  staff_id?: string | null
-  request_date: Date | string
-  request_type: $Enums.StaffRequestType
-  time_preference: string
-  memo?: string | null
-  status?: $Enums.StaffRequestStatus
-  created_at?: Date | string
-  updated_at?: Date | string
-}
-
-export type StaffRequestUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
-  time_preference?: Prisma.StringFieldUpdateOperationsInput | string
-  memo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumStaffRequestStatusFieldUpdateOperationsInput | $Enums.StaffRequestStatus
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nursery?: Prisma.NurseryUpdateOneRequiredWithoutStaff_requestsNestedInput
-  staff?: Prisma.StaffUpdateOneWithoutStaff_requestsNestedInput
-}
-
-export type StaffRequestUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
-  time_preference?: Prisma.StringFieldUpdateOperationsInput | string
-  memo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumStaffRequestStatusFieldUpdateOperationsInput | $Enums.StaffRequestStatus
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type StaffRequestUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   request_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request_type?: Prisma.EnumStaffRequestTypeFieldUpdateOperationsInput | $Enums.StaffRequestType
   time_preference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -927,7 +744,6 @@ export type StaffRequestUncheckedUpdateManyWithoutUserInput = {
 export type StaffRequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   nursery_id?: boolean
-  user_id?: boolean
   staff_id?: boolean
   request_date?: boolean
   request_type?: boolean
@@ -937,14 +753,12 @@ export type StaffRequestSelect<ExtArgs extends runtime.Types.Extensions.Internal
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  staff?: boolean | Prisma.StaffRequest$staffArgs<ExtArgs>
+  staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["staffRequest"]>
 
 export type StaffRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   nursery_id?: boolean
-  user_id?: boolean
   staff_id?: boolean
   request_date?: boolean
   request_type?: boolean
@@ -954,14 +768,12 @@ export type StaffRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  staff?: boolean | Prisma.StaffRequest$staffArgs<ExtArgs>
+  staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["staffRequest"]>
 
 export type StaffRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   nursery_id?: boolean
-  user_id?: boolean
   staff_id?: boolean
   request_date?: boolean
   request_type?: boolean
@@ -971,14 +783,12 @@ export type StaffRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  staff?: boolean | Prisma.StaffRequest$staffArgs<ExtArgs>
+  staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["staffRequest"]>
 
 export type StaffRequestSelectScalar = {
   id?: boolean
   nursery_id?: boolean
-  user_id?: boolean
   staff_id?: boolean
   request_date?: boolean
   request_type?: boolean
@@ -989,35 +799,30 @@ export type StaffRequestSelectScalar = {
   updated_at?: boolean
 }
 
-export type StaffRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "user_id" | "staff_id" | "request_date" | "request_type" | "time_preference" | "memo" | "status" | "created_at" | "updated_at", ExtArgs["result"]["staffRequest"]>
+export type StaffRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "staff_id" | "request_date" | "request_type" | "time_preference" | "memo" | "status" | "created_at" | "updated_at", ExtArgs["result"]["staffRequest"]>
 export type StaffRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  staff?: boolean | Prisma.StaffRequest$staffArgs<ExtArgs>
+  staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
 }
 export type StaffRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  staff?: boolean | Prisma.StaffRequest$staffArgs<ExtArgs>
+  staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
 }
 export type StaffRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  staff?: boolean | Prisma.StaffRequest$staffArgs<ExtArgs>
+  staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
 }
 
 export type $StaffRequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "StaffRequest"
   objects: {
     nursery: Prisma.$NurseryPayload<ExtArgs>
-    user: Prisma.$UserPayload<ExtArgs>
-    staff: Prisma.$StaffPayload<ExtArgs> | null
+    staff: Prisma.$StaffPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     nursery_id: string
-    user_id: string
-    staff_id: string | null
+    staff_id: string
     request_date: Date
     request_type: $Enums.StaffRequestType
     time_preference: string
@@ -1420,8 +1225,7 @@ readonly fields: StaffRequestFieldRefs;
 export interface Prisma__StaffRequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   nursery<T extends Prisma.NurseryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NurseryDefaultArgs<ExtArgs>>): Prisma.Prisma__NurseryClient<runtime.Types.Result.GetResult<Prisma.$NurseryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  staff<T extends Prisma.StaffRequest$staffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StaffRequest$staffArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  staff<T extends Prisma.StaffDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StaffDefaultArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1453,7 +1257,6 @@ export interface Prisma__StaffRequestClient<T, Null = never, ExtArgs extends run
 export interface StaffRequestFieldRefs {
   readonly id: Prisma.FieldRef<"StaffRequest", 'String'>
   readonly nursery_id: Prisma.FieldRef<"StaffRequest", 'String'>
-  readonly user_id: Prisma.FieldRef<"StaffRequest", 'String'>
   readonly staff_id: Prisma.FieldRef<"StaffRequest", 'String'>
   readonly request_date: Prisma.FieldRef<"StaffRequest", 'DateTime'>
   readonly request_type: Prisma.FieldRef<"StaffRequest", 'StaffRequestType'>
@@ -1860,25 +1663,6 @@ export type StaffRequestDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many StaffRequests to delete.
    */
   limit?: number
-}
-
-/**
- * StaffRequest.staff
- */
-export type StaffRequest$staffArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Staff
-   */
-  select?: Prisma.StaffSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Staff
-   */
-  omit?: Prisma.StaffOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.StaffInclude<ExtArgs> | null
-  where?: Prisma.StaffWhereInput
 }
 
 /**

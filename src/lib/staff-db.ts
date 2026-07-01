@@ -1,4 +1,4 @@
-import type { Staff as PrismaStaff, User as PrismaUser } from "@/generated/prisma/client";
+import type { Staff as PrismaStaff } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveNurseryId } from "@/lib/nursery-db";
@@ -33,15 +33,15 @@ function shiftTimeToDb(time: StaffShiftTime) {
   };
 }
 
-export function toStaffMember(record: PrismaStaff & { user?: PrismaUser | null }): StaffMember {
+export function toStaffMember(record: PrismaStaff): StaffMember {
   return {
     id: record.id,
     staff_id: record.staff_login_id ?? "",
     name: record.name,
     roleLabel: getJobTypeLabel(record.job_type as JobType),
     capable_class_ids: record.capable_class_ids ?? [],
-    employment_type: record.employment_type as EmploymentType,
-    job_type: record.job_type as JobType,
+    employment_type: (record.employment_type ?? "hijokin") as EmploymentType,
+    job_type: (record.job_type ?? "other") as JobType,
     has_nursery_teacher_license: record.has_nursery_teacher_license,
     work_availability: {
       start: record.work_availability_start
@@ -52,7 +52,7 @@ export function toStaffMember(record: PrismaStaff & { user?: PrismaUser | null }
         : "",
     },
     is_active: record.is_active,
-    hasAccount: record.user != null,
+    hasAccount: record.email != null,
   };
 }
 
@@ -102,14 +102,13 @@ export async function listStaff(nurseryId?: string) {
   const rows = await prisma.staff.findMany({
     where: { nursery_id: resolvedNurseryId },
     orderBy: [{ staff_login_id: "asc" }, { name: "asc" }],
-    include: { user: true },
   });
 
   return rows.map(toStaffMember);
 }
 
 export async function getStaffById(id: string) {
-  const row = await prisma.staff.findUnique({ where: { id }, include: { user: true } });
+  const row = await prisma.staff.findUnique({ where: { id } });
   return row ? toStaffMember(row) : null;
 }
 
@@ -124,7 +123,6 @@ export async function createStaff(input: StaffWriteInput, nurseryId?: string) {
         capable_class_ids: [],
         ...buildStaffData(input, staffLoginId),
       },
-      include: { user: true },
     });
 
     return toStaffMember(row);
@@ -158,7 +156,6 @@ export async function updateStaff(id: string, input: StaffWriteInput) {
     const row = await prisma.staff.update({
       where: { id },
       data: buildStaffData(input, staffLoginId),
-      include: { user: true },
     });
 
     return toStaffMember(row);

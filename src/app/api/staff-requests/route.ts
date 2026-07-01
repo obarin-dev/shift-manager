@@ -66,9 +66,6 @@ export async function POST(request: Request) {
   if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  if (!owner.staffId) {
-    return NextResponse.json({ error: "no_staff_profile" }, { status: 403 });
-  }
 
   let body: unknown;
   try {

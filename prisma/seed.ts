@@ -12,12 +12,6 @@ import { DEFAULT_NURSERY_ID } from "../src/lib/nursery-db";
 import { parseTimeToDate } from "../src/lib/nursery-time";
 import { hashPassword } from "../src/lib/user-db";
 
-const SEED_ACCOUNTS = [
-  { role: "admin" as const, email: "admin@example.com" },
-  { role: "manager" as const, email: "manager@example.com" },
-  { role: "staff" as const, email: "staff@example.com" },
-];
-
 const SEED_STAFF = [
   { id: "staff-1", staff_id: "000001", name: "山田 花子", employment_type: "seikin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1", "class-mixed"], work_availability: { start: "07:00", end: "19:30" }, is_active: true },
   { id: "staff-2", staff_id: "000002", name: "佐藤 太郎", employment_type: "hijokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1"], work_availability: { start: "07:30", end: "09:00" }, is_active: true },
@@ -26,6 +20,14 @@ const SEED_STAFF = [
   { id: "staff-5", staff_id: "000005", name: "田中 由美", employment_type: "hijokin" as const, job_type: "cook" as const, has_nursery_teacher_license: false, capable_class_ids: ["class-mixed"], work_availability: { start: "", end: "" }, is_active: true },
   { id: "staff-6", staff_id: "000006", name: "伊藤 誠", employment_type: "jokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-0", "class-2"], work_availability: { start: "07:00", end: "19:00" }, is_active: true },
 ];
+
+// ログインアカウントを持つスタッフ（メール・パスワード・ロールを直接 Staff に設定）
+const SEED_LOGIN_STAFF = [
+  { id: "staff-admin", staff_id: "000010", name: "管理者", email: "admin@example.com", role: "admin" as const, employment_type: "seikin" as const, job_type: "office" as const },
+  { id: "staff-manager", staff_id: "000011", name: "勤務表作成者", email: "manager@example.com", role: "manager" as const, employment_type: "seikin" as const, job_type: "office" as const },
+];
+// staff-6 (伊藤) は staff ロールのログインアカウント
+const STAFF_LOGIN_EMAIL = "staff@example.com";
 
 const SEED_CLASSROOMS = [
   { id: "class-0", name: "0歳児クラス", ageGroup: "age_0" as const, childCount: 8, auxiliarySlots: [{ id: "aux-0-1", count: 1, time: "10:00-15:00" }], mainStaffId: null, otherStaffIds: [] as string[], note: "" },
@@ -164,54 +166,47 @@ async function main() {
   }
 
   const demoPasswordHash = await hashPassword("demo1234");
-  const demoStaffLinks: Record<string, string | null> = {
-    "admin@example.com": null,
-    "manager@example.com": null,
-    "staff@example.com": "staff-6",
-  };
 
-  for (const account of SEED_ACCOUNTS) {
-    const userId = `user-${account.role}`;
-    const exists = await prisma.user.findUnique({
-      where: { id: userId },
+  // admin / manager: ログイン専用スタッフとして Staff テーブルに直接作成
+  for (const account of SEED_LOGIN_STAFF) {
+    const exists = await prisma.staff.findUnique({
+      where: { id: account.id },
       select: { id: true },
     });
     if (exists) {
       continue;
     }
-
-    await prisma.user.create({
+    await prisma.staff.create({
       data: {
-        id: userId,
+        id: account.id,
         nursery_id: DEFAULT_NURSERY_ID,
-        staff_id: demoStaffLinks[account.email] ?? null,
+        name: account.name,
+        staff_login_id: account.staff_id,
+        employment_type: account.employment_type,
+        job_type: account.job_type,
+        capable_class_ids: [],
+        has_nursery_teacher_license: false,
+        is_active: true,
         email: account.email,
         password_hash: demoPasswordHash,
         role: account.role,
-        is_active: true,
       },
     });
   }
 
-  const adminStaff = await prisma.staff.findFirst({
-    where: { name: { contains: "西園" } },
-    select: { id: true },
+  // staff-6 (伊藤) に staff ロールのログイン情報を設定
+  const itoStaff = await prisma.staff.findUnique({
+    where: { id: "staff-6" },
+    select: { id: true, email: true },
   });
-  if (adminStaff) {
-    await prisma.user.update({
-      where: { id: "user-admin" },
-      data: { staff_id: adminStaff.id },
-    });
-  }
-
-  const itoStaff = await prisma.staff.findFirst({
-    where: { name: { contains: "伊藤" } },
-    select: { id: true },
-  });
-  if (itoStaff) {
-    await prisma.user.update({
-      where: { id: "user-staff" },
-      data: { staff_id: itoStaff.id },
+  if (itoStaff && !itoStaff.email) {
+    await prisma.staff.update({
+      where: { id: "staff-6" },
+      data: {
+        email: STAFF_LOGIN_EMAIL,
+        password_hash: demoPasswordHash,
+        role: "staff",
+      },
     });
   }
 
@@ -244,20 +239,18 @@ async function main() {
     classroomCount,
     shiftTypeCount,
     calendarEntryCount,
-    userCount,
   ] = await Promise.all([
     prisma.nursery.count(),
     prisma.staff.count(),
     prisma.classroom.count(),
     prisma.shiftType.count(),
     prisma.calendarEntry.count(),
-    prisma.user.count(),
   ]);
 
   console.log("");
   console.log("Seed completed:");
   console.log(`  Nursery:    ${nurseryCount} row(s)`);
-  console.log(`  Staff:      ${staffCount} row(s) (expected ${SEED_STAFF.length})`);
+  console.log(`  Staff:      ${staffCount} row(s)`);
   console.log(`  Classroom:  ${classroomCount} row(s) (expected ${SEED_CLASSROOMS.length})`);
   console.log(
     `  ShiftType:  ${shiftTypeCount} row(s) (expected ${INITIAL_SHIFT_TYPES.length})`,
@@ -265,9 +258,8 @@ async function main() {
   console.log(
     `  Calendar:   ${calendarEntryCount} row(s) (expected ${calendarSeedEntries.length})`,
   );
-  console.log(`  User:       ${userCount} row(s) (expected ${SEED_ACCOUNTS.length})`);
 
-  if (staffCount < SEED_STAFF.length) {
+  if (staffCount < SEED_STAFF.length + SEED_LOGIN_STAFF.length) {
     throw new Error(
       `Staff の投入が不足しています。マイグレーション後に npm run db:seed を再実行してください。`,
     );

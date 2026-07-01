@@ -392,7 +392,6 @@ export const ModelName = {
   ShiftSchedule: 'ShiftSchedule',
   ShiftSlot: 'ShiftSlot',
   RosterSheet: 'RosterSheet',
-  User: 'User',
   Invitation: 'Invitation',
   StaffRequest: 'StaffRequest'
 } as const
@@ -410,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "nursery" | "calendarEntry" | "shiftType" | "classroom" | "staff" | "shiftSchedule" | "shiftSlot" | "rosterSheet" | "user" | "invitation" | "staffRequest"
+    modelProps: "nursery" | "calendarEntry" | "shiftType" | "classroom" | "staff" | "shiftSchedule" | "shiftSlot" | "rosterSheet" | "invitation" | "staffRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1006,80 +1005,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    User: {
-      payload: Prisma.$UserPayload<ExtArgs>
-      fields: Prisma.UserFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.UserFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        findFirst: {
-          args: Prisma.UserFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        findMany: {
-          args: Prisma.UserFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
-        }
-        create: {
-          args: Prisma.UserCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        createMany: {
-          args: Prisma.UserCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.UserCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
-        }
-        delete: {
-          args: Prisma.UserDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        update: {
-          args: Prisma.UserUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        deleteMany: {
-          args: Prisma.UserDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.UserUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.UserUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
-        }
-        upsert: {
-          args: Prisma.UserUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
-        }
-        aggregate: {
-          args: Prisma.UserAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateUser>
-        }
-        groupBy: {
-          args: Prisma.UserGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.UserCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
-        }
-      }
-    }
     Invitation: {
       payload: Prisma.$InvitationPayload<ExtArgs>
       fields: Prisma.InvitationFieldRefs
@@ -1355,6 +1280,9 @@ export const StaffScalarFieldEnum = {
   can_work_late_shift: 'can_work_late_shift',
   can_work_extended_care: 'can_work_extended_care',
   is_active: 'is_active',
+  email: 'email',
+  password_hash: 'password_hash',
+  role: 'role',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1401,21 +1329,6 @@ export const RosterSheetScalarFieldEnum = {
 export type RosterSheetScalarFieldEnum = (typeof RosterSheetScalarFieldEnum)[keyof typeof RosterSheetScalarFieldEnum]
 
 
-export const UserScalarFieldEnum = {
-  id: 'id',
-  nursery_id: 'nursery_id',
-  staff_id: 'staff_id',
-  email: 'email',
-  password_hash: 'password_hash',
-  role: 'role',
-  is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
-
-
 export const InvitationScalarFieldEnum = {
   id: 'id',
   nursery_id: 'nursery_id',
@@ -1435,7 +1348,6 @@ export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof
 export const StaffRequestScalarFieldEnum = {
   id: 'id',
   nursery_id: 'nursery_id',
-  user_id: 'user_id',
   staff_id: 'staff_id',
   request_date: 'request_date',
   request_type: 'request_type',
@@ -1637,20 +1549,6 @@ export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
 
 
 /**
- * Reference to a field of type 'ShiftScheduleStatus'
- */
-export type EnumShiftScheduleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShiftScheduleStatus'>
-    
-
-
-/**
- * Reference to a field of type 'ShiftScheduleStatus[]'
- */
-export type ListEnumShiftScheduleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShiftScheduleStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'UserRole'
  */
 export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
@@ -1661,6 +1559,20 @@ export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'UserRole[]'
  */
 export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ShiftScheduleStatus'
+ */
+export type EnumShiftScheduleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShiftScheduleStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ShiftScheduleStatus[]'
+ */
+export type ListEnumShiftScheduleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShiftScheduleStatus[]'>
     
 
 
@@ -1823,7 +1735,6 @@ export type GlobalOmitConfig = {
   shiftSchedule?: Prisma.ShiftScheduleOmit
   shiftSlot?: Prisma.ShiftSlotOmit
   rosterSheet?: Prisma.RosterSheetOmit
-  user?: Prisma.UserOmit
   invitation?: Prisma.InvitationOmit
   staffRequest?: Prisma.StaffRequestOmit
 }

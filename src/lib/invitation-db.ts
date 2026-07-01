@@ -151,7 +151,7 @@ export async function registerWithInvitation({
       throw new InvitationInvalidError();
     }
 
-    const user = await createUserInTx(tx, {
+    const staff = await createUserInTx(tx, {
       nurseryId: inv.nursery_id,
       staffId: inv.staff_id ?? null,
       email,
@@ -159,6 +159,6 @@ export async function registerWithInvitation({
       role: "staff",
     });
 
-    return { userId: user.id, nurseryId: user.nursery_id, email: user.email };
+    return { userId: staff.id, nurseryId: staff.nursery_id, email: staff.email };
   });
 }
