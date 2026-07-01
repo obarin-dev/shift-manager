@@ -62,7 +62,6 @@ export function AdminShell({
         ]
       : [
           allAdminNavItems[0],
-          { label: "職員", kind: "section" as const },
           ...staffNavItems,
           { label: "管理者", kind: "section" as const },
           ...allAdminNavItems.slice(1),
