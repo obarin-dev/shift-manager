@@ -58,14 +58,21 @@ describe("GET /api/classrooms", () => {
     vi.mocked(listClassrooms).mockResolvedValue(MOCK_CLASSROOMS as never);
 
     const res = await GET();
+    const body = await res.json();
+
     expect(res.status).toBe(200);
+    expect(body.data).toEqual(MOCK_CLASSROOMS);
   });
 
-  it("staff は 403 が返る", async () => {
+  it("staff もクラス一覧を取得できる", async () => {
     vi.mocked(getSession).mockResolvedValue(STAFF_SESSION);
+    vi.mocked(listClassrooms).mockResolvedValue(MOCK_CLASSROOMS as never);
 
     const res = await GET();
-    expect(res.status).toBe(403);
+    const body = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(body.data).toEqual(MOCK_CLASSROOMS);
   });
 
   it("未認証は 401 が返る", async () => {

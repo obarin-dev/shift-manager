@@ -98,7 +98,6 @@ function parseWriteBody(body: unknown): ClassroomWriteInput | null {
 export async function GET() {
   const session = await getSession();
   if (!session) return unauthorizedResponse();
-  if (session.role === "staff") return forbiddenResponse();
 
   try {
     const classrooms = await listClassrooms();

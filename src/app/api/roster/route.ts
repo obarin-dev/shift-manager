@@ -8,6 +8,7 @@ import {
 } from "@/lib/roster-db";
 import { getSession } from "@/lib/auth-session";
 import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
+import { getTodayJst } from "@/lib/nursery-time";
 
 export const runtime = "nodejs";
 
@@ -18,11 +19,14 @@ function isValidDateKey(value: string | null) {
 export async function GET(request: Request) {
   const session = await getSession();
   if (!session) return unauthorizedResponse();
-  if (session.role === "staff") return forbiddenResponse();
 
   const date = new URL(request.url).searchParams.get("date");
   if (!isValidDateKey(date)) {
     return NextResponse.json({ error: "invalid_date" }, { status: 400 });
+  }
+
+  if (session.role === "staff" && date !== getTodayJst()) {
+    return forbiddenResponse();
   }
 
   try {
