@@ -178,7 +178,7 @@ export async function generateShiftScheduleWithAi(targetMonth: string): Promise<
 
   const [nurseryName, staff, shiftTypes, holidaySettings, events] = await Promise.all([
     getPrimaryNurseryName(),
-    listStaff(),
+    listStaff(undefined, { schedulableOnly: true }),
     listShiftTypes(),
     getHolidaySettings(),
     listCalendarEntries({ from, to }),

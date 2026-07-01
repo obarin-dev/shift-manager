@@ -38,7 +38,7 @@ export function toStaffMember(record: PrismaStaff): StaffMember {
     id: record.id,
     staff_id: record.staff_login_id ?? "",
     name: record.name,
-    roleLabel: getJobTypeLabel(record.job_type as JobType),
+    roleLabel: getJobTypeLabel((record.job_type ?? "other") as JobType),
     capable_class_ids: record.capable_class_ids ?? [],
     employment_type: (record.employment_type ?? "hijokin") as EmploymentType,
     job_type: (record.job_type ?? "other") as JobType,
@@ -97,10 +97,13 @@ export async function allocateNextStaffLoginId(nurseryId: string) {
   return String(next).padStart(6, "0");
 }
 
-export async function listStaff(nurseryId?: string) {
+export async function listStaff(nurseryId?: string, opts?: { schedulableOnly?: boolean }) {
   const resolvedNurseryId = await resolveNurseryId(nurseryId);
   const rows = await prisma.staff.findMany({
-    where: { nursery_id: resolvedNurseryId },
+    where: {
+      nursery_id: resolvedNurseryId,
+      ...(opts?.schedulableOnly ? { employment_type: { not: null } } : {}),
+    },
     orderBy: [{ staff_login_id: "asc" }, { name: "asc" }],
   });
 

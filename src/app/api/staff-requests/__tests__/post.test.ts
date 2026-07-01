@@ -4,9 +4,10 @@ import type { AuthAccount } from "@/lib/user-db";
 import type { StaffRequestPayload } from "@/lib/staff-request-db";
 
 // --- モジュールモック ---
-vi.mock("@/lib/auth-session", () => ({
-  getSession: vi.fn(),
-}));
+vi.mock("@/lib/auth-session", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/auth-session")>();
+  return { ...actual, getSession: vi.fn() };
+});
 
 vi.mock("@/lib/user-db", () => ({
   getAuthAccountByUserId: vi.fn(),
@@ -89,11 +90,18 @@ describe("POST /api/staff-requests", () => {
     expect(res.status).toBe(401);
   });
 
-  it("admin ロールでも 201 を返す", async () => {
+  it("admin ロール: 403 を返す", async () => {
     vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "admin" });
     vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "admin" });
     const res = await POST(makeRequest(VALID_BODY));
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(403);
+  });
+
+  it("manager ロール: 403 を返す", async () => {
+    vi.mocked(getSession).mockResolvedValue({ ...STAFF_SESSION, role: "manager" });
+    vi.mocked(getAuthAccountByUserId).mockResolvedValue({ ...STAFF_ACCOUNT, role: "manager" });
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(403);
   });
 
   it("重複申請: 409 を返す", async () => {
