@@ -61,11 +61,11 @@ describe("GET /api/classrooms", () => {
     expect(res.status).toBe(200);
   });
 
-  it("staff は 403 が返る", async () => {
+  it("staff もクラス一覧を取得できる", async () => {
     vi.mocked(getSession).mockResolvedValue(STAFF_SESSION);
 
     const res = await GET();
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(200);
   });
 
   it("未認証は 401 が返る", async () => {

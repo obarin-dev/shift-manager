@@ -18,7 +18,6 @@ function isValidDateKey(value: string | null) {
 export async function GET(request: Request) {
   const session = await getSession();
   if (!session) return unauthorizedResponse();
-  if (session.role === "staff") return forbiddenResponse();
 
   const date = new URL(request.url).searchParams.get("date");
   if (!isValidDateKey(date)) {
