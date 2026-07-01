@@ -64,7 +64,7 @@ describe("GET /api/staff", () => {
     expect(body.data).toEqual(MOCK_STAFF);
   });
 
-  it("staff は id と display_name のみ取得できる", async () => {
+  it("staff は id と name のみ取得できる", async () => {
     vi.mocked(getSession).mockResolvedValue(STAFF_SESSION);
     vi.mocked(listStaff).mockResolvedValue(MOCK_STAFF as never);
 
