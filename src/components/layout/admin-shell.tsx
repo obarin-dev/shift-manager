@@ -27,7 +27,7 @@ export function AdminShell({
   scrollPanelLayout = false,
   children,
 }: AdminShellProps) {
-  const adminNavItems = ADMIN_NAV_ITEMS.map((item) => ({
+  const allAdminNavItems = ADMIN_NAV_ITEMS.map((item) => ({
     label: item.label,
     href: resolveAdminNavHref(item.path, role),
     isActive: !activeStaffNav && item.key === activeNav,
@@ -35,12 +35,6 @@ export function AdminShell({
   }));
 
   const staffNavItems = [
-    {
-      label: "ホーム",
-      href: "/home",
-      isActive: activeNav === "home" && !activeStaffNav,
-      icon: <SidebarIcon path="M3 10.5L12 3l9 7.5M6 9.5V21h12V9.5" />,
-    },
     {
       label: "出勤希望",
       href: "/staff/requests",
@@ -55,7 +49,24 @@ export function AdminShell({
     },
   ];
 
-  const groupedNavItems = role === "staff" ? staffNavItems : adminNavItems;
+  const groupedNavItems =
+    role === "staff"
+      ? [
+          {
+            label: "ホーム",
+            href: "/home",
+            isActive: activeNav === "home" && !activeStaffNav,
+            icon: <SidebarIcon path="M3 10.5L12 3l9 7.5M6 9.5V21h12V9.5" />,
+          },
+          ...staffNavItems,
+        ]
+      : [
+          allAdminNavItems[0],
+          { label: "職員", kind: "section" as const },
+          ...staffNavItems,
+          { label: "管理者", kind: "section" as const },
+          ...allAdminNavItems.slice(1),
+        ];
 
   return (
     <main className="home-page">
