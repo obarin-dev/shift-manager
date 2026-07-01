@@ -80,9 +80,10 @@ async function resolveStaffAssignment(
   mainStaffId: string | null,
   otherStaffIds: string[],
 ) {
+  const deduped = [...new Set(otherStaffIds)];
   const requestedIds = [
     ...(mainStaffId ? [mainStaffId] : []),
-    ...otherStaffIds,
+    ...deduped,
   ];
 
   if (requestedIds.length === 0) {
@@ -100,10 +101,8 @@ async function resolveStaffAssignment(
     throw new InvalidStaffAssignmentError(invalidStaffIds);
   }
 
-  const validMain = mainStaffId && validIds.has(mainStaffId) ? mainStaffId : null;
-  const validOthers = otherStaffIds.filter(
-    (id) => validIds.has(id) && id !== validMain,
-  );
+  const validMain = mainStaffId ?? null;
+  const validOthers = deduped.filter((id) => id !== validMain);
 
   return { mainStaffId: validMain, otherStaffIds: validOthers };
 }
@@ -153,27 +152,24 @@ export async function createClassroom(input: ClassroomWriteInput, nurseryId?: st
     input.otherStaffIds,
   );
 
-  const row = await prisma.$transaction(async (tx) => {
-    const classroom = await tx.classroom.create({
-      data: {
-        nursery_id: resolvedNurseryId,
-        name: input.name,
-        age_group: input.ageGroup,
-        child_count: input.childCount,
-        auxiliary_slots: input.auxiliarySlots as Prisma.InputJsonValue,
-        note: input.note || null,
-      },
-    });
+  const staffCreateData = [
+    ...(mainStaffId ? [{ staff_id: mainStaffId, role: "main" as const }] : []),
+    ...otherStaffIds.map((id) => ({ staff_id: id, role: "sub" as const })),
+  ];
 
-    const entries = buildClassroomStaffEntries(classroom.id, mainStaffId, otherStaffIds);
-    if (entries.length > 0) {
-      await tx.classroomStaff.createMany({ data: entries });
-    }
-
-    return tx.classroom.findUniqueOrThrow({
-      where: { id: classroom.id },
-      include: CLASSROOM_STAFF_INCLUDE,
-    });
+  const row = await prisma.classroom.create({
+    data: {
+      nursery_id: resolvedNurseryId,
+      name: input.name,
+      age_group: input.ageGroup,
+      child_count: input.childCount,
+      auxiliary_slots: input.auxiliarySlots as Prisma.InputJsonValue,
+      note: input.note || null,
+      ...(staffCreateData.length > 0
+        ? { classroom_staffs: { createMany: { data: staffCreateData } } }
+        : {}),
+    },
+    include: CLASSROOM_STAFF_INCLUDE,
   });
 
   return toClassroom(row);
@@ -230,5 +226,11 @@ export async function deleteClassroom(id: string) {
 export function isUniqueConstraintError(error: unknown) {
   return (
     error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"
+  );
+}
+
+export function isForeignKeyConstraintError(error: unknown) {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003"
   );
 }
