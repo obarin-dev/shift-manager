@@ -51,15 +51,7 @@ export function AdminShell({
 
   const groupedNavItems =
     role === "staff"
-      ? [
-          {
-            label: "ホーム",
-            href: "/home",
-            isActive: activeNav === "home" && !activeStaffNav,
-            icon: <SidebarIcon path="M3 10.5L12 3l9 7.5M6 9.5V21h12V9.5" />,
-          },
-          ...staffNavItems,
-        ]
+      ? [allAdminNavItems[0], ...staffNavItems]
       : [
           allAdminNavItems[0],
           ...staffNavItems,

@@ -58,7 +58,10 @@ describe("GET /api/staff", () => {
     vi.mocked(listStaff).mockResolvedValue(MOCK_STAFF as never);
 
     const res = await GET();
+    const body = await res.json();
+
     expect(res.status).toBe(200);
+    expect(body.data).toEqual(MOCK_STAFF);
   });
 
   it("staff は id と display_name のみ取得できる", async () => {
