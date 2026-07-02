@@ -29,7 +29,7 @@ export type ShiftSlotMinAggregateOutputType = {
   shift_schedule_id: string | null
   staff_id: string | null
   work_date: Date | null
-  shift_type: string | null
+  shift_type_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -39,7 +39,7 @@ export type ShiftSlotMaxAggregateOutputType = {
   shift_schedule_id: string | null
   staff_id: string | null
   work_date: Date | null
-  shift_type: string | null
+  shift_type_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -49,7 +49,7 @@ export type ShiftSlotCountAggregateOutputType = {
   shift_schedule_id: number
   staff_id: number
   work_date: number
-  shift_type: number
+  shift_type_id: number
   created_at: number
   updated_at: number
   _all: number
@@ -61,7 +61,7 @@ export type ShiftSlotMinAggregateInputType = {
   shift_schedule_id?: true
   staff_id?: true
   work_date?: true
-  shift_type?: true
+  shift_type_id?: true
   created_at?: true
   updated_at?: true
 }
@@ -71,7 +71,7 @@ export type ShiftSlotMaxAggregateInputType = {
   shift_schedule_id?: true
   staff_id?: true
   work_date?: true
-  shift_type?: true
+  shift_type_id?: true
   created_at?: true
   updated_at?: true
 }
@@ -81,7 +81,7 @@ export type ShiftSlotCountAggregateInputType = {
   shift_schedule_id?: true
   staff_id?: true
   work_date?: true
-  shift_type?: true
+  shift_type_id?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -164,7 +164,7 @@ export type ShiftSlotGroupByOutputType = {
   shift_schedule_id: string
   staff_id: string
   work_date: Date
-  shift_type: string
+  shift_type_id: string | null
   created_at: Date
   updated_at: Date
   _count: ShiftSlotCountAggregateOutputType | null
@@ -195,11 +195,12 @@ export type ShiftSlotWhereInput = {
   shift_schedule_id?: Prisma.StringFilter<"ShiftSlot"> | string
   staff_id?: Prisma.StringFilter<"ShiftSlot"> | string
   work_date?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
-  shift_type?: Prisma.StringFilter<"ShiftSlot"> | string
+  shift_type_id?: Prisma.StringNullableFilter<"ShiftSlot"> | string | null
   created_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
   shift_schedule?: Prisma.XOR<Prisma.ShiftScheduleScalarRelationFilter, Prisma.ShiftScheduleWhereInput>
   staff?: Prisma.XOR<Prisma.StaffScalarRelationFilter, Prisma.StaffWhereInput>
+  shift_type?: Prisma.XOR<Prisma.ShiftTypeNullableScalarRelationFilter, Prisma.ShiftTypeWhereInput> | null
 }
 
 export type ShiftSlotOrderByWithRelationInput = {
@@ -207,11 +208,12 @@ export type ShiftSlotOrderByWithRelationInput = {
   shift_schedule_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   work_date?: Prisma.SortOrder
-  shift_type?: Prisma.SortOrder
+  shift_type_id?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   shift_schedule?: Prisma.ShiftScheduleOrderByWithRelationInput
   staff?: Prisma.StaffOrderByWithRelationInput
+  shift_type?: Prisma.ShiftTypeOrderByWithRelationInput
 }
 
 export type ShiftSlotWhereUniqueInput = Prisma.AtLeast<{
@@ -223,11 +225,12 @@ export type ShiftSlotWhereUniqueInput = Prisma.AtLeast<{
   shift_schedule_id?: Prisma.StringFilter<"ShiftSlot"> | string
   staff_id?: Prisma.StringFilter<"ShiftSlot"> | string
   work_date?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
-  shift_type?: Prisma.StringFilter<"ShiftSlot"> | string
+  shift_type_id?: Prisma.StringNullableFilter<"ShiftSlot"> | string | null
   created_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
   shift_schedule?: Prisma.XOR<Prisma.ShiftScheduleScalarRelationFilter, Prisma.ShiftScheduleWhereInput>
   staff?: Prisma.XOR<Prisma.StaffScalarRelationFilter, Prisma.StaffWhereInput>
+  shift_type?: Prisma.XOR<Prisma.ShiftTypeNullableScalarRelationFilter, Prisma.ShiftTypeWhereInput> | null
 }, "id" | "shift_schedule_id_staff_id_work_date">
 
 export type ShiftSlotOrderByWithAggregationInput = {
@@ -235,7 +238,7 @@ export type ShiftSlotOrderByWithAggregationInput = {
   shift_schedule_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   work_date?: Prisma.SortOrder
-  shift_type?: Prisma.SortOrder
+  shift_type_id?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.ShiftSlotCountOrderByAggregateInput
@@ -251,7 +254,7 @@ export type ShiftSlotScalarWhereWithAggregatesInput = {
   shift_schedule_id?: Prisma.StringWithAggregatesFilter<"ShiftSlot"> | string
   staff_id?: Prisma.StringWithAggregatesFilter<"ShiftSlot"> | string
   work_date?: Prisma.DateTimeWithAggregatesFilter<"ShiftSlot"> | Date | string
-  shift_type?: Prisma.StringWithAggregatesFilter<"ShiftSlot"> | string
+  shift_type_id?: Prisma.StringNullableWithAggregatesFilter<"ShiftSlot"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"ShiftSlot"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"ShiftSlot"> | Date | string
 }
@@ -259,11 +262,11 @@ export type ShiftSlotScalarWhereWithAggregatesInput = {
 export type ShiftSlotCreateInput = {
   id?: string
   work_date: Date | string
-  shift_type: string
   created_at?: Date | string
   updated_at?: Date | string
   shift_schedule: Prisma.ShiftScheduleCreateNestedOneWithoutSlotsInput
   staff: Prisma.StaffCreateNestedOneWithoutShift_slotsInput
+  shift_type?: Prisma.ShiftTypeCreateNestedOneWithoutSlotsInput
 }
 
 export type ShiftSlotUncheckedCreateInput = {
@@ -271,7 +274,7 @@ export type ShiftSlotUncheckedCreateInput = {
   shift_schedule_id: string
   staff_id: string
   work_date: Date | string
-  shift_type: string
+  shift_type_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -279,11 +282,11 @@ export type ShiftSlotUncheckedCreateInput = {
 export type ShiftSlotUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shift_schedule?: Prisma.ShiftScheduleUpdateOneRequiredWithoutSlotsNestedInput
   staff?: Prisma.StaffUpdateOneRequiredWithoutShift_slotsNestedInput
+  shift_type?: Prisma.ShiftTypeUpdateOneWithoutSlotsNestedInput
 }
 
 export type ShiftSlotUncheckedUpdateInput = {
@@ -291,7 +294,7 @@ export type ShiftSlotUncheckedUpdateInput = {
   shift_schedule_id?: Prisma.StringFieldUpdateOperationsInput | string
   staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_type_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -301,7 +304,7 @@ export type ShiftSlotCreateManyInput = {
   shift_schedule_id: string
   staff_id: string
   work_date: Date | string
-  shift_type: string
+  shift_type_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -309,7 +312,6 @@ export type ShiftSlotCreateManyInput = {
 export type ShiftSlotUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -319,7 +321,7 @@ export type ShiftSlotUncheckedUpdateManyInput = {
   shift_schedule_id?: Prisma.StringFieldUpdateOperationsInput | string
   staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_type_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -345,7 +347,7 @@ export type ShiftSlotCountOrderByAggregateInput = {
   shift_schedule_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   work_date?: Prisma.SortOrder
-  shift_type?: Prisma.SortOrder
+  shift_type_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -355,7 +357,7 @@ export type ShiftSlotMaxOrderByAggregateInput = {
   shift_schedule_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   work_date?: Prisma.SortOrder
-  shift_type?: Prisma.SortOrder
+  shift_type_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -365,9 +367,51 @@ export type ShiftSlotMinOrderByAggregateInput = {
   shift_schedule_id?: Prisma.SortOrder
   staff_id?: Prisma.SortOrder
   work_date?: Prisma.SortOrder
-  shift_type?: Prisma.SortOrder
+  shift_type_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type ShiftSlotCreateNestedManyWithoutShift_typeInput = {
+  create?: Prisma.XOR<Prisma.ShiftSlotCreateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput> | Prisma.ShiftSlotCreateWithoutShift_typeInput[] | Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput[]
+  connectOrCreate?: Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput | Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput[]
+  createMany?: Prisma.ShiftSlotCreateManyShift_typeInputEnvelope
+  connect?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+}
+
+export type ShiftSlotUncheckedCreateNestedManyWithoutShift_typeInput = {
+  create?: Prisma.XOR<Prisma.ShiftSlotCreateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput> | Prisma.ShiftSlotCreateWithoutShift_typeInput[] | Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput[]
+  connectOrCreate?: Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput | Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput[]
+  createMany?: Prisma.ShiftSlotCreateManyShift_typeInputEnvelope
+  connect?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+}
+
+export type ShiftSlotUpdateManyWithoutShift_typeNestedInput = {
+  create?: Prisma.XOR<Prisma.ShiftSlotCreateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput> | Prisma.ShiftSlotCreateWithoutShift_typeInput[] | Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput[]
+  connectOrCreate?: Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput | Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput[]
+  upsert?: Prisma.ShiftSlotUpsertWithWhereUniqueWithoutShift_typeInput | Prisma.ShiftSlotUpsertWithWhereUniqueWithoutShift_typeInput[]
+  createMany?: Prisma.ShiftSlotCreateManyShift_typeInputEnvelope
+  set?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  disconnect?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  delete?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  connect?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  update?: Prisma.ShiftSlotUpdateWithWhereUniqueWithoutShift_typeInput | Prisma.ShiftSlotUpdateWithWhereUniqueWithoutShift_typeInput[]
+  updateMany?: Prisma.ShiftSlotUpdateManyWithWhereWithoutShift_typeInput | Prisma.ShiftSlotUpdateManyWithWhereWithoutShift_typeInput[]
+  deleteMany?: Prisma.ShiftSlotScalarWhereInput | Prisma.ShiftSlotScalarWhereInput[]
+}
+
+export type ShiftSlotUncheckedUpdateManyWithoutShift_typeNestedInput = {
+  create?: Prisma.XOR<Prisma.ShiftSlotCreateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput> | Prisma.ShiftSlotCreateWithoutShift_typeInput[] | Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput[]
+  connectOrCreate?: Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput | Prisma.ShiftSlotCreateOrConnectWithoutShift_typeInput[]
+  upsert?: Prisma.ShiftSlotUpsertWithWhereUniqueWithoutShift_typeInput | Prisma.ShiftSlotUpsertWithWhereUniqueWithoutShift_typeInput[]
+  createMany?: Prisma.ShiftSlotCreateManyShift_typeInputEnvelope
+  set?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  disconnect?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  delete?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  connect?: Prisma.ShiftSlotWhereUniqueInput | Prisma.ShiftSlotWhereUniqueInput[]
+  update?: Prisma.ShiftSlotUpdateWithWhereUniqueWithoutShift_typeInput | Prisma.ShiftSlotUpdateWithWhereUniqueWithoutShift_typeInput[]
+  updateMany?: Prisma.ShiftSlotUpdateManyWithWhereWithoutShift_typeInput | Prisma.ShiftSlotUpdateManyWithWhereWithoutShift_typeInput[]
+  deleteMany?: Prisma.ShiftSlotScalarWhereInput | Prisma.ShiftSlotScalarWhereInput[]
 }
 
 export type ShiftSlotCreateNestedManyWithoutStaffInput = {
@@ -454,20 +498,77 @@ export type ShiftSlotUncheckedUpdateManyWithoutShift_scheduleNestedInput = {
   deleteMany?: Prisma.ShiftSlotScalarWhereInput | Prisma.ShiftSlotScalarWhereInput[]
 }
 
-export type ShiftSlotCreateWithoutStaffInput = {
+export type ShiftSlotCreateWithoutShift_typeInput = {
   id?: string
   work_date: Date | string
-  shift_type: string
   created_at?: Date | string
   updated_at?: Date | string
   shift_schedule: Prisma.ShiftScheduleCreateNestedOneWithoutSlotsInput
+  staff: Prisma.StaffCreateNestedOneWithoutShift_slotsInput
+}
+
+export type ShiftSlotUncheckedCreateWithoutShift_typeInput = {
+  id?: string
+  shift_schedule_id: string
+  staff_id: string
+  work_date: Date | string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type ShiftSlotCreateOrConnectWithoutShift_typeInput = {
+  where: Prisma.ShiftSlotWhereUniqueInput
+  create: Prisma.XOR<Prisma.ShiftSlotCreateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput>
+}
+
+export type ShiftSlotCreateManyShift_typeInputEnvelope = {
+  data: Prisma.ShiftSlotCreateManyShift_typeInput | Prisma.ShiftSlotCreateManyShift_typeInput[]
+  skipDuplicates?: boolean
+}
+
+export type ShiftSlotUpsertWithWhereUniqueWithoutShift_typeInput = {
+  where: Prisma.ShiftSlotWhereUniqueInput
+  update: Prisma.XOR<Prisma.ShiftSlotUpdateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedUpdateWithoutShift_typeInput>
+  create: Prisma.XOR<Prisma.ShiftSlotCreateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedCreateWithoutShift_typeInput>
+}
+
+export type ShiftSlotUpdateWithWhereUniqueWithoutShift_typeInput = {
+  where: Prisma.ShiftSlotWhereUniqueInput
+  data: Prisma.XOR<Prisma.ShiftSlotUpdateWithoutShift_typeInput, Prisma.ShiftSlotUncheckedUpdateWithoutShift_typeInput>
+}
+
+export type ShiftSlotUpdateManyWithWhereWithoutShift_typeInput = {
+  where: Prisma.ShiftSlotScalarWhereInput
+  data: Prisma.XOR<Prisma.ShiftSlotUpdateManyMutationInput, Prisma.ShiftSlotUncheckedUpdateManyWithoutShift_typeInput>
+}
+
+export type ShiftSlotScalarWhereInput = {
+  AND?: Prisma.ShiftSlotScalarWhereInput | Prisma.ShiftSlotScalarWhereInput[]
+  OR?: Prisma.ShiftSlotScalarWhereInput[]
+  NOT?: Prisma.ShiftSlotScalarWhereInput | Prisma.ShiftSlotScalarWhereInput[]
+  id?: Prisma.StringFilter<"ShiftSlot"> | string
+  shift_schedule_id?: Prisma.StringFilter<"ShiftSlot"> | string
+  staff_id?: Prisma.StringFilter<"ShiftSlot"> | string
+  work_date?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
+  shift_type_id?: Prisma.StringNullableFilter<"ShiftSlot"> | string | null
+  created_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
+}
+
+export type ShiftSlotCreateWithoutStaffInput = {
+  id?: string
+  work_date: Date | string
+  created_at?: Date | string
+  updated_at?: Date | string
+  shift_schedule: Prisma.ShiftScheduleCreateNestedOneWithoutSlotsInput
+  shift_type?: Prisma.ShiftTypeCreateNestedOneWithoutSlotsInput
 }
 
 export type ShiftSlotUncheckedCreateWithoutStaffInput = {
   id?: string
   shift_schedule_id: string
   work_date: Date | string
-  shift_type: string
+  shift_type_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -498,33 +599,20 @@ export type ShiftSlotUpdateManyWithWhereWithoutStaffInput = {
   data: Prisma.XOR<Prisma.ShiftSlotUpdateManyMutationInput, Prisma.ShiftSlotUncheckedUpdateManyWithoutStaffInput>
 }
 
-export type ShiftSlotScalarWhereInput = {
-  AND?: Prisma.ShiftSlotScalarWhereInput | Prisma.ShiftSlotScalarWhereInput[]
-  OR?: Prisma.ShiftSlotScalarWhereInput[]
-  NOT?: Prisma.ShiftSlotScalarWhereInput | Prisma.ShiftSlotScalarWhereInput[]
-  id?: Prisma.StringFilter<"ShiftSlot"> | string
-  shift_schedule_id?: Prisma.StringFilter<"ShiftSlot"> | string
-  staff_id?: Prisma.StringFilter<"ShiftSlot"> | string
-  work_date?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
-  shift_type?: Prisma.StringFilter<"ShiftSlot"> | string
-  created_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"ShiftSlot"> | Date | string
-}
-
 export type ShiftSlotCreateWithoutShift_scheduleInput = {
   id?: string
   work_date: Date | string
-  shift_type: string
   created_at?: Date | string
   updated_at?: Date | string
   staff: Prisma.StaffCreateNestedOneWithoutShift_slotsInput
+  shift_type?: Prisma.ShiftTypeCreateNestedOneWithoutSlotsInput
 }
 
 export type ShiftSlotUncheckedCreateWithoutShift_scheduleInput = {
   id?: string
   staff_id: string
   work_date: Date | string
-  shift_type: string
+  shift_type_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -555,11 +643,47 @@ export type ShiftSlotUpdateManyWithWhereWithoutShift_scheduleInput = {
   data: Prisma.XOR<Prisma.ShiftSlotUpdateManyMutationInput, Prisma.ShiftSlotUncheckedUpdateManyWithoutShift_scheduleInput>
 }
 
+export type ShiftSlotCreateManyShift_typeInput = {
+  id?: string
+  shift_schedule_id: string
+  staff_id: string
+  work_date: Date | string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type ShiftSlotUpdateWithoutShift_typeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  shift_schedule?: Prisma.ShiftScheduleUpdateOneRequiredWithoutSlotsNestedInput
+  staff?: Prisma.StaffUpdateOneRequiredWithoutShift_slotsNestedInput
+}
+
+export type ShiftSlotUncheckedUpdateWithoutShift_typeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_schedule_id?: Prisma.StringFieldUpdateOperationsInput | string
+  staff_id?: Prisma.StringFieldUpdateOperationsInput | string
+  work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ShiftSlotUncheckedUpdateManyWithoutShift_typeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_schedule_id?: Prisma.StringFieldUpdateOperationsInput | string
+  staff_id?: Prisma.StringFieldUpdateOperationsInput | string
+  work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ShiftSlotCreateManyStaffInput = {
   id?: string
   shift_schedule_id: string
   work_date: Date | string
-  shift_type: string
+  shift_type_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -567,17 +691,17 @@ export type ShiftSlotCreateManyStaffInput = {
 export type ShiftSlotUpdateWithoutStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shift_schedule?: Prisma.ShiftScheduleUpdateOneRequiredWithoutSlotsNestedInput
+  shift_type?: Prisma.ShiftTypeUpdateOneWithoutSlotsNestedInput
 }
 
 export type ShiftSlotUncheckedUpdateWithoutStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   shift_schedule_id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_type_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -586,7 +710,7 @@ export type ShiftSlotUncheckedUpdateManyWithoutStaffInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   shift_schedule_id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_type_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -595,7 +719,7 @@ export type ShiftSlotCreateManyShift_scheduleInput = {
   id?: string
   staff_id: string
   work_date: Date | string
-  shift_type: string
+  shift_type_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -603,17 +727,17 @@ export type ShiftSlotCreateManyShift_scheduleInput = {
 export type ShiftSlotUpdateWithoutShift_scheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   staff?: Prisma.StaffUpdateOneRequiredWithoutShift_slotsNestedInput
+  shift_type?: Prisma.ShiftTypeUpdateOneWithoutSlotsNestedInput
 }
 
 export type ShiftSlotUncheckedUpdateWithoutShift_scheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_type_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -622,7 +746,7 @@ export type ShiftSlotUncheckedUpdateManyWithoutShift_scheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   staff_id?: Prisma.StringFieldUpdateOperationsInput | string
   work_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  shift_type?: Prisma.StringFieldUpdateOperationsInput | string
+  shift_type_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -634,11 +758,12 @@ export type ShiftSlotSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   shift_schedule_id?: boolean
   staff_id?: boolean
   work_date?: boolean
-  shift_type?: boolean
+  shift_type_id?: boolean
   created_at?: boolean
   updated_at?: boolean
   shift_schedule?: boolean | Prisma.ShiftScheduleDefaultArgs<ExtArgs>
   staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
+  shift_type?: boolean | Prisma.ShiftSlot$shift_typeArgs<ExtArgs>
 }, ExtArgs["result"]["shiftSlot"]>
 
 export type ShiftSlotSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -646,11 +771,12 @@ export type ShiftSlotSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   shift_schedule_id?: boolean
   staff_id?: boolean
   work_date?: boolean
-  shift_type?: boolean
+  shift_type_id?: boolean
   created_at?: boolean
   updated_at?: boolean
   shift_schedule?: boolean | Prisma.ShiftScheduleDefaultArgs<ExtArgs>
   staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
+  shift_type?: boolean | Prisma.ShiftSlot$shift_typeArgs<ExtArgs>
 }, ExtArgs["result"]["shiftSlot"]>
 
 export type ShiftSlotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -658,11 +784,12 @@ export type ShiftSlotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   shift_schedule_id?: boolean
   staff_id?: boolean
   work_date?: boolean
-  shift_type?: boolean
+  shift_type_id?: boolean
   created_at?: boolean
   updated_at?: boolean
   shift_schedule?: boolean | Prisma.ShiftScheduleDefaultArgs<ExtArgs>
   staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
+  shift_type?: boolean | Prisma.ShiftSlot$shift_typeArgs<ExtArgs>
 }, ExtArgs["result"]["shiftSlot"]>
 
 export type ShiftSlotSelectScalar = {
@@ -670,23 +797,26 @@ export type ShiftSlotSelectScalar = {
   shift_schedule_id?: boolean
   staff_id?: boolean
   work_date?: boolean
-  shift_type?: boolean
+  shift_type_id?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type ShiftSlotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shift_schedule_id" | "staff_id" | "work_date" | "shift_type" | "created_at" | "updated_at", ExtArgs["result"]["shiftSlot"]>
+export type ShiftSlotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shift_schedule_id" | "staff_id" | "work_date" | "shift_type_id" | "created_at" | "updated_at", ExtArgs["result"]["shiftSlot"]>
 export type ShiftSlotInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shift_schedule?: boolean | Prisma.ShiftScheduleDefaultArgs<ExtArgs>
   staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
+  shift_type?: boolean | Prisma.ShiftSlot$shift_typeArgs<ExtArgs>
 }
 export type ShiftSlotIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shift_schedule?: boolean | Prisma.ShiftScheduleDefaultArgs<ExtArgs>
   staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
+  shift_type?: boolean | Prisma.ShiftSlot$shift_typeArgs<ExtArgs>
 }
 export type ShiftSlotIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shift_schedule?: boolean | Prisma.ShiftScheduleDefaultArgs<ExtArgs>
   staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
+  shift_type?: boolean | Prisma.ShiftSlot$shift_typeArgs<ExtArgs>
 }
 
 export type $ShiftSlotPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -694,6 +824,7 @@ export type $ShiftSlotPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   objects: {
     shift_schedule: Prisma.$ShiftSchedulePayload<ExtArgs>
     staff: Prisma.$StaffPayload<ExtArgs>
+    shift_type: Prisma.$ShiftTypePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -702,9 +833,9 @@ export type $ShiftSlotPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     work_date: Date
     /**
      * *
-     *    * `off` または shift_type.id
+     *    * null = 休み（"off"）、それ以外は ShiftType.id への FK
      */
-    shift_type: string
+    shift_type_id: string | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["shiftSlot"]>
@@ -1103,6 +1234,7 @@ export interface Prisma__ShiftSlotClient<T, Null = never, ExtArgs extends runtim
   readonly [Symbol.toStringTag]: "PrismaPromise"
   shift_schedule<T extends Prisma.ShiftScheduleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShiftScheduleDefaultArgs<ExtArgs>>): Prisma.Prisma__ShiftScheduleClient<runtime.Types.Result.GetResult<Prisma.$ShiftSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   staff<T extends Prisma.StaffDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StaffDefaultArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  shift_type<T extends Prisma.ShiftSlot$shift_typeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShiftSlot$shift_typeArgs<ExtArgs>>): Prisma.Prisma__ShiftTypeClient<runtime.Types.Result.GetResult<Prisma.$ShiftTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1136,7 +1268,7 @@ export interface ShiftSlotFieldRefs {
   readonly shift_schedule_id: Prisma.FieldRef<"ShiftSlot", 'String'>
   readonly staff_id: Prisma.FieldRef<"ShiftSlot", 'String'>
   readonly work_date: Prisma.FieldRef<"ShiftSlot", 'DateTime'>
-  readonly shift_type: Prisma.FieldRef<"ShiftSlot", 'String'>
+  readonly shift_type_id: Prisma.FieldRef<"ShiftSlot", 'String'>
   readonly created_at: Prisma.FieldRef<"ShiftSlot", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"ShiftSlot", 'DateTime'>
 }
@@ -1537,6 +1669,25 @@ export type ShiftSlotDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many ShiftSlots to delete.
    */
   limit?: number
+}
+
+/**
+ * ShiftSlot.shift_type
+ */
+export type ShiftSlot$shift_typeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ShiftType
+   */
+  select?: Prisma.ShiftTypeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ShiftType
+   */
+  omit?: Prisma.ShiftTypeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShiftTypeInclude<ExtArgs> | null
+  where?: Prisma.ShiftTypeWhereInput
 }
 
 /**

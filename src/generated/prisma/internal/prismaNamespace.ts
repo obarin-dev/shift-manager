@@ -1392,7 +1392,7 @@ export const ShiftSlotScalarFieldEnum = {
   shift_schedule_id: 'shift_schedule_id',
   staff_id: 'staff_id',
   work_date: 'work_date',
-  shift_type: 'shift_type',
+  shift_type_id: 'shift_type_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
