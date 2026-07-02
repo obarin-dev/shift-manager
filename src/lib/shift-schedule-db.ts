@@ -6,6 +6,7 @@ import type { Classroom } from "@/lib/classroom-helpers";
 import type { ShiftTypeDefinition, NurseryRestSettings } from "@/lib/nursery-helpers";
 import { resolveNurseryId } from "@/lib/nursery-db";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
+import { SHIFT_CELL_OFF } from "@/lib/shift-schedule-options";
 
 export type ShiftSchedulePayload = {
   status: ShiftScheduleStatus;
@@ -23,12 +24,12 @@ export type PublishedShiftScheduleData = ShiftSchedulePayload & {
 function toShiftAssignment(slot: {
   staff_id: string;
   work_date: Date;
-  shift_type: string;
+  shift_type_id: string | null;
 }): ShiftAssignment {
   return {
     staff_id: slot.staff_id,
     work_date: formatDbDate(slot.work_date),
-    shift_type: slot.shift_type,
+    shift_type: slot.shift_type_id ?? SHIFT_CELL_OFF,
   };
 }
 
@@ -199,7 +200,7 @@ export async function saveShiftSchedule(
         shift_schedule_id: schedule.id,
         staff_id: assignment.staff_id,
         work_date: parseDateToDb(assignment.work_date),
-        shift_type: assignment.shift_type,
+        shift_type_id: assignment.shift_type === SHIFT_CELL_OFF ? null : assignment.shift_type,
       })),
     });
   });

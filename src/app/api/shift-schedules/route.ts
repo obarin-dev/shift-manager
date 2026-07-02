@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@/generated/prisma/client";
 import type { ShiftAssignment, ShiftScheduleStatus } from "@/lib/shift-helpers";
 import {
   getPublishedShiftScheduleByMonth,
@@ -54,7 +55,8 @@ function normalizePayload(input: unknown): PersistedShiftSchedulePayload | null 
     if (
       typeof assignment.staff_id !== "string" ||
       typeof assignment.work_date !== "string" ||
-      typeof assignment.shift_type !== "string"
+      typeof assignment.shift_type !== "string" ||
+      assignment.shift_type === ""
     ) {
       return null;
     }
@@ -151,6 +153,9 @@ export async function PUT(request: Request) {
     await saveShiftSchedule(month!, payload);
     return NextResponse.json({ ok: true });
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
+      return NextResponse.json({ error: "invalid_shift_type" }, { status: 400 });
+    }
     console.error("PUT /api/shift-schedules failed:", error);
     return NextResponse.json({ error: "server_error" }, { status: 500 });
   }

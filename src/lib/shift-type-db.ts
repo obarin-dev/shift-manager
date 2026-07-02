@@ -113,6 +113,10 @@ export async function updateShiftType(id: string, input: ShiftTypeWriteInput) {
   return toShiftTypeDefinition(row);
 }
 
+export async function countSlotsByShiftType(id: string) {
+  return prisma.shiftSlot.count({ where: { shift_type_id: id } });
+}
+
 export async function deleteShiftType(id: string) {
   await prisma.shiftType.delete({ where: { id } });
 }

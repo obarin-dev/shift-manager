@@ -137,6 +137,7 @@ model ShiftType {
   color      String        @default("#FEF08A")
   created_at DateTime      @default(now())
   updated_at DateTime      @updatedAt
+  slots      ShiftSlot[]
 
   @@index([nursery_id])
 }
@@ -227,15 +228,17 @@ model ShiftSlot {
   staff             Staff         @relation(fields: [staff_id], references: [id], onDelete: Cascade)
   work_date         DateTime      @db.Date
   /**
-   * `off` または shift_type.id
+   * null = 休み（"off"）、それ以外は ShiftType.id への FK
    */
-  shift_type        String
+  shift_type_id     String?
+  shift_type        ShiftType?    @relation(fields: [shift_type_id], references: [id], onDelete: SetNull)
   created_at        DateTime      @default(now())
   updated_at        DateTime      @updatedAt
 
   @@unique([shift_schedule_id, staff_id, work_date])
   @@index([shift_schedule_id])
   @@index([staff_id])
+  @@index([shift_type_id])
 }
 
 model RosterSheet {

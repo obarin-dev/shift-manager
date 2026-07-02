@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import {
+  countSlotsByShiftType,
   deleteShiftType,
   getShiftTypeById,
   isShiftTypeSchemaError,
@@ -126,6 +127,14 @@ export async function DELETE(_request: Request, context: RouteContext) {
 
     if (!existing) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+
+    const slotCount = await countSlotsByShiftType(id);
+    if (slotCount > 0) {
+      return NextResponse.json(
+        { error: "shift_type_in_use", slot_count: slotCount },
+        { status: 409 },
+      );
     }
 
     await deleteShiftType(id);
