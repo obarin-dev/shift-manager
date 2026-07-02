@@ -108,6 +108,20 @@ input {
   gap: 18px;
 }
 
+.setup-card {
+  max-width: 480px;
+}
+
+.setup-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.setup-actions .btn--primary {
+  flex: 1;
+}
+
 .form-field {
   display: grid;
   gap: 8px;
