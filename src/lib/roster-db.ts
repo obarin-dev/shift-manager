@@ -16,8 +16,6 @@ export type RosterSheetPayload = {
   assignments: RosterCellAssignment[];
   todayChildCounts: Record<string, number>;
   slotCountsByRowAndClass: Record<string, number>;
-  columnWidths: Record<string, number>;
-  rowHeights: Record<string, number>;
 };
 
 
@@ -43,8 +41,6 @@ function toRosterSheetPayload(
     assignments: migrateRosterAssignments(value.rows, value.assignments, classrooms),
     todayChildCounts: value.todayChildCounts ?? {},
     slotCountsByRowAndClass: value.slotCountsByRowAndClass ?? {},
-    columnWidths: value.columnWidths ?? {},
-    rowHeights: value.rowHeights ?? {},
   };
 }
 
@@ -61,8 +57,6 @@ export function normalizeRosterSheetPayload(
     assignments: migrateRosterAssignments(input.rows, input.assignments, classrooms),
     todayChildCounts: input.todayChildCounts ?? {},
     slotCountsByRowAndClass: input.slotCountsByRowAndClass ?? {},
-    columnWidths: input.columnWidths ?? {},
-    rowHeights: input.rowHeights ?? {},
   };
 }
 
