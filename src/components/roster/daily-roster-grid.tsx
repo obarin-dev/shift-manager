@@ -57,9 +57,44 @@ type RosterPersistencePayload = {
   assignments: RosterCellAssignment[];
   todayChildCounts: Record<string, number>;
   slotCountsByRowAndClass: Record<string, number>;
-  columnWidths: Record<string, number>;
-  rowHeights: Record<string, number>;
 };
+
+const LS_KEY_COLUMN_WIDTHS = "roster:layout:columnWidths";
+const LS_KEY_ROW_HEIGHTS_PREFIX = "roster:layout:rowHeights:";
+
+function loadColumnWidthsFromStorage(): Record<string, number> {
+  try {
+    const raw = localStorage.getItem(LS_KEY_COLUMN_WIDTHS);
+    return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function loadRowHeightsFromStorage(dateKey: string): Record<string, number> {
+  try {
+    const raw = localStorage.getItem(`${LS_KEY_ROW_HEIGHTS_PREFIX}${dateKey}`);
+    return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveColumnWidthsToStorage(widths: Record<string, number>) {
+  try {
+    localStorage.setItem(LS_KEY_COLUMN_WIDTHS, JSON.stringify(widths));
+  } catch {
+    // localStorage unavailable (SSR or private browsing) — silently ignore
+  }
+}
+
+function saveRowHeightsToStorage(dateKey: string, heights: Record<string, number>) {
+  try {
+    localStorage.setItem(`${LS_KEY_ROW_HEIGHTS_PREFIX}${dateKey}`, JSON.stringify(heights));
+  } catch {
+    // localStorage unavailable — silently ignore
+  }
+}
 
 function createDefaultRows() {
   return buildRosterTimeSlots(DEFAULT_START_TIME, DEFAULT_END_TIME, DEFAULT_STEP_MINUTES).map(
@@ -108,6 +143,7 @@ export function DailyRosterGrid({
   const [todayEvents, setTodayEvents] = useState<NurseryCalendarEntry[]>([]);
   const columnResizeState = useRef<{ classroomId: string; startX: number; startWidth: number } | null>(null);
   const rowResizeState = useRef<{ rowId: string; startY: number; startHeight: number } | null>(null);
+  const focusDateRef = useRef(focusDate);
 
   const assignmentMap = useMemo(
     () => buildRosterAssignmentMap(assignments),
@@ -273,8 +309,6 @@ export function DailyRosterGrid({
       assignments,
       todayChildCounts,
       slotCountsByRowAndClass,
-      columnWidths,
-      rowHeights,
     };
   };
 
@@ -413,6 +447,22 @@ export function DailyRosterGrid({
   };
 
   useEffect(() => {
+    focusDateRef.current = focusDate;
+  }, [focusDate]);
+
+  useEffect(() => {
+    setColumnWidths(loadColumnWidthsFromStorage());
+  }, []);
+
+  useEffect(() => {
+    saveColumnWidthsToStorage(columnWidths);
+  }, [columnWidths]);
+
+  useEffect(() => {
+    saveRowHeightsToStorage(focusDateRef.current, rowHeights);
+  }, [rowHeights]);
+
+  useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
       if (columnResizeState.current) {
         const { classroomId, startX, startWidth } = columnResizeState.current;
@@ -461,8 +511,7 @@ export function DailyRosterGrid({
         if (!data.data) {
           setRows(createDefaultRows());
           setAssignments([]);
-          setColumnWidths({});
-          setRowHeights({});
+          setRowHeights(loadRowHeightsFromStorage(focusDate));
           setDailyChildCounts((current) => {
             const next = { ...current };
             for (const classroom of classrooms) {
@@ -485,8 +534,7 @@ export function DailyRosterGrid({
 
         setRows(data.data.rows);
         setAssignments(migrateRosterAssignments(data.data.rows, data.data.assignments, classrooms));
-        setColumnWidths(data.data.columnWidths ?? {});
-        setRowHeights(data.data.rowHeights ?? {});
+        setRowHeights(loadRowHeightsFromStorage(focusDate));
         setDailyChildCounts((current) => {
           const next = { ...current };
           for (const classroom of classrooms) {
