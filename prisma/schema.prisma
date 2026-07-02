@@ -70,6 +70,11 @@ enum StaffRequestStatus {
   needs_review
 }
 
+enum ClassroomStaffRole {
+  main
+  sub
+}
+
 model Nursery {
   id                       String          @id @default(cuid())
   name                     String
@@ -137,22 +142,32 @@ model ShiftType {
 }
 
 model Classroom {
-  id              String   @id @default(cuid())
-  nursery_id      String
-  nursery         Nursery  @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
-  name            String
-  age_group       AgeGroup
-  child_count     Int
-  auxiliary_slots Json     @default("[]")
-  main_staff_id   String?
-  main_staff      Staff?   @relation("MainStaff", fields: [main_staff_id], references: [id], onDelete: SetNull)
-  other_staff_ids String[] @default([])
-  note            String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id               String           @id @default(cuid())
+  nursery_id       String
+  nursery          Nursery          @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  name             String
+  age_group        AgeGroup
+  child_count      Int
+  auxiliary_slots  Json             @default("[]")
+  note             String?
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+  classroom_staffs ClassroomStaff[]
 
   @@unique([nursery_id, name])
   @@index([nursery_id])
+}
+
+model ClassroomStaff {
+  classroom_id String
+  classroom    Classroom          @relation(fields: [classroom_id], references: [id], onDelete: Cascade)
+  staff_id     String
+  staff        Staff              @relation(fields: [staff_id], references: [id], onDelete: Cascade)
+  role         ClassroomStaffRole
+  created_at   DateTime           @default(now())
+
+  @@id([classroom_id, staff_id])
+  @@index([staff_id])
 }
 
 model Staff {
@@ -178,7 +193,7 @@ model Staff {
   role                        UserRole?
   created_at                  DateTime        @default(now())
   updated_at                  DateTime        @updatedAt
-  main_staff_for              Classroom[]     @relation("MainStaff")
+  classroom_staffs            ClassroomStaff[]
   shift_slots                 ShiftSlot[]
   staff_requests              StaffRequest[]
   invitations                 Invitation[]

@@ -150,6 +150,10 @@ async function main() {
     if (exists) {
       continue;
     }
+    const staffCreateData = [
+      ...(classroom.mainStaffId ? [{ staff_id: classroom.mainStaffId, role: "main" as const }] : []),
+      ...classroom.otherStaffIds.map((id: string) => ({ staff_id: id, role: "sub" as const })),
+    ];
     await prisma.classroom.create({
       data: {
         id: classroom.id,
@@ -158,9 +162,10 @@ async function main() {
         age_group: classroom.ageGroup,
         child_count: classroom.childCount,
         auxiliary_slots: classroom.auxiliarySlots,
-        main_staff_id: classroom.mainStaffId ?? null,
-        other_staff_ids: classroom.otherStaffIds,
         note: classroom.note || null,
+        ...(staffCreateData.length > 0
+          ? { classroom_staffs: { createMany: { data: staffCreateData } } }
+          : {}),
       },
     });
   }

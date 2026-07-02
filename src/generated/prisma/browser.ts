@@ -38,6 +38,11 @@ export type ShiftType = Prisma.ShiftTypeModel
  */
 export type Classroom = Prisma.ClassroomModel
 /**
+ * Model ClassroomStaff
+ * 
+ */
+export type ClassroomStaff = Prisma.ClassroomStaffModel
+/**
  * Model Staff
  * 
  */

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   createClassroom,
   InvalidStaffAssignmentError,
+  isForeignKeyConstraintError,
   isUniqueConstraintError,
   listClassrooms,
   type ClassroomWriteInput,
@@ -124,6 +125,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ data: classroom }, { status: 201 });
   } catch (error) {
     if (error instanceof InvalidStaffAssignmentError) {
+      return NextResponse.json({ error: "invalid_staff" }, { status: 400 });
+    }
+
+    if (isForeignKeyConstraintError(error)) {
       return NextResponse.json({ error: "invalid_staff" }, { status: 400 });
     }
 

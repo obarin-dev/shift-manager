@@ -388,6 +388,7 @@ export const ModelName = {
   CalendarEntry: 'CalendarEntry',
   ShiftType: 'ShiftType',
   Classroom: 'Classroom',
+  ClassroomStaff: 'ClassroomStaff',
   Staff: 'Staff',
   ShiftSchedule: 'ShiftSchedule',
   ShiftSlot: 'ShiftSlot',
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "nursery" | "calendarEntry" | "shiftType" | "classroom" | "staff" | "shiftSchedule" | "shiftSlot" | "rosterSheet" | "invitation" | "staffRequest"
+    modelProps: "nursery" | "calendarEntry" | "shiftType" | "classroom" | "classroomStaff" | "staff" | "shiftSchedule" | "shiftSlot" | "rosterSheet" | "invitation" | "staffRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -706,6 +707,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ClassroomCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ClassroomCountAggregateOutputType> | number
+        }
+      }
+    }
+    ClassroomStaff: {
+      payload: Prisma.$ClassroomStaffPayload<ExtArgs>
+      fields: Prisma.ClassroomStaffFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClassroomStaffFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClassroomStaffFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>
+        }
+        findFirst: {
+          args: Prisma.ClassroomStaffFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClassroomStaffFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>
+        }
+        findMany: {
+          args: Prisma.ClassroomStaffFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>[]
+        }
+        create: {
+          args: Prisma.ClassroomStaffCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>
+        }
+        createMany: {
+          args: Prisma.ClassroomStaffCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClassroomStaffCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>[]
+        }
+        delete: {
+          args: Prisma.ClassroomStaffDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>
+        }
+        update: {
+          args: Prisma.ClassroomStaffUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClassroomStaffDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClassroomStaffUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClassroomStaffUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClassroomStaffUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassroomStaffPayload>
+        }
+        aggregate: {
+          args: Prisma.ClassroomStaffAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClassroomStaff>
+        }
+        groupBy: {
+          args: Prisma.ClassroomStaffGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClassroomStaffGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClassroomStaffCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClassroomStaffCountAggregateOutputType> | number
         }
       }
     }
@@ -1253,14 +1328,22 @@ export const ClassroomScalarFieldEnum = {
   age_group: 'age_group',
   child_count: 'child_count',
   auxiliary_slots: 'auxiliary_slots',
-  main_staff_id: 'main_staff_id',
-  other_staff_ids: 'other_staff_ids',
   note: 'note',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
 export type ClassroomScalarFieldEnum = (typeof ClassroomScalarFieldEnum)[keyof typeof ClassroomScalarFieldEnum]
+
+
+export const ClassroomStaffScalarFieldEnum = {
+  classroom_id: 'classroom_id',
+  staff_id: 'staff_id',
+  role: 'role',
+  created_at: 'created_at'
+} as const
+
+export type ClassroomStaffScalarFieldEnum = (typeof ClassroomStaffScalarFieldEnum)[keyof typeof ClassroomStaffScalarFieldEnum]
 
 
 export const StaffScalarFieldEnum = {
@@ -1521,6 +1604,20 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'ClassroomStaffRole'
+ */
+export type EnumClassroomStaffRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassroomStaffRole'>
+    
+
+
+/**
+ * Reference to a field of type 'ClassroomStaffRole[]'
+ */
+export type ListEnumClassroomStaffRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassroomStaffRole[]'>
+    
+
+
+/**
  * Reference to a field of type 'EmploymentType'
  */
 export type EnumEmploymentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentType'>
@@ -1731,6 +1828,7 @@ export type GlobalOmitConfig = {
   calendarEntry?: Prisma.CalendarEntryOmit
   shiftType?: Prisma.ShiftTypeOmit
   classroom?: Prisma.ClassroomOmit
+  classroomStaff?: Prisma.ClassroomStaffOmit
   staff?: Prisma.StaffOmit
   shiftSchedule?: Prisma.ShiftScheduleOmit
   shiftSlot?: Prisma.ShiftSlotOmit

@@ -40,7 +40,6 @@ export type ClassroomMinAggregateOutputType = {
   name: string | null
   age_group: $Enums.AgeGroup | null
   child_count: number | null
-  main_staff_id: string | null
   note: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -52,7 +51,6 @@ export type ClassroomMaxAggregateOutputType = {
   name: string | null
   age_group: $Enums.AgeGroup | null
   child_count: number | null
-  main_staff_id: string | null
   note: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -65,8 +63,6 @@ export type ClassroomCountAggregateOutputType = {
   age_group: number
   child_count: number
   auxiliary_slots: number
-  main_staff_id: number
-  other_staff_ids: number
   note: number
   created_at: number
   updated_at: number
@@ -88,7 +84,6 @@ export type ClassroomMinAggregateInputType = {
   name?: true
   age_group?: true
   child_count?: true
-  main_staff_id?: true
   note?: true
   created_at?: true
   updated_at?: true
@@ -100,7 +95,6 @@ export type ClassroomMaxAggregateInputType = {
   name?: true
   age_group?: true
   child_count?: true
-  main_staff_id?: true
   note?: true
   created_at?: true
   updated_at?: true
@@ -113,8 +107,6 @@ export type ClassroomCountAggregateInputType = {
   age_group?: true
   child_count?: true
   auxiliary_slots?: true
-  main_staff_id?: true
-  other_staff_ids?: true
   note?: true
   created_at?: true
   updated_at?: true
@@ -214,8 +206,6 @@ export type ClassroomGroupByOutputType = {
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots: runtime.JsonValue
-  main_staff_id: string | null
-  other_staff_ids: string[]
   note: string | null
   created_at: Date
   updated_at: Date
@@ -251,13 +241,11 @@ export type ClassroomWhereInput = {
   age_group?: Prisma.EnumAgeGroupFilter<"Classroom"> | $Enums.AgeGroup
   child_count?: Prisma.IntFilter<"Classroom"> | number
   auxiliary_slots?: Prisma.JsonFilter<"Classroom">
-  main_staff_id?: Prisma.StringNullableFilter<"Classroom"> | string | null
-  other_staff_ids?: Prisma.StringNullableListFilter<"Classroom">
   note?: Prisma.StringNullableFilter<"Classroom"> | string | null
   created_at?: Prisma.DateTimeFilter<"Classroom"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Classroom"> | Date | string
   nursery?: Prisma.XOR<Prisma.NurseryScalarRelationFilter, Prisma.NurseryWhereInput>
-  main_staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
+  classroom_staffs?: Prisma.ClassroomStaffListRelationFilter
 }
 
 export type ClassroomOrderByWithRelationInput = {
@@ -267,13 +255,11 @@ export type ClassroomOrderByWithRelationInput = {
   age_group?: Prisma.SortOrder
   child_count?: Prisma.SortOrder
   auxiliary_slots?: Prisma.SortOrder
-  main_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  other_staff_ids?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   nursery?: Prisma.NurseryOrderByWithRelationInput
-  main_staff?: Prisma.StaffOrderByWithRelationInput
+  classroom_staffs?: Prisma.ClassroomStaffOrderByRelationAggregateInput
 }
 
 export type ClassroomWhereUniqueInput = Prisma.AtLeast<{
@@ -287,13 +273,11 @@ export type ClassroomWhereUniqueInput = Prisma.AtLeast<{
   age_group?: Prisma.EnumAgeGroupFilter<"Classroom"> | $Enums.AgeGroup
   child_count?: Prisma.IntFilter<"Classroom"> | number
   auxiliary_slots?: Prisma.JsonFilter<"Classroom">
-  main_staff_id?: Prisma.StringNullableFilter<"Classroom"> | string | null
-  other_staff_ids?: Prisma.StringNullableListFilter<"Classroom">
   note?: Prisma.StringNullableFilter<"Classroom"> | string | null
   created_at?: Prisma.DateTimeFilter<"Classroom"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Classroom"> | Date | string
   nursery?: Prisma.XOR<Prisma.NurseryScalarRelationFilter, Prisma.NurseryWhereInput>
-  main_staff?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
+  classroom_staffs?: Prisma.ClassroomStaffListRelationFilter
 }, "id" | "nursery_id_name">
 
 export type ClassroomOrderByWithAggregationInput = {
@@ -303,8 +287,6 @@ export type ClassroomOrderByWithAggregationInput = {
   age_group?: Prisma.SortOrder
   child_count?: Prisma.SortOrder
   auxiliary_slots?: Prisma.SortOrder
-  main_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  other_staff_ids?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -325,8 +307,6 @@ export type ClassroomScalarWhereWithAggregatesInput = {
   age_group?: Prisma.EnumAgeGroupWithAggregatesFilter<"Classroom"> | $Enums.AgeGroup
   child_count?: Prisma.IntWithAggregatesFilter<"Classroom"> | number
   auxiliary_slots?: Prisma.JsonWithAggregatesFilter<"Classroom">
-  main_staff_id?: Prisma.StringNullableWithAggregatesFilter<"Classroom"> | string | null
-  other_staff_ids?: Prisma.StringNullableListFilter<"Classroom">
   note?: Prisma.StringNullableWithAggregatesFilter<"Classroom"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Classroom"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Classroom"> | Date | string
@@ -338,12 +318,11 @@ export type ClassroomCreateInput = {
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutClassroomsInput
-  main_staff?: Prisma.StaffCreateNestedOneWithoutMain_staff_forInput
+  classroom_staffs?: Prisma.ClassroomStaffCreateNestedManyWithoutClassroomInput
 }
 
 export type ClassroomUncheckedCreateInput = {
@@ -353,11 +332,10 @@ export type ClassroomUncheckedCreateInput = {
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: string | null
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  classroom_staffs?: Prisma.ClassroomStaffUncheckedCreateNestedManyWithoutClassroomInput
 }
 
 export type ClassroomUpdateInput = {
@@ -366,12 +344,11 @@ export type ClassroomUpdateInput = {
   age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
   child_count?: Prisma.IntFieldUpdateOperationsInput | number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nursery?: Prisma.NurseryUpdateOneRequiredWithoutClassroomsNestedInput
-  main_staff?: Prisma.StaffUpdateOneWithoutMain_staff_forNestedInput
+  classroom_staffs?: Prisma.ClassroomStaffUpdateManyWithoutClassroomNestedInput
 }
 
 export type ClassroomUncheckedUpdateInput = {
@@ -381,11 +358,10 @@ export type ClassroomUncheckedUpdateInput = {
   age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
   child_count?: Prisma.IntFieldUpdateOperationsInput | number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classroom_staffs?: Prisma.ClassroomStaffUncheckedUpdateManyWithoutClassroomNestedInput
 }
 
 export type ClassroomCreateManyInput = {
@@ -395,8 +371,6 @@ export type ClassroomCreateManyInput = {
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: string | null
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -408,7 +382,6 @@ export type ClassroomUpdateManyMutationInput = {
   age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
   child_count?: Prisma.IntFieldUpdateOperationsInput | number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -421,8 +394,6 @@ export type ClassroomUncheckedUpdateManyInput = {
   age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
   child_count?: Prisma.IntFieldUpdateOperationsInput | number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -438,14 +409,6 @@ export type ClassroomOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StringNullableListFilter<$PrismaModel = never> = {
-  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
-}
-
 export type ClassroomNursery_idNameCompoundUniqueInput = {
   nursery_id: string
   name: string
@@ -458,8 +421,6 @@ export type ClassroomCountOrderByAggregateInput = {
   age_group?: Prisma.SortOrder
   child_count?: Prisma.SortOrder
   auxiliary_slots?: Prisma.SortOrder
-  main_staff_id?: Prisma.SortOrder
-  other_staff_ids?: Prisma.SortOrder
   note?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -475,7 +436,6 @@ export type ClassroomMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   age_group?: Prisma.SortOrder
   child_count?: Prisma.SortOrder
-  main_staff_id?: Prisma.SortOrder
   note?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -487,7 +447,6 @@ export type ClassroomMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   age_group?: Prisma.SortOrder
   child_count?: Prisma.SortOrder
-  main_staff_id?: Prisma.SortOrder
   note?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -495,6 +454,11 @@ export type ClassroomMinOrderByAggregateInput = {
 
 export type ClassroomSumOrderByAggregateInput = {
   child_count?: Prisma.SortOrder
+}
+
+export type ClassroomScalarRelationFilter = {
+  is?: Prisma.ClassroomWhereInput
+  isNot?: Prisma.ClassroomWhereInput
 }
 
 export type ClassroomCreateNestedManyWithoutNurseryInput = {
@@ -539,59 +503,22 @@ export type ClassroomUncheckedUpdateManyWithoutNurseryNestedInput = {
   deleteMany?: Prisma.ClassroomScalarWhereInput | Prisma.ClassroomScalarWhereInput[]
 }
 
-export type ClassroomCreateother_staff_idsInput = {
-  set: string[]
-}
-
 export type EnumAgeGroupFieldUpdateOperationsInput = {
   set?: $Enums.AgeGroup
 }
 
-export type ClassroomUpdateother_staff_idsInput = {
-  set?: string[]
-  push?: string | string[]
+export type ClassroomCreateNestedOneWithoutClassroom_staffsInput = {
+  create?: Prisma.XOR<Prisma.ClassroomCreateWithoutClassroom_staffsInput, Prisma.ClassroomUncheckedCreateWithoutClassroom_staffsInput>
+  connectOrCreate?: Prisma.ClassroomCreateOrConnectWithoutClassroom_staffsInput
+  connect?: Prisma.ClassroomWhereUniqueInput
 }
 
-export type ClassroomCreateNestedManyWithoutMain_staffInput = {
-  create?: Prisma.XOR<Prisma.ClassroomCreateWithoutMain_staffInput, Prisma.ClassroomUncheckedCreateWithoutMain_staffInput> | Prisma.ClassroomCreateWithoutMain_staffInput[] | Prisma.ClassroomUncheckedCreateWithoutMain_staffInput[]
-  connectOrCreate?: Prisma.ClassroomCreateOrConnectWithoutMain_staffInput | Prisma.ClassroomCreateOrConnectWithoutMain_staffInput[]
-  createMany?: Prisma.ClassroomCreateManyMain_staffInputEnvelope
-  connect?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-}
-
-export type ClassroomUncheckedCreateNestedManyWithoutMain_staffInput = {
-  create?: Prisma.XOR<Prisma.ClassroomCreateWithoutMain_staffInput, Prisma.ClassroomUncheckedCreateWithoutMain_staffInput> | Prisma.ClassroomCreateWithoutMain_staffInput[] | Prisma.ClassroomUncheckedCreateWithoutMain_staffInput[]
-  connectOrCreate?: Prisma.ClassroomCreateOrConnectWithoutMain_staffInput | Prisma.ClassroomCreateOrConnectWithoutMain_staffInput[]
-  createMany?: Prisma.ClassroomCreateManyMain_staffInputEnvelope
-  connect?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-}
-
-export type ClassroomUpdateManyWithoutMain_staffNestedInput = {
-  create?: Prisma.XOR<Prisma.ClassroomCreateWithoutMain_staffInput, Prisma.ClassroomUncheckedCreateWithoutMain_staffInput> | Prisma.ClassroomCreateWithoutMain_staffInput[] | Prisma.ClassroomUncheckedCreateWithoutMain_staffInput[]
-  connectOrCreate?: Prisma.ClassroomCreateOrConnectWithoutMain_staffInput | Prisma.ClassroomCreateOrConnectWithoutMain_staffInput[]
-  upsert?: Prisma.ClassroomUpsertWithWhereUniqueWithoutMain_staffInput | Prisma.ClassroomUpsertWithWhereUniqueWithoutMain_staffInput[]
-  createMany?: Prisma.ClassroomCreateManyMain_staffInputEnvelope
-  set?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  disconnect?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  delete?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  connect?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  update?: Prisma.ClassroomUpdateWithWhereUniqueWithoutMain_staffInput | Prisma.ClassroomUpdateWithWhereUniqueWithoutMain_staffInput[]
-  updateMany?: Prisma.ClassroomUpdateManyWithWhereWithoutMain_staffInput | Prisma.ClassroomUpdateManyWithWhereWithoutMain_staffInput[]
-  deleteMany?: Prisma.ClassroomScalarWhereInput | Prisma.ClassroomScalarWhereInput[]
-}
-
-export type ClassroomUncheckedUpdateManyWithoutMain_staffNestedInput = {
-  create?: Prisma.XOR<Prisma.ClassroomCreateWithoutMain_staffInput, Prisma.ClassroomUncheckedCreateWithoutMain_staffInput> | Prisma.ClassroomCreateWithoutMain_staffInput[] | Prisma.ClassroomUncheckedCreateWithoutMain_staffInput[]
-  connectOrCreate?: Prisma.ClassroomCreateOrConnectWithoutMain_staffInput | Prisma.ClassroomCreateOrConnectWithoutMain_staffInput[]
-  upsert?: Prisma.ClassroomUpsertWithWhereUniqueWithoutMain_staffInput | Prisma.ClassroomUpsertWithWhereUniqueWithoutMain_staffInput[]
-  createMany?: Prisma.ClassroomCreateManyMain_staffInputEnvelope
-  set?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  disconnect?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  delete?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  connect?: Prisma.ClassroomWhereUniqueInput | Prisma.ClassroomWhereUniqueInput[]
-  update?: Prisma.ClassroomUpdateWithWhereUniqueWithoutMain_staffInput | Prisma.ClassroomUpdateWithWhereUniqueWithoutMain_staffInput[]
-  updateMany?: Prisma.ClassroomUpdateManyWithWhereWithoutMain_staffInput | Prisma.ClassroomUpdateManyWithWhereWithoutMain_staffInput[]
-  deleteMany?: Prisma.ClassroomScalarWhereInput | Prisma.ClassroomScalarWhereInput[]
+export type ClassroomUpdateOneRequiredWithoutClassroom_staffsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassroomCreateWithoutClassroom_staffsInput, Prisma.ClassroomUncheckedCreateWithoutClassroom_staffsInput>
+  connectOrCreate?: Prisma.ClassroomCreateOrConnectWithoutClassroom_staffsInput
+  upsert?: Prisma.ClassroomUpsertWithoutClassroom_staffsInput
+  connect?: Prisma.ClassroomWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassroomUpdateToOneWithWhereWithoutClassroom_staffsInput, Prisma.ClassroomUpdateWithoutClassroom_staffsInput>, Prisma.ClassroomUncheckedUpdateWithoutClassroom_staffsInput>
 }
 
 export type ClassroomCreateWithoutNurseryInput = {
@@ -600,11 +527,10 @@ export type ClassroomCreateWithoutNurseryInput = {
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
-  main_staff?: Prisma.StaffCreateNestedOneWithoutMain_staff_forInput
+  classroom_staffs?: Prisma.ClassroomStaffCreateNestedManyWithoutClassroomInput
 }
 
 export type ClassroomUncheckedCreateWithoutNurseryInput = {
@@ -613,11 +539,10 @@ export type ClassroomUncheckedCreateWithoutNurseryInput = {
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: string | null
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  classroom_staffs?: Prisma.ClassroomStaffUncheckedCreateNestedManyWithoutClassroomInput
 }
 
 export type ClassroomCreateOrConnectWithoutNurseryInput = {
@@ -656,63 +581,73 @@ export type ClassroomScalarWhereInput = {
   age_group?: Prisma.EnumAgeGroupFilter<"Classroom"> | $Enums.AgeGroup
   child_count?: Prisma.IntFilter<"Classroom"> | number
   auxiliary_slots?: Prisma.JsonFilter<"Classroom">
-  main_staff_id?: Prisma.StringNullableFilter<"Classroom"> | string | null
-  other_staff_ids?: Prisma.StringNullableListFilter<"Classroom">
   note?: Prisma.StringNullableFilter<"Classroom"> | string | null
   created_at?: Prisma.DateTimeFilter<"Classroom"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Classroom"> | Date | string
 }
 
-export type ClassroomCreateWithoutMain_staffInput = {
+export type ClassroomCreateWithoutClassroom_staffsInput = {
   id?: string
   name: string
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   nursery: Prisma.NurseryCreateNestedOneWithoutClassroomsInput
 }
 
-export type ClassroomUncheckedCreateWithoutMain_staffInput = {
+export type ClassroomUncheckedCreateWithoutClassroom_staffsInput = {
   id?: string
   nursery_id: string
   name: string
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
-export type ClassroomCreateOrConnectWithoutMain_staffInput = {
+export type ClassroomCreateOrConnectWithoutClassroom_staffsInput = {
   where: Prisma.ClassroomWhereUniqueInput
-  create: Prisma.XOR<Prisma.ClassroomCreateWithoutMain_staffInput, Prisma.ClassroomUncheckedCreateWithoutMain_staffInput>
+  create: Prisma.XOR<Prisma.ClassroomCreateWithoutClassroom_staffsInput, Prisma.ClassroomUncheckedCreateWithoutClassroom_staffsInput>
 }
 
-export type ClassroomCreateManyMain_staffInputEnvelope = {
-  data: Prisma.ClassroomCreateManyMain_staffInput | Prisma.ClassroomCreateManyMain_staffInput[]
-  skipDuplicates?: boolean
+export type ClassroomUpsertWithoutClassroom_staffsInput = {
+  update: Prisma.XOR<Prisma.ClassroomUpdateWithoutClassroom_staffsInput, Prisma.ClassroomUncheckedUpdateWithoutClassroom_staffsInput>
+  create: Prisma.XOR<Prisma.ClassroomCreateWithoutClassroom_staffsInput, Prisma.ClassroomUncheckedCreateWithoutClassroom_staffsInput>
+  where?: Prisma.ClassroomWhereInput
 }
 
-export type ClassroomUpsertWithWhereUniqueWithoutMain_staffInput = {
-  where: Prisma.ClassroomWhereUniqueInput
-  update: Prisma.XOR<Prisma.ClassroomUpdateWithoutMain_staffInput, Prisma.ClassroomUncheckedUpdateWithoutMain_staffInput>
-  create: Prisma.XOR<Prisma.ClassroomCreateWithoutMain_staffInput, Prisma.ClassroomUncheckedCreateWithoutMain_staffInput>
+export type ClassroomUpdateToOneWithWhereWithoutClassroom_staffsInput = {
+  where?: Prisma.ClassroomWhereInput
+  data: Prisma.XOR<Prisma.ClassroomUpdateWithoutClassroom_staffsInput, Prisma.ClassroomUncheckedUpdateWithoutClassroom_staffsInput>
 }
 
-export type ClassroomUpdateWithWhereUniqueWithoutMain_staffInput = {
-  where: Prisma.ClassroomWhereUniqueInput
-  data: Prisma.XOR<Prisma.ClassroomUpdateWithoutMain_staffInput, Prisma.ClassroomUncheckedUpdateWithoutMain_staffInput>
+export type ClassroomUpdateWithoutClassroom_staffsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
+  child_count?: Prisma.IntFieldUpdateOperationsInput | number
+  auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nursery?: Prisma.NurseryUpdateOneRequiredWithoutClassroomsNestedInput
 }
 
-export type ClassroomUpdateManyWithWhereWithoutMain_staffInput = {
-  where: Prisma.ClassroomScalarWhereInput
-  data: Prisma.XOR<Prisma.ClassroomUpdateManyMutationInput, Prisma.ClassroomUncheckedUpdateManyWithoutMain_staffInput>
+export type ClassroomUncheckedUpdateWithoutClassroom_staffsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
+  child_count?: Prisma.IntFieldUpdateOperationsInput | number
+  auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassroomCreateManyNurseryInput = {
@@ -721,8 +656,6 @@ export type ClassroomCreateManyNurseryInput = {
   age_group: $Enums.AgeGroup
   child_count: number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: string | null
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
   note?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -734,11 +667,10 @@ export type ClassroomUpdateWithoutNurseryInput = {
   age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
   child_count?: Prisma.IntFieldUpdateOperationsInput | number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  main_staff?: Prisma.StaffUpdateOneWithoutMain_staff_forNestedInput
+  classroom_staffs?: Prisma.ClassroomStaffUpdateManyWithoutClassroomNestedInput
 }
 
 export type ClassroomUncheckedUpdateWithoutNurseryInput = {
@@ -747,11 +679,10 @@ export type ClassroomUncheckedUpdateWithoutNurseryInput = {
   age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
   child_count?: Prisma.IntFieldUpdateOperationsInput | number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classroom_staffs?: Prisma.ClassroomStaffUncheckedUpdateManyWithoutClassroomNestedInput
 }
 
 export type ClassroomUncheckedUpdateManyWithoutNurseryInput = {
@@ -760,65 +691,40 @@ export type ClassroomUncheckedUpdateManyWithoutNurseryInput = {
   age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
   child_count?: Prisma.IntFieldUpdateOperationsInput | number
   auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  main_staff_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ClassroomCreateManyMain_staffInput = {
-  id?: string
-  nursery_id: string
-  name: string
-  age_group: $Enums.AgeGroup
-  child_count: number
-  auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomCreateother_staff_idsInput | string[]
-  note?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
+
+/**
+ * Count Type ClassroomCountOutputType
+ */
+
+export type ClassroomCountOutputType = {
+  classroom_staffs: number
 }
 
-export type ClassroomUpdateWithoutMain_staffInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
-  child_count?: Prisma.IntFieldUpdateOperationsInput | number
-  auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
-  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nursery?: Prisma.NurseryUpdateOneRequiredWithoutClassroomsNestedInput
+export type ClassroomCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  classroom_staffs?: boolean | ClassroomCountOutputTypeCountClassroom_staffsArgs
 }
 
-export type ClassroomUncheckedUpdateWithoutMain_staffInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
-  child_count?: Prisma.IntFieldUpdateOperationsInput | number
-  auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
-  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+/**
+ * ClassroomCountOutputType without action
+ */
+export type ClassroomCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClassroomCountOutputType
+   */
+  select?: Prisma.ClassroomCountOutputTypeSelect<ExtArgs> | null
 }
 
-export type ClassroomUncheckedUpdateManyWithoutMain_staffInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  age_group?: Prisma.EnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup
-  child_count?: Prisma.IntFieldUpdateOperationsInput | number
-  auxiliary_slots?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  other_staff_ids?: Prisma.ClassroomUpdateother_staff_idsInput | string[]
-  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+/**
+ * ClassroomCountOutputType without action
+ */
+export type ClassroomCountOutputTypeCountClassroom_staffsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClassroomStaffWhereInput
 }
-
 
 
 export type ClassroomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -828,13 +734,12 @@ export type ClassroomSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   age_group?: boolean
   child_count?: boolean
   auxiliary_slots?: boolean
-  main_staff_id?: boolean
-  other_staff_ids?: boolean
   note?: boolean
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  main_staff?: boolean | Prisma.Classroom$main_staffArgs<ExtArgs>
+  classroom_staffs?: boolean | Prisma.Classroom$classroom_staffsArgs<ExtArgs>
+  _count?: boolean | Prisma.ClassroomCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classroom"]>
 
 export type ClassroomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -844,13 +749,10 @@ export type ClassroomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   age_group?: boolean
   child_count?: boolean
   auxiliary_slots?: boolean
-  main_staff_id?: boolean
-  other_staff_ids?: boolean
   note?: boolean
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  main_staff?: boolean | Prisma.Classroom$main_staffArgs<ExtArgs>
 }, ExtArgs["result"]["classroom"]>
 
 export type ClassroomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -860,13 +762,10 @@ export type ClassroomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   age_group?: boolean
   child_count?: boolean
   auxiliary_slots?: boolean
-  main_staff_id?: boolean
-  other_staff_ids?: boolean
   note?: boolean
   created_at?: boolean
   updated_at?: boolean
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  main_staff?: boolean | Prisma.Classroom$main_staffArgs<ExtArgs>
 }, ExtArgs["result"]["classroom"]>
 
 export type ClassroomSelectScalar = {
@@ -876,32 +775,29 @@ export type ClassroomSelectScalar = {
   age_group?: boolean
   child_count?: boolean
   auxiliary_slots?: boolean
-  main_staff_id?: boolean
-  other_staff_ids?: boolean
   note?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type ClassroomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "name" | "age_group" | "child_count" | "auxiliary_slots" | "main_staff_id" | "other_staff_ids" | "note" | "created_at" | "updated_at", ExtArgs["result"]["classroom"]>
+export type ClassroomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "name" | "age_group" | "child_count" | "auxiliary_slots" | "note" | "created_at" | "updated_at", ExtArgs["result"]["classroom"]>
 export type ClassroomInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  main_staff?: boolean | Prisma.Classroom$main_staffArgs<ExtArgs>
+  classroom_staffs?: boolean | Prisma.Classroom$classroom_staffsArgs<ExtArgs>
+  _count?: boolean | Prisma.ClassroomCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClassroomIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  main_staff?: boolean | Prisma.Classroom$main_staffArgs<ExtArgs>
 }
 export type ClassroomIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
-  main_staff?: boolean | Prisma.Classroom$main_staffArgs<ExtArgs>
 }
 
 export type $ClassroomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Classroom"
   objects: {
     nursery: Prisma.$NurseryPayload<ExtArgs>
-    main_staff: Prisma.$StaffPayload<ExtArgs> | null
+    classroom_staffs: Prisma.$ClassroomStaffPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -910,8 +806,6 @@ export type $ClassroomPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     age_group: $Enums.AgeGroup
     child_count: number
     auxiliary_slots: runtime.JsonValue
-    main_staff_id: string | null
-    other_staff_ids: string[]
     note: string | null
     created_at: Date
     updated_at: Date
@@ -1310,7 +1204,7 @@ readonly fields: ClassroomFieldRefs;
 export interface Prisma__ClassroomClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   nursery<T extends Prisma.NurseryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NurseryDefaultArgs<ExtArgs>>): Prisma.Prisma__NurseryClient<runtime.Types.Result.GetResult<Prisma.$NurseryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  main_staff<T extends Prisma.Classroom$main_staffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Classroom$main_staffArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  classroom_staffs<T extends Prisma.Classroom$classroom_staffsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Classroom$classroom_staffsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassroomStaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1346,8 +1240,6 @@ export interface ClassroomFieldRefs {
   readonly age_group: Prisma.FieldRef<"Classroom", 'AgeGroup'>
   readonly child_count: Prisma.FieldRef<"Classroom", 'Int'>
   readonly auxiliary_slots: Prisma.FieldRef<"Classroom", 'Json'>
-  readonly main_staff_id: Prisma.FieldRef<"Classroom", 'String'>
-  readonly other_staff_ids: Prisma.FieldRef<"Classroom", 'String[]'>
   readonly note: Prisma.FieldRef<"Classroom", 'String'>
   readonly created_at: Prisma.FieldRef<"Classroom", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Classroom", 'DateTime'>
@@ -1752,22 +1644,27 @@ export type ClassroomDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
- * Classroom.main_staff
+ * Classroom.classroom_staffs
  */
-export type Classroom$main_staffArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Classroom$classroom_staffsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Staff
+   * Select specific fields to fetch from the ClassroomStaff
    */
-  select?: Prisma.StaffSelect<ExtArgs> | null
+  select?: Prisma.ClassroomStaffSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Staff
+   * Omit specific fields from the ClassroomStaff
    */
-  omit?: Prisma.StaffOmit<ExtArgs> | null
+  omit?: Prisma.ClassroomStaffOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.StaffInclude<ExtArgs> | null
-  where?: Prisma.StaffWhereInput
+  include?: Prisma.ClassroomStaffInclude<ExtArgs> | null
+  where?: Prisma.ClassroomStaffWhereInput
+  orderBy?: Prisma.ClassroomStaffOrderByWithRelationInput | Prisma.ClassroomStaffOrderByWithRelationInput[]
+  cursor?: Prisma.ClassroomStaffWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClassroomStaffScalarFieldEnum | Prisma.ClassroomStaffScalarFieldEnum[]
 }
 
 /**

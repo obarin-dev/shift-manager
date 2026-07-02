@@ -55,6 +55,7 @@ export const ModelName = {
   CalendarEntry: 'CalendarEntry',
   ShiftType: 'ShiftType',
   Classroom: 'Classroom',
+  ClassroomStaff: 'ClassroomStaff',
   Staff: 'Staff',
   ShiftSchedule: 'ShiftSchedule',
   ShiftSlot: 'ShiftSlot',
@@ -140,14 +141,22 @@ export const ClassroomScalarFieldEnum = {
   age_group: 'age_group',
   child_count: 'child_count',
   auxiliary_slots: 'auxiliary_slots',
-  main_staff_id: 'main_staff_id',
-  other_staff_ids: 'other_staff_ids',
   note: 'note',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
 export type ClassroomScalarFieldEnum = (typeof ClassroomScalarFieldEnum)[keyof typeof ClassroomScalarFieldEnum]
+
+
+export const ClassroomStaffScalarFieldEnum = {
+  classroom_id: 'classroom_id',
+  staff_id: 'staff_id',
+  role: 'role',
+  created_at: 'created_at'
+} as const
+
+export type ClassroomStaffScalarFieldEnum = (typeof ClassroomStaffScalarFieldEnum)[keyof typeof ClassroomStaffScalarFieldEnum]
 
 
 export const StaffScalarFieldEnum = {

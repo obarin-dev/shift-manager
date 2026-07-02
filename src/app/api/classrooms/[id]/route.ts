@@ -3,6 +3,7 @@ import {
   deleteClassroom,
   getClassroomById,
   InvalidStaffAssignmentError,
+  isForeignKeyConstraintError,
   isUniqueConstraintError,
   updateClassroom,
   type ClassroomWriteInput,
@@ -148,6 +149,10 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ data: classroom });
   } catch (error) {
     if (error instanceof InvalidStaffAssignmentError) {
+      return NextResponse.json({ error: "invalid_staff" }, { status: 400 });
+    }
+
+    if (isForeignKeyConstraintError(error)) {
       return NextResponse.json({ error: "invalid_staff" }, { status: 400 });
     }
 
