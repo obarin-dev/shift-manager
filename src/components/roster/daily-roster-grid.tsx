@@ -143,6 +143,7 @@ export function DailyRosterGrid({
   const [todayEvents, setTodayEvents] = useState<NurseryCalendarEntry[]>([]);
   const columnResizeState = useRef<{ classroomId: string; startX: number; startWidth: number } | null>(null);
   const rowResizeState = useRef<{ rowId: string; startY: number; startHeight: number } | null>(null);
+  const focusDateRef = useRef(focusDate);
 
   const assignmentMap = useMemo(
     () => buildRosterAssignmentMap(assignments),
@@ -446,12 +447,16 @@ export function DailyRosterGrid({
   };
 
   useEffect(() => {
+    focusDateRef.current = focusDate;
+  }, [focusDate]);
+
+  useEffect(() => {
     saveColumnWidthsToStorage(columnWidths);
   }, [columnWidths]);
 
   useEffect(() => {
-    saveRowHeightsToStorage(focusDate, rowHeights);
-  }, [focusDate, rowHeights]);
+    saveRowHeightsToStorage(focusDateRef.current, rowHeights);
+  }, [rowHeights]);
 
   useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
