@@ -135,7 +135,7 @@ export function DailyRosterGrid({
   /** 日付×クラス×時間ごとの表示プルダウン数 */
   const [cellSlotCounts, setCellSlotCounts] = useState<Record<string, number>>({});
   const [addMenuRowId, setAddMenuRowId] = useState<string | null>(null);
-  const [columnWidths, setColumnWidths] = useState<Record<string, number>>(() => loadColumnWidthsFromStorage());
+  const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
   const [rowHeights, setRowHeights] = useState<Record<string, number>>({});
   const [saveMessage, setSaveMessage] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
@@ -449,6 +449,10 @@ export function DailyRosterGrid({
   useEffect(() => {
     focusDateRef.current = focusDate;
   }, [focusDate]);
+
+  useEffect(() => {
+    setColumnWidths(loadColumnWidthsFromStorage());
+  }, []);
 
   useEffect(() => {
     saveColumnWidthsToStorage(columnWidths);
