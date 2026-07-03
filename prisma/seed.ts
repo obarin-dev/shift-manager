@@ -1,3 +1,9 @@
+/**
+ * ⚠️ 開発・デモ環境専用のシードスクリプトです。本番環境では絶対に実行しないでください。
+ *
+ * 本番初期セットアップは /setup ページ（管理者アカウント作成フォーム）を使用してください。
+ * 詳細は README.md の「本番環境のセットアップ」を参照してください。
+ */
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
