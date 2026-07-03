@@ -46,6 +46,7 @@ export async function createInitialSetup(input: SetupInput): Promise<void> {
         role: "admin",
         is_active: true,
         capable_class_ids: [],
+        staff_login_id: "000001",
       },
     });
   });

@@ -3,6 +3,25 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
+function EyeIcon() {
+  return (
+    <svg fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+      <line x1="1" x2="23" y1="1" y2="23" />
+    </svg>
+  );
+}
+
 type Step = 1 | 2;
 
 type NurseryFields = {
@@ -90,6 +109,8 @@ export function SetupForm() {
     adminPassword: "",
     adminPasswordConfirm: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleNurseryNext = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -147,7 +168,7 @@ export function SetupForm() {
 
   if (step === 1) {
     return (
-      <form onSubmit={handleNurseryNext} noValidate>
+      <form onSubmit={handleNurseryNext} noValidate className="login-form">
         <div className="card-heading">
           <h2>園の基本情報</h2>
           <p>ステップ 1 / 2</p>
@@ -222,7 +243,7 @@ export function SetupForm() {
           </div>
         </div>
 
-        <button type="submit" className="btn btn--primary btn--full">
+        <button type="submit" className="primary-button">
           次へ：管理者アカウント →
         </button>
       </form>
@@ -230,7 +251,7 @@ export function SetupForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate className="login-form">
       <div className="card-heading">
         <h2>管理者アカウント</h2>
         <p>ステップ 2 / 2</p>
@@ -261,6 +282,7 @@ export function SetupForm() {
         <input
           id="adminEmail"
           type="email"
+          autoComplete="off"
           value={admin.adminEmail}
           onChange={(e) => setAdmin({ ...admin, adminEmail: e.target.value })}
           aria-invalid={!!fieldErrors.adminEmail}
@@ -274,14 +296,26 @@ export function SetupForm() {
 
       <div className="form-field">
         <label htmlFor="adminPassword">パスワード <span aria-hidden="true">*</span></label>
-        <input
-          id="adminPassword"
-          type="password"
-          value={admin.adminPassword}
-          onChange={(e) => setAdmin({ ...admin, adminPassword: e.target.value })}
-          aria-invalid={!!fieldErrors.adminPassword}
-          required
-        />
+        <div className="form-field__password-wrapper">
+          <input
+            id="adminPassword"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            value={admin.adminPassword}
+            onChange={(e) => setAdmin({ ...admin, adminPassword: e.target.value })}
+            aria-invalid={!!fieldErrors.adminPassword}
+            required
+          />
+          <button
+            type="button"
+            className="form-field__password-toggle"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        </div>
         {fieldErrors.adminPassword && (
           <p className="form-error" role="alert">{fieldErrors.adminPassword}</p>
         )}
@@ -289,14 +323,26 @@ export function SetupForm() {
 
       <div className="form-field">
         <label htmlFor="adminPasswordConfirm">パスワード（確認） <span aria-hidden="true">*</span></label>
-        <input
-          id="adminPasswordConfirm"
-          type="password"
-          value={admin.adminPasswordConfirm}
-          onChange={(e) => setAdmin({ ...admin, adminPasswordConfirm: e.target.value })}
-          aria-invalid={!!fieldErrors.adminPasswordConfirm}
-          required
-        />
+        <div className="form-field__password-wrapper">
+          <input
+            id="adminPasswordConfirm"
+            type={showConfirm ? "text" : "password"}
+            autoComplete="new-password"
+            value={admin.adminPasswordConfirm}
+            onChange={(e) => setAdmin({ ...admin, adminPasswordConfirm: e.target.value })}
+            aria-invalid={!!fieldErrors.adminPasswordConfirm}
+            required
+          />
+          <button
+            type="button"
+            className="form-field__password-toggle"
+            onClick={() => setShowConfirm((v) => !v)}
+            aria-label={showConfirm ? "パスワードを隠す" : "パスワードを表示"}
+            tabIndex={-1}
+          >
+            {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        </div>
         {fieldErrors.adminPasswordConfirm && (
           <p className="form-error" role="alert">{fieldErrors.adminPasswordConfirm}</p>
         )}
@@ -305,13 +351,13 @@ export function SetupForm() {
       <div className="setup-actions">
         <button
           type="button"
-          className="btn btn--secondary"
+          className="secondary-button"
           onClick={() => { setFieldErrors({}); setStep(1); }}
           disabled={submitting}
         >
           ← 戻る
         </button>
-        <button type="submit" className="btn btn--primary" disabled={submitting}>
+        <button type="submit" className="primary-button" disabled={submitting}>
           {submitting ? "セットアップ中..." : "セットアップ完了"}
         </button>
       </div>
