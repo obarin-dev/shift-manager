@@ -28,8 +28,6 @@ type NurseryFields = {
   nurseryName: string;
   address: string;
   phoneNumber: string;
-  openTime: string;
-  closeTime: string;
 };
 
 type AdminFields = {
@@ -47,25 +45,11 @@ const ERROR_MESSAGES: Record<string, string> = {
   internal_error: "サーバーエラーが発生しました。しばらくしてから再度お試しください。",
 };
 
-const TIME_PATTERN = /^\d{2}:\d{2}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validateNursery(fields: NurseryFields): FieldErrors {
   const errors: FieldErrors = {};
   if (!fields.nurseryName.trim()) errors.nurseryName = "園名を入力してください。";
-  if (!fields.openTime.trim()) {
-    errors.openTime = "開園時間を入力してください。";
-  } else if (!TIME_PATTERN.test(fields.openTime)) {
-    errors.openTime = "HH:MM 形式で入力してください。";
-  }
-  if (!fields.closeTime.trim()) {
-    errors.closeTime = "閉園時間を入力してください。";
-  } else if (!TIME_PATTERN.test(fields.closeTime)) {
-    errors.closeTime = "HH:MM 形式で入力してください。";
-  }
-  if (!errors.openTime && !errors.closeTime && fields.openTime >= fields.closeTime) {
-    errors.closeTime = "閉園時間は開園時間より後にしてください。";
-  }
   return errors;
 }
 
@@ -99,8 +83,6 @@ export function SetupForm() {
     nurseryName: "",
     address: "",
     phoneNumber: "",
-    openTime: "07:00",
-    closeTime: "18:00",
   });
 
   const [admin, setAdmin] = useState<AdminFields>({
@@ -143,8 +125,6 @@ export function SetupForm() {
           nurseryName: nursery.nurseryName,
           address: nursery.address,
           phoneNumber: nursery.phoneNumber,
-          openTime: nursery.openTime,
-          closeTime: nursery.closeTime,
           adminName: admin.adminName,
           adminEmail: admin.adminEmail,
           adminPassword: admin.adminPassword,
@@ -210,37 +190,6 @@ export function SetupForm() {
             onChange={(e) => setNursery({ ...nursery, phoneNumber: e.target.value })}
             placeholder="03-0000-0000"
           />
-        </div>
-
-        <div className="form-field-row">
-          <div className="form-field-row__item">
-            <label htmlFor="openTime">開園時間 <span aria-hidden="true">*</span></label>
-            <input
-              id="openTime"
-              type="time"
-              value={nursery.openTime}
-              onChange={(e) => setNursery({ ...nursery, openTime: e.target.value })}
-              aria-invalid={!!fieldErrors.openTime}
-              required
-            />
-            {fieldErrors.openTime && (
-              <p className="form-error" role="alert">{fieldErrors.openTime}</p>
-            )}
-          </div>
-          <div className="form-field-row__item">
-            <label htmlFor="closeTime">閉園時間 <span aria-hidden="true">*</span></label>
-            <input
-              id="closeTime"
-              type="time"
-              value={nursery.closeTime}
-              onChange={(e) => setNursery({ ...nursery, closeTime: e.target.value })}
-              aria-invalid={!!fieldErrors.closeTime}
-              required
-            />
-            {fieldErrors.closeTime && (
-              <p className="form-error" role="alert">{fieldErrors.closeTime}</p>
-            )}
-          </div>
         </div>
 
         <button type="submit" className="primary-button">

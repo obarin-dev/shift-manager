@@ -10,8 +10,8 @@ export function toNurseryProfile(record: Nursery): NurseryProfile {
     name: record.name,
     address: record.address ?? "",
     phone_number: record.phone_number ?? "",
-    open_time: formatDbTime(record.open_time),
-    close_time: formatDbTime(record.close_time),
+    open_time: record.open_time ? formatDbTime(record.open_time) : "",
+    close_time: record.close_time ? formatDbTime(record.close_time) : "",
     extended_close_time: record.extended_close_time
       ? formatDbTime(record.extended_close_time)
       : "",

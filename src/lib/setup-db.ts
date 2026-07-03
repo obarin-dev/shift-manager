@@ -1,13 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/user-db";
-import { parseTimeToDate } from "@/lib/nursery-time";
 
 export type SetupInput = {
   nurseryName: string;
   address: string;
   phoneNumber: string;
-  openTime: string;
-  closeTime: string;
   adminName: string;
   adminEmail: string;
   adminPassword: string;
@@ -32,8 +29,6 @@ export async function createInitialSetup(input: SetupInput): Promise<void> {
         name: input.nurseryName.trim(),
         address: input.address.trim() || null,
         phone_number: input.phoneNumber.trim() || null,
-        open_time: parseTimeToDate(input.openTime),
-        close_time: parseTimeToDate(input.closeTime),
       },
     });
 
