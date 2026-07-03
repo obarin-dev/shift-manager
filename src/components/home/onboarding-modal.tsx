@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, type FormEvent } from "react";
+import { validateNurseryHours } from "@/lib/nursery-helpers";
 
 type OnboardingStatus = {
   nursingHours: boolean;
@@ -69,7 +70,7 @@ function NursingHoursForm({ onDone }: { onDone: () => void }) {
   const [closeTime, setCloseTime] = useState("18:00");
   const [extendedCloseTime, setExtendedCloseTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [currentProfile, setCurrentProfile] = useState<Record<string, unknown>>({});
 
   useEffect(() => {
@@ -87,9 +88,11 @@ function NursingHoursForm({ onDone }: { onDone: () => void }) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-    if (!openTime || !closeTime) {
-      setError("開園・閉園時間を入力してください。");
+    setErrors({});
+    const profile = { open_time: openTime, close_time: closeTime, extended_close_time: extendedCloseTime };
+    const validationErrors = validateNurseryHours(profile);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
     setSubmitting(true);
@@ -107,7 +110,7 @@ function NursingHoursForm({ onDone }: { onDone: () => void }) {
       if (!res.ok) throw new Error();
       onDone();
     } catch {
-      setError("保存に失敗しました。");
+      setErrors({ form: "保存に失敗しました。" });
     } finally {
       setSubmitting(false);
     }
@@ -115,20 +118,23 @@ function NursingHoursForm({ onDone }: { onDone: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="login-form">
-      {error && <p className="form-alert" role="alert">{error}</p>}
+      {errors.form && <p className="form-alert" role="alert">{errors.form}</p>}
       <div className="form-field-row">
         <div className="form-field-row__item">
           <label htmlFor="ob-open-time">開園時間 <span aria-hidden="true">*</span></label>
           <input id="ob-open-time" type="time" value={openTime} onChange={(e) => setOpenTime(e.target.value)} required />
+          {errors.open_time && <p className="form-field-error">{errors.open_time}</p>}
         </div>
         <div className="form-field-row__item">
           <label htmlFor="ob-close-time">閉園時間 <span aria-hidden="true">*</span></label>
           <input id="ob-close-time" type="time" value={closeTime} onChange={(e) => setCloseTime(e.target.value)} required />
+          {errors.close_time && <p className="form-field-error">{errors.close_time}</p>}
         </div>
       </div>
       <div className="form-field">
         <label htmlFor="ob-extended-time">延長保育終了時間（任意）</label>
         <input id="ob-extended-time" type="time" value={extendedCloseTime} onChange={(e) => setExtendedCloseTime(e.target.value)} />
+        {errors.extended_close_time && <p className="form-field-error">{errors.extended_close_time}</p>}
       </div>
       <button type="submit" className="primary-button" disabled={submitting}>
         {submitting ? "保存中..." : "保存して次へ"}
@@ -150,7 +156,9 @@ function StepPageLink({ href, desc }: { href: string; desc: string }) {
 }
 
 // ── Modal ─────────────────────────────────────────────────
-const SESSION_KEY = "onboarding-dismissed";
+// 完了後の dismiss は localStorage（永続）、未完了の dismiss は sessionStorage（セッション限り）
+const DONE_KEY = "onboarding-complete-dismissed";
+const PENDING_KEY = "onboarding-dismissed";
 
 export function OnboardingModal() {
   const [status, setStatus] = useState<OnboardingStatus | null>(null);
@@ -163,11 +171,11 @@ export function OnboardingModal() {
     if (s) {
       const allDone = STEPS.every((step) => s[step.id]);
       if (allDone) {
-        const isDismissed = localStorage.getItem(SESSION_KEY) === "1";
+        const isDismissed = localStorage.getItem(DONE_KEY) === "1";
         setDismissed(isDismissed);
         return;
       }
-      const isDismissed = localStorage.getItem(SESSION_KEY) === "1";
+      const isDismissed = sessionStorage.getItem(PENDING_KEY) === "1";
       setDismissed(isDismissed);
       if (!isDismissed) {
         const first = STEPS.find((step) => !s[step.id]);
@@ -190,7 +198,7 @@ export function OnboardingModal() {
             type="button"
             className="modal-panel__close"
             aria-label="閉じる"
-            onClick={() => { localStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}
+            onClick={() => { localStorage.setItem(DONE_KEY, "1"); setDismissed(true); }}
           >
             ✕
           </button>
@@ -211,7 +219,7 @@ export function OnboardingModal() {
               <button
                 type="button"
                 className="secondary-button"
-                onClick={() => { localStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}
+                onClick={() => { localStorage.setItem(DONE_KEY, "1"); setDismissed(true); }}
               >
                 閉じる
               </button>
@@ -227,7 +235,7 @@ export function OnboardingModal() {
       <div className="modal-panel onboarding-modal">
         <div className="modal-panel__header">
           <h2>初期設定を完了しましょう</h2>
-          <button type="button" className="modal-panel__close" aria-label="閉じる" onClick={() => { localStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}>
+          <button type="button" className="modal-panel__close" aria-label="閉じる" onClick={() => { sessionStorage.setItem(PENDING_KEY, "1"); setDismissed(true); }}>
             ✕
           </button>
         </div>

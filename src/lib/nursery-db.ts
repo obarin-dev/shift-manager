@@ -47,7 +47,7 @@ export async function getOnboardingStatus(nurseryId: string) {
   const [nursery, shiftTypeCount, staffCount, classroomCount] = await Promise.all([
     prisma.nursery.findUnique({
       where: { id: nurseryId },
-      select: { open_time: true, weekly_closed_weekdays: true, close_on_public_holidays: true },
+      select: { open_time: true, weekly_closed_weekdays: true, close_on_public_holidays: true, holiday_settings_confirmed: true },
     }),
     prisma.shiftType.count({ where: { nursery_id: nurseryId } }),
     prisma.staff.count({
@@ -63,6 +63,7 @@ export async function getOnboardingStatus(nurseryId: string) {
     nursingHours: nursery?.open_time != null,
     shiftTypes: shiftTypeCount >= 1,
     holidaySettings:
+      nursery?.holiday_settings_confirmed === true ||
       (nursery?.weekly_closed_weekdays ?? []).length >= 1 ||
       nursery?.close_on_public_holidays === true,
     staff: staffCount >= 1,

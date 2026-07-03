@@ -43,6 +43,7 @@ export type NurseryMinAggregateOutputType = {
   close_time: Date | null
   extended_close_time: Date | null
   close_on_public_holidays: boolean | null
+  holiday_settings_confirmed: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -56,6 +57,7 @@ export type NurseryMaxAggregateOutputType = {
   close_time: Date | null
   extended_close_time: Date | null
   close_on_public_holidays: boolean | null
+  holiday_settings_confirmed: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -70,6 +72,7 @@ export type NurseryCountAggregateOutputType = {
   extended_close_time: number
   weekly_closed_weekdays: number
   close_on_public_holidays: number
+  holiday_settings_confirmed: number
   created_at: number
   updated_at: number
   _all: number
@@ -93,6 +96,7 @@ export type NurseryMinAggregateInputType = {
   close_time?: true
   extended_close_time?: true
   close_on_public_holidays?: true
+  holiday_settings_confirmed?: true
   created_at?: true
   updated_at?: true
 }
@@ -106,6 +110,7 @@ export type NurseryMaxAggregateInputType = {
   close_time?: true
   extended_close_time?: true
   close_on_public_holidays?: true
+  holiday_settings_confirmed?: true
   created_at?: true
   updated_at?: true
 }
@@ -120,6 +125,7 @@ export type NurseryCountAggregateInputType = {
   extended_close_time?: true
   weekly_closed_weekdays?: true
   close_on_public_holidays?: true
+  holiday_settings_confirmed?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -221,6 +227,7 @@ export type NurseryGroupByOutputType = {
   extended_close_time: Date | null
   weekly_closed_weekdays: number[]
   close_on_public_holidays: boolean
+  holiday_settings_confirmed: boolean
   created_at: Date
   updated_at: Date
   _count: NurseryCountAggregateOutputType | null
@@ -258,6 +265,7 @@ export type NurseryWhereInput = {
   extended_close_time?: Prisma.DateTimeNullableFilter<"Nursery"> | Date | string | null
   weekly_closed_weekdays?: Prisma.IntNullableListFilter<"Nursery">
   close_on_public_holidays?: Prisma.BoolFilter<"Nursery"> | boolean
+  holiday_settings_confirmed?: Prisma.BoolFilter<"Nursery"> | boolean
   created_at?: Prisma.DateTimeFilter<"Nursery"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Nursery"> | Date | string
   classrooms?: Prisma.ClassroomListRelationFilter
@@ -280,6 +288,7 @@ export type NurseryOrderByWithRelationInput = {
   extended_close_time?: Prisma.SortOrderInput | Prisma.SortOrder
   weekly_closed_weekdays?: Prisma.SortOrder
   close_on_public_holidays?: Prisma.SortOrder
+  holiday_settings_confirmed?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   classrooms?: Prisma.ClassroomOrderByRelationAggregateInput
@@ -305,6 +314,7 @@ export type NurseryWhereUniqueInput = Prisma.AtLeast<{
   extended_close_time?: Prisma.DateTimeNullableFilter<"Nursery"> | Date | string | null
   weekly_closed_weekdays?: Prisma.IntNullableListFilter<"Nursery">
   close_on_public_holidays?: Prisma.BoolFilter<"Nursery"> | boolean
+  holiday_settings_confirmed?: Prisma.BoolFilter<"Nursery"> | boolean
   created_at?: Prisma.DateTimeFilter<"Nursery"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Nursery"> | Date | string
   classrooms?: Prisma.ClassroomListRelationFilter
@@ -327,6 +337,7 @@ export type NurseryOrderByWithAggregationInput = {
   extended_close_time?: Prisma.SortOrderInput | Prisma.SortOrder
   weekly_closed_weekdays?: Prisma.SortOrder
   close_on_public_holidays?: Prisma.SortOrder
+  holiday_settings_confirmed?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.NurseryCountOrderByAggregateInput
@@ -349,6 +360,7 @@ export type NurseryScalarWhereWithAggregatesInput = {
   extended_close_time?: Prisma.DateTimeNullableWithAggregatesFilter<"Nursery"> | Date | string | null
   weekly_closed_weekdays?: Prisma.IntNullableListFilter<"Nursery">
   close_on_public_holidays?: Prisma.BoolWithAggregatesFilter<"Nursery"> | boolean
+  holiday_settings_confirmed?: Prisma.BoolWithAggregatesFilter<"Nursery"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Nursery"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Nursery"> | Date | string
 }
@@ -363,6 +375,7 @@ export type NurseryCreateInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -385,6 +398,7 @@ export type NurseryUncheckedCreateInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -407,6 +421,7 @@ export type NurseryUpdateInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -429,6 +444,7 @@ export type NurseryUncheckedUpdateInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -451,6 +467,7 @@ export type NurseryCreateManyInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -465,6 +482,7 @@ export type NurseryUpdateManyMutationInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -479,6 +497,7 @@ export type NurseryUncheckedUpdateManyInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -501,6 +520,7 @@ export type NurseryCountOrderByAggregateInput = {
   extended_close_time?: Prisma.SortOrder
   weekly_closed_weekdays?: Prisma.SortOrder
   close_on_public_holidays?: Prisma.SortOrder
+  holiday_settings_confirmed?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -518,6 +538,7 @@ export type NurseryMaxOrderByAggregateInput = {
   close_time?: Prisma.SortOrder
   extended_close_time?: Prisma.SortOrder
   close_on_public_holidays?: Prisma.SortOrder
+  holiday_settings_confirmed?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -531,6 +552,7 @@ export type NurseryMinOrderByAggregateInput = {
   close_time?: Prisma.SortOrder
   extended_close_time?: Prisma.SortOrder
   close_on_public_holidays?: Prisma.SortOrder
+  holiday_settings_confirmed?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -695,6 +717,7 @@ export type NurseryCreateWithoutCalendar_entriesInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -716,6 +739,7 @@ export type NurseryUncheckedCreateWithoutCalendar_entriesInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -753,6 +777,7 @@ export type NurseryUpdateWithoutCalendar_entriesInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -774,6 +799,7 @@ export type NurseryUncheckedUpdateWithoutCalendar_entriesInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -795,6 +821,7 @@ export type NurseryCreateWithoutShift_typesInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -816,6 +843,7 @@ export type NurseryUncheckedCreateWithoutShift_typesInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -853,6 +881,7 @@ export type NurseryUpdateWithoutShift_typesInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -874,6 +903,7 @@ export type NurseryUncheckedUpdateWithoutShift_typesInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -895,6 +925,7 @@ export type NurseryCreateWithoutClassroomsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   staffs?: Prisma.StaffCreateNestedManyWithoutNurseryInput
@@ -916,6 +947,7 @@ export type NurseryUncheckedCreateWithoutClassroomsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutNurseryInput
@@ -953,6 +985,7 @@ export type NurseryUpdateWithoutClassroomsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   staffs?: Prisma.StaffUpdateManyWithoutNurseryNestedInput
@@ -974,6 +1007,7 @@ export type NurseryUncheckedUpdateWithoutClassroomsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   staffs?: Prisma.StaffUncheckedUpdateManyWithoutNurseryNestedInput
@@ -995,6 +1029,7 @@ export type NurseryCreateWithoutStaffsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -1016,6 +1051,7 @@ export type NurseryUncheckedCreateWithoutStaffsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -1053,6 +1089,7 @@ export type NurseryUpdateWithoutStaffsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -1074,6 +1111,7 @@ export type NurseryUncheckedUpdateWithoutStaffsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -1095,6 +1133,7 @@ export type NurseryCreateWithoutShift_schedulesInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -1116,6 +1155,7 @@ export type NurseryUncheckedCreateWithoutShift_schedulesInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -1153,6 +1193,7 @@ export type NurseryUpdateWithoutShift_schedulesInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -1174,6 +1215,7 @@ export type NurseryUncheckedUpdateWithoutShift_schedulesInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -1195,6 +1237,7 @@ export type NurseryCreateWithoutRoster_sheetsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -1216,6 +1259,7 @@ export type NurseryUncheckedCreateWithoutRoster_sheetsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -1253,6 +1297,7 @@ export type NurseryUpdateWithoutRoster_sheetsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -1274,6 +1319,7 @@ export type NurseryUncheckedUpdateWithoutRoster_sheetsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -1295,6 +1341,7 @@ export type NurseryCreateWithoutInvitationsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -1316,6 +1363,7 @@ export type NurseryUncheckedCreateWithoutInvitationsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -1353,6 +1401,7 @@ export type NurseryUpdateWithoutInvitationsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -1374,6 +1423,7 @@ export type NurseryUncheckedUpdateWithoutInvitationsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -1395,6 +1445,7 @@ export type NurseryCreateWithoutStaff_requestsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
@@ -1416,6 +1467,7 @@ export type NurseryUncheckedCreateWithoutStaff_requestsInput = {
   extended_close_time?: Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
@@ -1453,6 +1505,7 @@ export type NurseryUpdateWithoutStaff_requestsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
@@ -1474,6 +1527,7 @@ export type NurseryUncheckedUpdateWithoutStaff_requestsInput = {
   extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
   close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
@@ -1589,6 +1643,7 @@ export type NurserySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   extended_close_time?: boolean
   weekly_closed_weekdays?: boolean
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: boolean
   updated_at?: boolean
   classrooms?: boolean | Prisma.Nursery$classroomsArgs<ExtArgs>
@@ -1612,6 +1667,7 @@ export type NurserySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   extended_close_time?: boolean
   weekly_closed_weekdays?: boolean
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["nursery"]>
@@ -1626,6 +1682,7 @@ export type NurserySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   extended_close_time?: boolean
   weekly_closed_weekdays?: boolean
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["nursery"]>
@@ -1640,11 +1697,12 @@ export type NurserySelectScalar = {
   extended_close_time?: boolean
   weekly_closed_weekdays?: boolean
   close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type NurseryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "address" | "phone_number" | "open_time" | "close_time" | "extended_close_time" | "weekly_closed_weekdays" | "close_on_public_holidays" | "created_at" | "updated_at", ExtArgs["result"]["nursery"]>
+export type NurseryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "address" | "phone_number" | "open_time" | "close_time" | "extended_close_time" | "weekly_closed_weekdays" | "close_on_public_holidays" | "holiday_settings_confirmed" | "created_at" | "updated_at", ExtArgs["result"]["nursery"]>
 export type NurseryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   classrooms?: boolean | Prisma.Nursery$classroomsArgs<ExtArgs>
   staffs?: boolean | Prisma.Nursery$staffsArgs<ExtArgs>
@@ -1689,6 +1747,11 @@ export type $NurseryPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      *    * 国民の祝日を休園とする
      */
     close_on_public_holidays: boolean
+    /**
+     * *
+     *    * 休日設定を一度でも保存したか（定休なしでも true になる）
+     */
+    holiday_settings_confirmed: boolean
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["nursery"]>
@@ -2131,6 +2194,7 @@ export interface NurseryFieldRefs {
   readonly extended_close_time: Prisma.FieldRef<"Nursery", 'DateTime'>
   readonly weekly_closed_weekdays: Prisma.FieldRef<"Nursery", 'Int[]'>
   readonly close_on_public_holidays: Prisma.FieldRef<"Nursery", 'Boolean'>
+  readonly holiday_settings_confirmed: Prisma.FieldRef<"Nursery", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"Nursery", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Nursery", 'DateTime'>
 }

@@ -90,7 +90,11 @@ model Nursery {
   /**
    * 国民の祝日を休園とする
    */
-  close_on_public_holidays Boolean         @default(false)
+  close_on_public_holidays      Boolean         @default(false)
+  /**
+   * 休日設定を一度でも保存したか（定休なしでも true になる）
+   */
+  holiday_settings_confirmed    Boolean         @default(false)
   created_at               DateTime        @default(now())
   updated_at               DateTime        @updatedAt
   classrooms               Classroom[]
