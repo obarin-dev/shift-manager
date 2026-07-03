@@ -43,6 +43,33 @@ export async function getPrimaryNurseryProfile() {
   return nursery ? toNurseryProfile(nursery) : null;
 }
 
+export async function getOnboardingStatus(nurseryId: string) {
+  const [nursery, shiftTypeCount, staffCount, classroomCount] = await Promise.all([
+    prisma.nursery.findUnique({
+      where: { id: nurseryId },
+      select: { open_time: true, weekly_closed_weekdays: true, close_on_public_holidays: true },
+    }),
+    prisma.shiftType.count({ where: { nursery_id: nurseryId } }),
+    prisma.staff.count({
+      where: {
+        nursery_id: nurseryId,
+        NOT: { role: "admin" },
+      },
+    }),
+    prisma.classroom.count({ where: { nursery_id: nurseryId } }),
+  ]);
+
+  return {
+    nursingHours: nursery?.open_time != null,
+    shiftTypes: shiftTypeCount >= 1,
+    holidaySettings:
+      (nursery?.weekly_closed_weekdays ?? []).length >= 1 ||
+      nursery?.close_on_public_holidays === true,
+    staff: staffCount >= 1,
+    classes: classroomCount >= 1,
+  };
+}
+
 export async function updatePrimaryNurseryProfile(input: NurseryProfile) {
   const nursery = await getPrimaryNursery();
 

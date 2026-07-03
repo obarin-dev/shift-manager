@@ -163,11 +163,11 @@ export function OnboardingModal() {
     if (s) {
       const allDone = STEPS.every((step) => s[step.id]);
       if (allDone) {
-        const isDismissed = sessionStorage.getItem(SESSION_KEY) === "1";
+        const isDismissed = localStorage.getItem(SESSION_KEY) === "1";
         setDismissed(isDismissed);
         return;
       }
-      const isDismissed = sessionStorage.getItem(SESSION_KEY) === "1";
+      const isDismissed = localStorage.getItem(SESSION_KEY) === "1";
       setDismissed(isDismissed);
       if (!isDismissed) {
         const first = STEPS.find((step) => !s[step.id]);
@@ -190,7 +190,7 @@ export function OnboardingModal() {
             type="button"
             className="modal-panel__close"
             aria-label="閉じる"
-            onClick={() => { sessionStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}
+            onClick={() => { localStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}
           >
             ✕
           </button>
@@ -211,7 +211,7 @@ export function OnboardingModal() {
               <button
                 type="button"
                 className="secondary-button"
-                onClick={() => { sessionStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}
+                onClick={() => { localStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}
               >
                 閉じる
               </button>
@@ -227,7 +227,7 @@ export function OnboardingModal() {
       <div className="modal-panel onboarding-modal">
         <div className="modal-panel__header">
           <h2>初期設定を完了しましょう</h2>
-          <button type="button" className="modal-panel__close" aria-label="閉じる" onClick={() => { sessionStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}>
+          <button type="button" className="modal-panel__close" aria-label="閉じる" onClick={() => { localStorage.setItem(SESSION_KEY, "1"); setDismissed(true); }}>
             ✕
           </button>
         </div>

@@ -8,19 +8,11 @@ vi.mock("@/lib/auth-session", async (importOriginal) => {
 
 vi.mock("@/lib/nursery-db", () => ({
   getActiveNurseryId: vi.fn().mockResolvedValue("nursery-hoshinoko"),
-}));
-
-vi.mock("@/lib/prisma", () => ({
-  prisma: {
-    nursery: { findUnique: vi.fn() },
-    shiftType: { count: vi.fn() },
-    staff: { count: vi.fn() },
-    classroom: { count: vi.fn() },
-  },
+  getOnboardingStatus: vi.fn(),
 }));
 
 import { getSession } from "@/lib/auth-session";
-import { prisma } from "@/lib/prisma";
+import { getOnboardingStatus } from "@/lib/nursery-db";
 import { GET } from "../route";
 
 const ADMIN_SESSION: SessionData = {
@@ -37,17 +29,28 @@ const STAFF_SESSION: SessionData = {
   email: "staff@example.com",
 };
 
+const ALL_FALSE = {
+  nursingHours: false,
+  shiftTypes: false,
+  holidaySettings: false,
+  staff: false,
+  classes: false,
+};
+
+const ALL_TRUE = {
+  nursingHours: true,
+  shiftTypes: true,
+  holidaySettings: true,
+  staff: true,
+  classes: true,
+};
+
 const mockGetSession = vi.mocked(getSession);
-const mockNurseryFindUnique = vi.mocked(prisma.nursery.findUnique);
-const mockShiftTypeCount = vi.mocked(prisma.shiftType.count);
-const mockStaffCount = vi.mocked(prisma.staff.count);
-const mockClassroomCount = vi.mocked(prisma.classroom.count);
+const mockGetOnboardingStatus = vi.mocked(getOnboardingStatus);
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockShiftTypeCount.mockResolvedValue(0);
-  mockStaffCount.mockResolvedValue(0);
-  mockClassroomCount.mockResolvedValue(0);
+  mockGetOnboardingStatus.mockResolvedValue(ALL_FALSE);
 });
 
 describe("GET /api/onboarding/status", () => {
@@ -57,42 +60,25 @@ describe("GET /api/onboarding/status", () => {
     expect(res.status).toBe(401);
   });
 
-  it("returns 401 when role is staff", async () => {
+  it("returns 403 when role is staff", async () => {
     mockGetSession.mockResolvedValue(STAFF_SESSION);
     const res = await GET();
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
   });
 
   it("returns all false when nursery has no data", async () => {
     mockGetSession.mockResolvedValue(ADMIN_SESSION);
-    mockNurseryFindUnique.mockResolvedValue({
-      open_time: null,
-      weekly_closed_weekdays: [],
-      close_on_public_holidays: false,
-    } as never);
-    mockShiftTypeCount.mockResolvedValue(0);
-    mockStaffCount.mockResolvedValue(0);
-    mockClassroomCount.mockResolvedValue(0);
+    mockGetOnboardingStatus.mockResolvedValue(ALL_FALSE);
 
     const res = await GET();
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body).toEqual({
-      nursingHours: false,
-      shiftTypes: false,
-      holidaySettings: false,
-      staff: false,
-      classes: false,
-    });
+    expect(body).toEqual(ALL_FALSE);
   });
 
   it("returns nursingHours true when open_time is set", async () => {
     mockGetSession.mockResolvedValue(ADMIN_SESSION);
-    mockNurseryFindUnique.mockResolvedValue({
-      open_time: new Date("1970-01-01T07:00:00Z"),
-      weekly_closed_weekdays: [],
-      close_on_public_holidays: false,
-    } as never);
+    mockGetOnboardingStatus.mockResolvedValue({ ...ALL_FALSE, nursingHours: true });
 
     const res = await GET();
     const body = await res.json();
@@ -101,49 +87,28 @@ describe("GET /api/onboarding/status", () => {
 
   it("returns holidaySettings true when close_on_public_holidays is true", async () => {
     mockGetSession.mockResolvedValue(ADMIN_SESSION);
-    mockNurseryFindUnique.mockResolvedValue({
-      open_time: null,
-      weekly_closed_weekdays: [],
-      close_on_public_holidays: true,
-    } as never);
+    mockGetOnboardingStatus.mockResolvedValue({ ...ALL_FALSE, holidaySettings: true });
 
     const res = await GET();
     const body = await res.json();
     expect(body.holidaySettings).toBe(true);
   });
 
-  it("returns holidaySettings true when weekly_closed_weekdays has entries", async () => {
+  it("returns staff true when non-admin staff exist (including manager role)", async () => {
     mockGetSession.mockResolvedValue(ADMIN_SESSION);
-    mockNurseryFindUnique.mockResolvedValue({
-      open_time: null,
-      weekly_closed_weekdays: ["sunday"],
-      close_on_public_holidays: false,
-    } as never);
+    mockGetOnboardingStatus.mockResolvedValue({ ...ALL_FALSE, staff: true });
 
     const res = await GET();
     const body = await res.json();
-    expect(body.holidaySettings).toBe(true);
+    expect(body.staff).toBe(true);
   });
 
   it("returns all true when all data is present", async () => {
     mockGetSession.mockResolvedValue(ADMIN_SESSION);
-    mockNurseryFindUnique.mockResolvedValue({
-      open_time: new Date("1970-01-01T07:00:00Z"),
-      weekly_closed_weekdays: ["sunday"],
-      close_on_public_holidays: false,
-    } as never);
-    mockShiftTypeCount.mockResolvedValue(2);
-    mockStaffCount.mockResolvedValue(3);
-    mockClassroomCount.mockResolvedValue(1);
+    mockGetOnboardingStatus.mockResolvedValue(ALL_TRUE);
 
     const res = await GET();
     const body = await res.json();
-    expect(body).toEqual({
-      nursingHours: true,
-      shiftTypes: true,
-      holidaySettings: true,
-      staff: true,
-      classes: true,
-    });
+    expect(body).toEqual(ALL_TRUE);
   });
 });
