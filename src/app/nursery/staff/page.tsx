@@ -4,6 +4,7 @@ import { buildAdminHref } from "@/lib/admin-navigation";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { StaffManagementSettings } from "@/components/staff/staff-management-settings";
+import { OnboardingBanner } from "@/components/home/onboarding-banner";
 
 export default async function NurseryStaffPage() {
   const { account } = await requireAdminOrManager();
@@ -21,6 +22,8 @@ export default async function NurseryStaffPage() {
         <span aria-hidden="true">/</span>
         <span>職員管理</span>
       </nav>
+
+      <OnboardingBanner />
 
       <AppHeader
         actions={

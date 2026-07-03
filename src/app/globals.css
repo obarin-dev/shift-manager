@@ -130,6 +130,313 @@ input {
   font-weight: 600;
 }
 
+.onboarding-modal {
+  width: min(100%, 480px);
+}
+
+.onboarding-steps {
+  display: grid;
+  gap: 8px;
+}
+
+.onboarding-step {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.onboarding-step--done {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.onboarding-step__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.onboarding-step--done .onboarding-step__header {
+  color: #16a34a;
+  cursor: default;
+}
+
+.onboarding-step__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.onboarding-step--done .onboarding-step__number {
+  background: #bbf7d0;
+  color: #16a34a;
+}
+
+.onboarding-step--active .onboarding-step__number {
+  background: var(--primary);
+  color: #fff;
+}
+
+.onboarding-step__body {
+  padding: 0 16px 16px;
+}
+
+.onboarding-step__note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.onboarding-shift-inputs {
+  display: grid;
+  gap: 6px;
+}
+
+.onboarding-shift-header {
+  display: grid;
+  grid-template-columns: 1fr 90px 90px 28px;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 0 4px;
+}
+
+.onboarding-shift-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 90px 28px;
+  gap: 6px;
+  align-items: center;
+}
+
+.onboarding-shift-row__name,
+.onboarding-shift-row__time {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.onboarding-shift-row__name:focus,
+.onboarding-shift-row__time:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.onboarding-shift-row__remove {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.onboarding-shift-row__remove:hover:not(:disabled) {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.onboarding-shift-row__remove:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.onboarding-modal--complete {
+  max-width: 420px;
+  position: relative;
+}
+
+.onboarding-modal--complete .modal-panel__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.onboarding-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 8px 8px;
+  gap: 12px;
+}
+
+.onboarding-complete__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.onboarding-complete__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.onboarding-complete__desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.onboarding-complete__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.onboarding-complete__actions .primary-button {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.onboarding-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 12px 18px;
+  margin-bottom: 16px;
+}
+
+.onboarding-banner__body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.onboarding-banner__badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: #dbeafe;
+  border-radius: 6px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.onboarding-banner__guide {
+  font-size: 0.9rem;
+  color: #1e40af;
+}
+
+.onboarding-banner__back {
+  font-size: 0.85rem;
+  color: var(--primary);
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.onboarding-banner__back:hover {
+  text-decoration: underline;
+}
+
+.onboarding-step-link {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.onboarding-step-link__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.onboarding-add-btn {
+  align-self: flex-start;
+  border: 1px dashed var(--border);
+  background: none;
+  color: var(--primary);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.onboarding-add-btn:hover {
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.onboarding-weekday-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.onboarding-weekday-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.onboarding-weekday-btn--active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.onboarding-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 .form-field {
   display: grid;
   gap: 8px;

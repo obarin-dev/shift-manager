@@ -10,8 +10,8 @@ export function toNurseryProfile(record: Nursery): NurseryProfile {
     name: record.name,
     address: record.address ?? "",
     phone_number: record.phone_number ?? "",
-    open_time: formatDbTime(record.open_time),
-    close_time: formatDbTime(record.close_time),
+    open_time: record.open_time ? formatDbTime(record.open_time) : "",
+    close_time: record.close_time ? formatDbTime(record.close_time) : "",
     extended_close_time: record.extended_close_time
       ? formatDbTime(record.extended_close_time)
       : "",
@@ -41,6 +41,34 @@ export async function getPrimaryNurseryName(): Promise<string> {
 export async function getPrimaryNurseryProfile() {
   const nursery = await getPrimaryNursery();
   return nursery ? toNurseryProfile(nursery) : null;
+}
+
+export async function getOnboardingStatus(nurseryId: string) {
+  const [nursery, shiftTypeCount, staffCount, classroomCount] = await Promise.all([
+    prisma.nursery.findUnique({
+      where: { id: nurseryId },
+      select: { open_time: true, weekly_closed_weekdays: true, close_on_public_holidays: true, holiday_settings_confirmed: true },
+    }),
+    prisma.shiftType.count({ where: { nursery_id: nurseryId } }),
+    prisma.staff.count({
+      where: {
+        nursery_id: nurseryId,
+        NOT: { role: "admin" },
+      },
+    }),
+    prisma.classroom.count({ where: { nursery_id: nurseryId } }),
+  ]);
+
+  return {
+    nursingHours: nursery?.open_time != null,
+    shiftTypes: shiftTypeCount >= 1,
+    holidaySettings:
+      nursery?.holiday_settings_confirmed === true ||
+      (nursery?.weekly_closed_weekdays ?? []).length >= 1 ||
+      nursery?.close_on_public_holidays === true,
+    staff: staffCount >= 1,
+    classes: classroomCount >= 1,
+  };
 }
 
 export async function updatePrimaryNurseryProfile(input: NurseryProfile) {
