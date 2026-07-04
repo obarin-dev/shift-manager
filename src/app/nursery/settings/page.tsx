@@ -11,7 +11,7 @@ export default async function NurserySettingsPage() {
   const role = account.role;
 
   return (
-    <AdminShell activeNav="nursery" activeNurseryNav="settings" account={account} role={role}>
+    <AdminShell activeNav="nursery" account={account} role={role}>
       <nav aria-label="パンくず" className="breadcrumb">
         <Link href={buildAdminHref("/nursery", role)}>園管理</Link>
         <span aria-hidden="true">/</span>

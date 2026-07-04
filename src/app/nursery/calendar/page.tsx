@@ -10,7 +10,7 @@ export default async function NurseryCalendarPage() {
   const role = account.role;
 
   return (
-    <AdminShell activeNav="nursery" activeNurseryNav="calendar" account={account} role={role}>
+    <AdminShell activeNav="nursery" account={account} role={role}>
       <nav aria-label="パンくず" className="breadcrumb">
         <Link href={buildAdminHref("/nursery", role)}>園管理</Link>
         <span aria-hidden="true">/</span>

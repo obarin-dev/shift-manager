@@ -9,7 +9,7 @@ type SidebarNavItem = {
   href?: string;
   isActive?: boolean;
   icon?: ReactNode;
-  kind?: "link" | "section" | "sub";
+  kind?: "link" | "section";
 };
 
 type AppSidebarProps = {
@@ -95,17 +95,9 @@ export function AppSidebar({
             );
           }
 
-          const linkClass = [
-            "app-sidebar__link",
-            item.kind === "sub" && "app-sidebar__link--sub",
-            item.isActive && "is-active",
-          ]
-            .filter(Boolean)
-            .join(" ");
-
           return (
             <a
-              className={linkClass}
+              className={item.isActive ? "app-sidebar__link is-active" : "app-sidebar__link"}
               href={item.href ?? "#"}
               key={`${item.label}-${item.href}`}
             >
