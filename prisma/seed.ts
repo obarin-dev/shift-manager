@@ -19,18 +19,18 @@ import { parseTimeToDate } from "../src/lib/nursery-time";
 import { hashPassword } from "../src/lib/user-db";
 
 const SEED_STAFF = [
-  { id: "staff-1", staff_id: "000001", name: "山田 花子", employment_type: "seikin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1", "class-mixed"], work_availability: { start: "07:00", end: "19:30" }, is_active: true },
-  { id: "staff-2", staff_id: "000002", name: "佐藤 太郎", employment_type: "hijokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1"], work_availability: { start: "07:30", end: "09:00" }, is_active: true },
-  { id: "staff-3", staff_id: "000003", name: "鈴木 美咲", employment_type: "jokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-2", "class-mixed"], work_availability: { start: "15:00", end: "19:00" }, is_active: true },
-  { id: "staff-4", staff_id: "000004", name: "高橋 健", employment_type: "hijokin" as const, job_type: "nurse" as const, has_nursery_teacher_license: false, capable_class_ids: ["class-0"], work_availability: { start: "14:00", end: "18:00" }, is_active: true },
-  { id: "staff-5", staff_id: "000005", name: "田中 由美", employment_type: "hijokin" as const, job_type: "cook" as const, has_nursery_teacher_license: false, capable_class_ids: ["class-mixed"], work_availability: { start: "", end: "" }, is_active: true },
-  { id: "staff-6", staff_id: "000006", name: "伊藤 誠", employment_type: "jokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-0", "class-2"], work_availability: { start: "07:00", end: "19:00" }, is_active: true },
+  { id: "staff-1", staff_id: "000001", name: "山田 花子", last_name: "山田", first_name: "花子", employment_type: "seikin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1", "class-mixed"], work_availability: { start: "07:00", end: "19:30" }, is_active: true },
+  { id: "staff-2", staff_id: "000002", name: "佐藤 太郎", last_name: "佐藤", first_name: "太郎", employment_type: "hijokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-1"], work_availability: { start: "07:30", end: "09:00" }, is_active: true },
+  { id: "staff-3", staff_id: "000003", name: "鈴木 美咲", last_name: "鈴木", first_name: "美咲", employment_type: "jokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-2", "class-mixed"], work_availability: { start: "15:00", end: "19:00" }, is_active: true },
+  { id: "staff-4", staff_id: "000004", name: "高橋 健", last_name: "高橋", first_name: "健", employment_type: "hijokin" as const, job_type: "nurse" as const, has_nursery_teacher_license: false, capable_class_ids: ["class-0"], work_availability: { start: "14:00", end: "18:00" }, is_active: true },
+  { id: "staff-5", staff_id: "000005", name: "田中 由美", last_name: "田中", first_name: "由美", employment_type: "hijokin" as const, job_type: "cook" as const, has_nursery_teacher_license: false, capable_class_ids: ["class-mixed"], work_availability: { start: "", end: "" }, is_active: true },
+  { id: "staff-6", staff_id: "000006", name: "伊藤 誠", last_name: "伊藤", first_name: "誠", employment_type: "jokin" as const, job_type: "nursery_teacher" as const, has_nursery_teacher_license: true, capable_class_ids: ["class-0", "class-2"], work_availability: { start: "07:00", end: "19:00" }, is_active: true },
 ];
 
 // ログインアカウントを持つスタッフ（メール・パスワード・ロールを直接 Staff に設定）
 const SEED_LOGIN_STAFF = [
-  { id: "staff-admin", staff_id: "000010", name: "管理者", email: "admin@example.com", role: "admin" as const, employment_type: "seikin" as const, job_type: "office" as const },
-  { id: "staff-manager", staff_id: "000011", name: "勤務表作成者", email: "manager@example.com", role: "manager" as const, employment_type: "seikin" as const, job_type: "office" as const },
+  { id: "staff-admin", staff_id: "000010", name: "管理者", last_name: "管理者", first_name: "", email: "admin@example.com", role: "admin" as const, employment_type: "seikin" as const, job_type: "office" as const },
+  { id: "staff-manager", staff_id: "000011", name: "勤務表作成者", last_name: "勤務表作成者", first_name: "", email: "manager@example.com", role: "manager" as const, employment_type: "seikin" as const, job_type: "office" as const },
 ];
 // staff-6 (伊藤) は staff ロールのログインアカウント
 const STAFF_LOGIN_EMAIL = "staff@example.com";
@@ -132,6 +132,8 @@ async function main() {
         id: staff.id,
         nursery_id: DEFAULT_NURSERY_ID,
         name: staff.name,
+        last_name: staff.last_name,
+        first_name: staff.first_name || null,
         employment_type: staff.employment_type,
         job_type: staff.job_type,
         capable_class_ids: staff.capable_class_ids,
@@ -192,6 +194,8 @@ async function main() {
         id: account.id,
         nursery_id: DEFAULT_NURSERY_ID,
         name: account.name,
+        last_name: account.last_name,
+        first_name: account.first_name || null,
         staff_login_id: account.staff_id,
         employment_type: account.employment_type,
         job_type: account.job_type,

@@ -62,7 +62,8 @@ const EMPTY_INVITATION_DRAFT: InvitationDraft = {
 
 const EMPTY_STAFF_FORM_VALUES: StaffFormValues = {
   staff_id: "",
-  name: "",
+  last_name: "",
+  first_name: "",
   employment_type: "",
   job_type: "",
   has_nursery_teacher_license: true,
@@ -79,7 +80,8 @@ const INVITATION_EXPIRY_OPTIONS = [
 function staffToFormValues(staff: StaffMember) {
   return {
     staff_id: staffLoginIdToInput(staff.staff_id),
-    name: staff.name,
+    last_name: staff.last_name,
+    first_name: staff.first_name,
     employment_type: staff.employment_type,
     job_type: staff.job_type,
     has_nursery_teacher_license: staff.has_nursery_teacher_license,
@@ -95,7 +97,8 @@ type StaffManagementSettingsProps = {
 
 function staffToApiPayload(values: StaffFormValues) {
   return {
-    name: values.name.trim(),
+    last_name: values.last_name.trim(),
+    first_name: values.first_name.trim(),
     employment_type: values.employment_type,
     job_type: values.job_type,
     has_nursery_teacher_license: values.has_nursery_teacher_license,

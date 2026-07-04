@@ -21,7 +21,8 @@ import {
 
 type StaffFormValues = {
   staff_id: string;
-  name: string;
+  last_name: string;
+  first_name: string;
   employment_type: EmploymentType | "";
   job_type: JobType | "";
   has_nursery_teacher_license: boolean;
@@ -43,10 +44,14 @@ type StaffFormModalProps = {
 function validateStaffForm(values: StaffFormValues) {
   const errors: StaffFormErrors = {};
 
-  if (!values.name.trim()) {
-    errors.name = "氏名を入力してください。";
-  } else if (values.name.trim().length > 50) {
-    errors.name = "氏名は50文字以内で入力してください。";
+  if (!values.last_name.trim()) {
+    errors.last_name = "姓を入力してください。";
+  } else if (values.last_name.trim().length > 25) {
+    errors.last_name = "姓は25文字以内で入力してください。";
+  }
+
+  if (values.first_name.trim().length > 25) {
+    errors.first_name = "名は25文字以内で入力してください。";
   }
 
   if (!values.employment_type) {
@@ -148,20 +153,39 @@ export function StaffFormModal({
             </div>
           )}
 
-          <label className="form-field" htmlFor="staff-name">
-            <span>氏名</span>
-            <input
-              aria-invalid={Boolean(errors.name)}
-              id="staff-name"
-              name="name"
-              onChange={(event) =>
-                setValues((current) => ({ ...current, name: event.target.value }))
-              }
-              type="text"
-              value={values.name}
-            />
-            {errors.name ? <span className="field-error">{errors.name}</span> : null}
-          </label>
+          <div className="modal-form__grid">
+            <label className="form-field" htmlFor="staff-last-name">
+              <span>姓</span>
+              <input
+                aria-invalid={Boolean(errors.last_name)}
+                id="staff-last-name"
+                name="last_name"
+                onChange={(event) =>
+                  setValues((current) => ({ ...current, last_name: event.target.value }))
+                }
+                placeholder="山田"
+                type="text"
+                value={values.last_name}
+              />
+              {errors.last_name ? <span className="field-error">{errors.last_name}</span> : null}
+            </label>
+
+            <label className="form-field" htmlFor="staff-first-name">
+              <span>名</span>
+              <input
+                aria-invalid={Boolean(errors.first_name)}
+                id="staff-first-name"
+                name="first_name"
+                onChange={(event) =>
+                  setValues((current) => ({ ...current, first_name: event.target.value }))
+                }
+                placeholder="花子"
+                type="text"
+                value={values.first_name}
+              />
+              {errors.first_name ? <span className="field-error">{errors.first_name}</span> : null}
+            </label>
+          </div>
 
           <div className="modal-form__grid">
             <label className="form-field" htmlFor="staff-employment">

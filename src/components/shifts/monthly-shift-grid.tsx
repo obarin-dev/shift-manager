@@ -732,7 +732,7 @@ export function MonthlyShiftGrid({
                       return null;
                     }
 
-                    const surname = getStaffSurname(staffMember.name);
+                    const surname = staffMember.last_name || getStaffSurname(staffMember.name);
                     const sectionKey = section.classroomId ?? "unassigned";
 
                     return (

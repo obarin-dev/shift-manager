@@ -180,6 +180,8 @@ model Staff {
   nursery_id                  String
   nursery                     Nursery          @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
   name                        String
+  last_name                   String?
+  first_name                  String?
   name_kana                   String?
   phone_number                String?
   employment_type             EmploymentType?

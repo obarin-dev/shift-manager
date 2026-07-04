@@ -8,7 +8,8 @@ import { formatDbTime, parseTimeToDate } from "@/lib/nursery-time";
 
 export type StaffWriteInput = {
   staff_id: string;
-  name: string;
+  last_name: string;
+  first_name: string;
   employment_type: EmploymentType;
   job_type: JobType;
   has_nursery_teacher_license: boolean;
@@ -38,6 +39,8 @@ export function toStaffMember(record: PrismaStaff): StaffMember {
     id: record.id,
     staff_id: record.staff_login_id ?? "",
     name: record.name,
+    last_name: record.last_name ?? record.name.split(/[\s　]/)[0] ?? record.name,
+    first_name: record.first_name ?? record.name.split(/[\s　]/).slice(1).join(" ") ?? "",
     role: record.role ?? null,
     roleLabel: getJobTypeLabel((record.job_type ?? "other") as JobType),
     capable_class_ids: record.capable_class_ids ?? [],
@@ -59,8 +62,11 @@ export function toStaffMember(record: PrismaStaff): StaffMember {
 
 
 function buildStaffData(input: StaffWriteInput, staffLoginId: string | null) {
+  const fullName = [input.last_name, input.first_name].filter(Boolean).join(" ");
   return {
-    name: input.name,
+    name: fullName,
+    last_name: input.last_name,
+    first_name: input.first_name || null,
     employment_type: input.employment_type,
     job_type: input.job_type,
     has_nursery_teacher_license: input.has_nursery_teacher_license,
