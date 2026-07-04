@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/user-db";
+import { INITIAL_SHIFT_TYPES } from "@/lib/nursery-helpers";
+import { parseTimeToDate } from "@/lib/nursery-time";
+import { normalizeShiftColor, getDefaultColorForShiftCode, DEFAULT_SHIFT_TYPE_COLOR } from "@/lib/shift-type-colors";
 
 export type SetupInput = {
   nurseryName: string;
@@ -42,6 +45,25 @@ export async function createInitialSetup(input: SetupInput): Promise<void> {
         staff_login_id: "000001",
       },
     });
+
+    for (const shiftType of INITIAL_SHIFT_TYPES) {
+      const color =
+        normalizeShiftColor(shiftType.color) ??
+        getDefaultColorForShiftCode(shiftType.code) ??
+        DEFAULT_SHIFT_TYPE_COLOR;
+      await tx.shiftType.create({
+        data: {
+          nursery_id: nursery.id,
+          code: shiftType.code,
+          name: shiftType.name,
+          start_time: parseTimeToDate(shiftType.start),
+          end_time: parseTimeToDate(shiftType.end),
+          is_active: shiftType.is_active,
+          sort_order: shiftType.sort_order,
+          color,
+        },
+      });
+    }
   });
 }
 
