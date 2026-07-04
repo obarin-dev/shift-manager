@@ -272,7 +272,7 @@ async function main() {
 
   if (staffCount < SEED_STAFF.length + SEED_LOGIN_STAFF.length) {
     throw new Error(
-      `Staff の投入が不足しています。マイグレーション後に npm run db:seed を再実行してください。`,
+      `Staff の投入が不足しています。マイグレーション後に npm run db:seed:demo を再実行してください。`,
     );
   }
 

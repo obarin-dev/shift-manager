@@ -9,8 +9,8 @@ Next.js (App Router) + Prisma + PostgreSQL 構成の保育園向けシフト管�
 npm install
 
 # 環境変数の設定
-cp .env.example .env
-# DATABASE_URL, AUTH_SECRET を設定
+cp .env.example .env.local
+# DATABASE_URL（必須）、AUTH_SECRET・GEMINI_API_KEY を設定
 
 # DB マイグレーション
 npx prisma migrate dev
