@@ -38,6 +38,7 @@ export function toStaffMember(record: PrismaStaff): StaffMember {
     id: record.id,
     staff_id: record.staff_login_id ?? "",
     name: record.name,
+    role: record.role ?? null,
     roleLabel: getJobTypeLabel((record.job_type ?? "other") as JobType),
     capable_class_ids: record.capable_class_ids ?? [],
     employment_type: (record.employment_type ?? "hijokin") as EmploymentType,

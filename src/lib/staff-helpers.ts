@@ -72,6 +72,7 @@ export type StaffMember = {
   id: string;
   staff_id: string;
   name: string;
+  role: string | null;
   roleLabel: string;
   capable_class_ids: string[];
   employment_type: EmploymentType;

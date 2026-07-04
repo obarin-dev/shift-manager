@@ -4,6 +4,7 @@ import { TodayScheduleHeader } from "@/components/home/today-schedule-header";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { DailyRosterGrid } from "@/components/roster/daily-roster-grid";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
+import { OnboardingModal } from "@/components/home/onboarding-modal";
 
 export default async function HomePage() {
   const { account } = await requireAuth();
@@ -35,6 +36,7 @@ export default async function HomePage() {
       role={role}
       scrollPanelLayout
     >
+      {account.role === "admin" && <OnboardingModal />}
       <TodayScheduleHeader
         actions={headerActions}
         dateLabel={todayLabel}

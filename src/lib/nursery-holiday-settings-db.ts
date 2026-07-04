@@ -49,6 +49,7 @@ export async function updateHolidaySettings(
       data: {
         weekly_closed_weekdays: input.weekly_closed_days,
         close_on_public_holidays: input.close_on_public_holidays,
+        holiday_settings_confirmed: true,
       },
     });
 

@@ -80,8 +80,8 @@ model Nursery {
   name                     String
   address                  String?
   phone_number             String?
-  open_time                DateTime        @db.Time
-  close_time               DateTime        @db.Time
+  open_time                DateTime?       @db.Time
+  close_time               DateTime?       @db.Time
   extended_close_time      DateTime?       @db.Time
   /**
    * 毎週休園の曜日（0=日 … 6=土）
@@ -90,7 +90,11 @@ model Nursery {
   /**
    * 国民の祝日を休園とする
    */
-  close_on_public_holidays Boolean         @default(false)
+  close_on_public_holidays      Boolean         @default(false)
+  /**
+   * 休日設定を一度でも保存したか（定休なしでも true になる）
+   */
+  holiday_settings_confirmed    Boolean         @default(false)
   created_at               DateTime        @default(now())
   updated_at               DateTime        @updatedAt
   classrooms               Classroom[]
@@ -172,28 +176,28 @@ model ClassroomStaff {
 }
 
 model Staff {
-  id                          String          @id @default(cuid())
+  id                          String           @id @default(cuid())
   nursery_id                  String
-  nursery                     Nursery         @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  nursery                     Nursery          @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
   name                        String
   name_kana                   String?
   phone_number                String?
   employment_type             EmploymentType?
   job_type                    JobType?
-  has_nursery_teacher_license Boolean         @default(false)
-  capable_class_ids           String[]        @default([])
+  has_nursery_teacher_license Boolean          @default(false)
+  capable_class_ids           String[]         @default([])
   staff_login_id              String?
-  work_availability_start     DateTime?       @db.Time
-  work_availability_end       DateTime?       @db.Time
-  can_work_early_shift        Boolean         @default(false)
-  can_work_late_shift         Boolean         @default(false)
-  can_work_extended_care      Boolean         @default(false)
-  is_active                   Boolean         @default(true)
+  work_availability_start     DateTime?        @db.Time
+  work_availability_end       DateTime?        @db.Time
+  can_work_early_shift        Boolean          @default(false)
+  can_work_late_shift         Boolean          @default(false)
+  can_work_extended_care      Boolean          @default(false)
+  is_active                   Boolean          @default(true)
   email                       String?
   password_hash               String?
   role                        UserRole?
-  created_at                  DateTime        @default(now())
-  updated_at                  DateTime        @updatedAt
+  created_at                  DateTime         @default(now())
+  updated_at                  DateTime         @updatedAt
   classroom_staffs            ClassroomStaff[]
   shift_slots                 ShiftSlot[]
   staff_requests              StaffRequest[]

@@ -90,6 +90,7 @@ export const NurseryScalarFieldEnum = {
   extended_close_time: 'extended_close_time',
   weekly_closed_weekdays: 'weekly_closed_weekdays',
   close_on_public_holidays: 'close_on_public_holidays',
+  holiday_settings_confirmed: 'holiday_settings_confirmed',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

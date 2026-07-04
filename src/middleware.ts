@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionTokenEdge } from "@/lib/auth-edge";
 
-const PUBLIC_PATHS = ["/login"];
-const PUBLIC_API_PATHS = ["/api/auth/login"];
+const PUBLIC_PATHS = ["/login", "/setup"];
+const PUBLIC_API_PATHS = ["/api/auth/login", "/api/setup/status", "/api/setup"];
 
 const ADMIN_MANAGER_ONLY_PATHS = ["/shifts", "/roster", "/requests", "/nursery"];
 
@@ -53,13 +53,26 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const session = token ? await verifySessionTokenEdge(token) : null;
 
-  if (pathname === "/login" && session) {
+  if ((pathname === "/login" || pathname === "/setup") && session) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
   if (!isPublicPath(pathname) && !session) {
     if (pathname.startsWith("/api/")) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
+
+    try {
+      const statusUrl = new URL("/api/setup/status", request.nextUrl.origin);
+      const statusRes = await fetch(statusUrl);
+      if (statusRes.ok) {
+        const { setupRequired } = (await statusRes.json()) as { setupRequired?: boolean };
+        if (setupRequired) {
+          return NextResponse.redirect(new URL("/setup", request.url));
+        }
+      }
+    } catch {
+      // DB 未接続などのエラー時は /login へのフォールバックで続行
     }
 
     return NextResponse.redirect(new URL("/login", request.url));
