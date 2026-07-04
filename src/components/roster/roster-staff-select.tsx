@@ -1,7 +1,6 @@
 "use client";
 
 import type { StaffMember } from "@/lib/staff-helpers";
-import { getStaffSurname } from "@/lib/shift-helpers";
 
 
 type RosterStaffSelectProps = {
@@ -37,7 +36,7 @@ export function RosterStaffSelect({
         .filter((member) => !excluded.has(member.id))
         .map((member) => (
           <option key={member.id} value={member.id}>
-            {member.last_name || getStaffSurname(member.name)}
+            {member.last_name}
           </option>
         ))}
     </select>
