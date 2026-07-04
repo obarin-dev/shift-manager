@@ -13,7 +13,6 @@ import {
   formatTargetMonthLabel,
   getAssignmentForCell,
   getCurrentTargetMonth,
-  getStaffSurname,
   parseTargetMonth,
   shiftTargetMonth,
   type ShiftAssignment,
@@ -732,7 +731,7 @@ export function MonthlyShiftGrid({
                       return null;
                     }
 
-                    const surname = getStaffSurname(staffMember.name);
+                    const surname = staffMember.last_name;
                     const sectionKey = section.classroomId ?? "unassigned";
 
                     return (

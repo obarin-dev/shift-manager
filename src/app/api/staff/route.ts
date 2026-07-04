@@ -38,13 +38,14 @@ function parseWriteBody(body: unknown): StaffWriteInput | null {
   }
 
   const payload = body as Record<string, unknown>;
-  const name = typeof payload.name === "string" ? payload.name.trim() : "";
+  const lastName = typeof payload.last_name === "string" ? payload.last_name.trim() : "";
+  const firstName = typeof payload.first_name === "string" ? payload.first_name.trim() : "";
   const employmentType = payload.employment_type;
   const jobType = payload.job_type;
   const workAvailability = parseWorkAvailability(payload.work_availability);
 
   if (
-    !name ||
+    !lastName ||
     typeof employmentType !== "string" ||
     !EMPLOYMENT_TYPES.has(employmentType as EmploymentType) ||
     typeof jobType !== "string" ||
@@ -58,7 +59,8 @@ function parseWriteBody(body: unknown): StaffWriteInput | null {
 
   return {
     staff_id: "",
-    name,
+    last_name: lastName,
+    first_name: firstName,
     employment_type: employmentType as EmploymentType,
     job_type: jobType as JobType,
     has_nursery_teacher_license: payload.has_nursery_teacher_license,

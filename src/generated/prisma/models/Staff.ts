@@ -28,6 +28,8 @@ export type StaffMinAggregateOutputType = {
   id: string | null
   nursery_id: string | null
   name: string | null
+  last_name: string | null
+  first_name: string | null
   name_kana: string | null
   phone_number: string | null
   employment_type: $Enums.EmploymentType | null
@@ -51,6 +53,8 @@ export type StaffMaxAggregateOutputType = {
   id: string | null
   nursery_id: string | null
   name: string | null
+  last_name: string | null
+  first_name: string | null
   name_kana: string | null
   phone_number: string | null
   employment_type: $Enums.EmploymentType | null
@@ -74,6 +78,8 @@ export type StaffCountAggregateOutputType = {
   id: number
   nursery_id: number
   name: number
+  last_name: number
+  first_name: number
   name_kana: number
   phone_number: number
   employment_type: number
@@ -100,6 +106,8 @@ export type StaffMinAggregateInputType = {
   id?: true
   nursery_id?: true
   name?: true
+  last_name?: true
+  first_name?: true
   name_kana?: true
   phone_number?: true
   employment_type?: true
@@ -123,6 +131,8 @@ export type StaffMaxAggregateInputType = {
   id?: true
   nursery_id?: true
   name?: true
+  last_name?: true
+  first_name?: true
   name_kana?: true
   phone_number?: true
   employment_type?: true
@@ -146,6 +156,8 @@ export type StaffCountAggregateInputType = {
   id?: true
   nursery_id?: true
   name?: true
+  last_name?: true
+  first_name?: true
   name_kana?: true
   phone_number?: true
   employment_type?: true
@@ -243,6 +255,8 @@ export type StaffGroupByOutputType = {
   id: string
   nursery_id: string
   name: string
+  last_name: string | null
+  first_name: string | null
   name_kana: string | null
   phone_number: string | null
   employment_type: $Enums.EmploymentType | null
@@ -288,6 +302,8 @@ export type StaffWhereInput = {
   id?: Prisma.StringFilter<"Staff"> | string
   nursery_id?: Prisma.StringFilter<"Staff"> | string
   name?: Prisma.StringFilter<"Staff"> | string
+  last_name?: Prisma.StringNullableFilter<"Staff"> | string | null
+  first_name?: Prisma.StringNullableFilter<"Staff"> | string | null
   name_kana?: Prisma.StringNullableFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableFilter<"Staff"> | string | null
   employment_type?: Prisma.EnumEmploymentTypeNullableFilter<"Staff"> | $Enums.EmploymentType | null
@@ -317,6 +333,8 @@ export type StaffOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  last_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  first_name?: Prisma.SortOrderInput | Prisma.SortOrder
   name_kana?: Prisma.SortOrderInput | Prisma.SortOrder
   phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
   employment_type?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -351,6 +369,8 @@ export type StaffWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.StaffWhereInput | Prisma.StaffWhereInput[]
   nursery_id?: Prisma.StringFilter<"Staff"> | string
   name?: Prisma.StringFilter<"Staff"> | string
+  last_name?: Prisma.StringNullableFilter<"Staff"> | string | null
+  first_name?: Prisma.StringNullableFilter<"Staff"> | string | null
   name_kana?: Prisma.StringNullableFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableFilter<"Staff"> | string | null
   employment_type?: Prisma.EnumEmploymentTypeNullableFilter<"Staff"> | $Enums.EmploymentType | null
@@ -380,6 +400,8 @@ export type StaffOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  last_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  first_name?: Prisma.SortOrderInput | Prisma.SortOrder
   name_kana?: Prisma.SortOrderInput | Prisma.SortOrder
   phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
   employment_type?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -410,6 +432,8 @@ export type StaffScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Staff"> | string
   nursery_id?: Prisma.StringWithAggregatesFilter<"Staff"> | string
   name?: Prisma.StringWithAggregatesFilter<"Staff"> | string
+  last_name?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
+  first_name?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
   name_kana?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableWithAggregatesFilter<"Staff"> | string | null
   employment_type?: Prisma.EnumEmploymentTypeNullableWithAggregatesFilter<"Staff"> | $Enums.EmploymentType | null
@@ -433,6 +457,8 @@ export type StaffScalarWhereWithAggregatesInput = {
 export type StaffCreateInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -462,6 +488,8 @@ export type StaffUncheckedCreateInput = {
   id?: string
   nursery_id: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -489,6 +517,8 @@ export type StaffUncheckedCreateInput = {
 export type StaffUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -518,6 +548,8 @@ export type StaffUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -546,6 +578,8 @@ export type StaffCreateManyInput = {
   id?: string
   nursery_id: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -569,6 +603,8 @@ export type StaffCreateManyInput = {
 export type StaffUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -593,6 +629,8 @@ export type StaffUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -650,6 +688,8 @@ export type StaffCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  last_name?: Prisma.SortOrder
+  first_name?: Prisma.SortOrder
   name_kana?: Prisma.SortOrder
   phone_number?: Prisma.SortOrder
   employment_type?: Prisma.SortOrder
@@ -674,6 +714,8 @@ export type StaffMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  last_name?: Prisma.SortOrder
+  first_name?: Prisma.SortOrder
   name_kana?: Prisma.SortOrder
   phone_number?: Prisma.SortOrder
   employment_type?: Prisma.SortOrder
@@ -697,6 +739,8 @@ export type StaffMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nursery_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  last_name?: Prisma.SortOrder
+  first_name?: Prisma.SortOrder
   name_kana?: Prisma.SortOrder
   phone_number?: Prisma.SortOrder
   employment_type?: Prisma.SortOrder
@@ -845,6 +889,8 @@ export type StaffUpdateOneRequiredWithoutStaff_requestsNestedInput = {
 export type StaffCreateWithoutNurseryInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -872,6 +918,8 @@ export type StaffCreateWithoutNurseryInput = {
 export type StaffUncheckedCreateWithoutNurseryInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -929,6 +977,8 @@ export type StaffScalarWhereInput = {
   id?: Prisma.StringFilter<"Staff"> | string
   nursery_id?: Prisma.StringFilter<"Staff"> | string
   name?: Prisma.StringFilter<"Staff"> | string
+  last_name?: Prisma.StringNullableFilter<"Staff"> | string | null
+  first_name?: Prisma.StringNullableFilter<"Staff"> | string | null
   name_kana?: Prisma.StringNullableFilter<"Staff"> | string | null
   phone_number?: Prisma.StringNullableFilter<"Staff"> | string | null
   employment_type?: Prisma.EnumEmploymentTypeNullableFilter<"Staff"> | $Enums.EmploymentType | null
@@ -952,6 +1002,8 @@ export type StaffScalarWhereInput = {
 export type StaffCreateWithoutClassroom_staffsInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -980,6 +1032,8 @@ export type StaffUncheckedCreateWithoutClassroom_staffsInput = {
   id?: string
   nursery_id: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1022,6 +1076,8 @@ export type StaffUpdateToOneWithWhereWithoutClassroom_staffsInput = {
 export type StaffUpdateWithoutClassroom_staffsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1050,6 +1106,8 @@ export type StaffUncheckedUpdateWithoutClassroom_staffsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1076,6 +1134,8 @@ export type StaffUncheckedUpdateWithoutClassroom_staffsInput = {
 export type StaffCreateWithoutShift_slotsInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1104,6 +1164,8 @@ export type StaffUncheckedCreateWithoutShift_slotsInput = {
   id?: string
   nursery_id: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1146,6 +1208,8 @@ export type StaffUpdateToOneWithWhereWithoutShift_slotsInput = {
 export type StaffUpdateWithoutShift_slotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1174,6 +1238,8 @@ export type StaffUncheckedUpdateWithoutShift_slotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1200,6 +1266,8 @@ export type StaffUncheckedUpdateWithoutShift_slotsInput = {
 export type StaffCreateWithoutInvitationsInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1228,6 +1296,8 @@ export type StaffUncheckedCreateWithoutInvitationsInput = {
   id?: string
   nursery_id: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1270,6 +1340,8 @@ export type StaffUpdateToOneWithWhereWithoutInvitationsInput = {
 export type StaffUpdateWithoutInvitationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1298,6 +1370,8 @@ export type StaffUncheckedUpdateWithoutInvitationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1324,6 +1398,8 @@ export type StaffUncheckedUpdateWithoutInvitationsInput = {
 export type StaffCreateWithoutStaff_requestsInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1352,6 +1428,8 @@ export type StaffUncheckedCreateWithoutStaff_requestsInput = {
   id?: string
   nursery_id: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1394,6 +1472,8 @@ export type StaffUpdateToOneWithWhereWithoutStaff_requestsInput = {
 export type StaffUpdateWithoutStaff_requestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1422,6 +1502,8 @@ export type StaffUncheckedUpdateWithoutStaff_requestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nursery_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1448,6 +1530,8 @@ export type StaffUncheckedUpdateWithoutStaff_requestsInput = {
 export type StaffCreateManyNurseryInput = {
   id?: string
   name: string
+  last_name?: string | null
+  first_name?: string | null
   name_kana?: string | null
   phone_number?: string | null
   employment_type?: $Enums.EmploymentType | null
@@ -1471,6 +1555,8 @@ export type StaffCreateManyNurseryInput = {
 export type StaffUpdateWithoutNurseryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1498,6 +1584,8 @@ export type StaffUpdateWithoutNurseryInput = {
 export type StaffUncheckedUpdateWithoutNurseryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1525,6 +1613,8 @@ export type StaffUncheckedUpdateWithoutNurseryInput = {
 export type StaffUncheckedUpdateManyWithoutNurseryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name_kana?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employment_type?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
@@ -1607,6 +1697,8 @@ export type StaffSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   nursery_id?: boolean
   name?: boolean
+  last_name?: boolean
+  first_name?: boolean
   name_kana?: boolean
   phone_number?: boolean
   employment_type?: boolean
@@ -1637,6 +1729,8 @@ export type StaffSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   nursery_id?: boolean
   name?: boolean
+  last_name?: boolean
+  first_name?: boolean
   name_kana?: boolean
   phone_number?: boolean
   employment_type?: boolean
@@ -1662,6 +1756,8 @@ export type StaffSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   nursery_id?: boolean
   name?: boolean
+  last_name?: boolean
+  first_name?: boolean
   name_kana?: boolean
   phone_number?: boolean
   employment_type?: boolean
@@ -1687,6 +1783,8 @@ export type StaffSelectScalar = {
   id?: boolean
   nursery_id?: boolean
   name?: boolean
+  last_name?: boolean
+  first_name?: boolean
   name_kana?: boolean
   phone_number?: boolean
   employment_type?: boolean
@@ -1707,7 +1805,7 @@ export type StaffSelectScalar = {
   updated_at?: boolean
 }
 
-export type StaffOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "name" | "name_kana" | "phone_number" | "employment_type" | "job_type" | "has_nursery_teacher_license" | "capable_class_ids" | "staff_login_id" | "work_availability_start" | "work_availability_end" | "can_work_early_shift" | "can_work_late_shift" | "can_work_extended_care" | "is_active" | "email" | "password_hash" | "role" | "created_at" | "updated_at", ExtArgs["result"]["staff"]>
+export type StaffOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nursery_id" | "name" | "last_name" | "first_name" | "name_kana" | "phone_number" | "employment_type" | "job_type" | "has_nursery_teacher_license" | "capable_class_ids" | "staff_login_id" | "work_availability_start" | "work_availability_end" | "can_work_early_shift" | "can_work_late_shift" | "can_work_extended_care" | "is_active" | "email" | "password_hash" | "role" | "created_at" | "updated_at", ExtArgs["result"]["staff"]>
 export type StaffInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nursery?: boolean | Prisma.NurseryDefaultArgs<ExtArgs>
   classroom_staffs?: boolean | Prisma.Staff$classroom_staffsArgs<ExtArgs>
@@ -1736,6 +1834,8 @@ export type $StaffPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     nursery_id: string
     name: string
+    last_name: string | null
+    first_name: string | null
     name_kana: string | null
     phone_number: string | null
     employment_type: $Enums.EmploymentType | null
@@ -2185,6 +2285,8 @@ export interface StaffFieldRefs {
   readonly id: Prisma.FieldRef<"Staff", 'String'>
   readonly nursery_id: Prisma.FieldRef<"Staff", 'String'>
   readonly name: Prisma.FieldRef<"Staff", 'String'>
+  readonly last_name: Prisma.FieldRef<"Staff", 'String'>
+  readonly first_name: Prisma.FieldRef<"Staff", 'String'>
   readonly name_kana: Prisma.FieldRef<"Staff", 'String'>
   readonly phone_number: Prisma.FieldRef<"Staff", 'String'>
   readonly employment_type: Prisma.FieldRef<"Staff", 'EmploymentType'>

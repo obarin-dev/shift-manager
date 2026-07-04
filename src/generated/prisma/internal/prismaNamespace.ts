@@ -1351,6 +1351,8 @@ export const StaffScalarFieldEnum = {
   id: 'id',
   nursery_id: 'nursery_id',
   name: 'name',
+  last_name: 'last_name',
+  first_name: 'first_name',
   name_kana: 'name_kana',
   phone_number: 'phone_number',
   employment_type: 'employment_type',
