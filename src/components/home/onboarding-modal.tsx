@@ -143,7 +143,7 @@ function NursingHoursForm({ onDone }: { onDone: () => void }) {
         <input id="ob-extended-time" type="time" value={extendedCloseTime} onChange={(e) => setExtendedCloseTime(e.target.value)} />
         {errors.extended_close_time && <p className="form-field-error">{errors.extended_close_time}</p>}
       </div>
-      <button type="submit" className="primary-button" disabled={submitting}>
+      <button type="submit" className="primary-button" disabled={submitting || currentProfile === null}>
         {submitting ? "保存中..." : "保存して次へ"}
       </button>
     </form>
