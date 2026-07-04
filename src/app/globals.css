@@ -850,6 +850,17 @@ input {
   background: currentColor;
 }
 
+.app-sidebar__link--sub {
+  padding-left: 28px;
+  min-height: 34px;
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.app-sidebar.is-collapsed .app-sidebar__link--sub {
+  display: none;
+}
+
 .app-sidebar__footer {
   display: grid;
   gap: 18px;

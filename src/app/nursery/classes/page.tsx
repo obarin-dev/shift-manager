@@ -13,6 +13,7 @@ export default async function NurseryClassesPage() {
   return (
     <AdminShell
       activeNav="nursery"
+      activeNurseryNav="classes"
       account={account}
       role={role}
       scrollPanelLayout

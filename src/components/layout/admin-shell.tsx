@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import {
   ADMIN_NAV_ITEMS,
+  NURSERY_SUB_NAV_ITEMS,
   type AdminNavKey,
+  type NurserySubNavKey,
   resolveAdminNavHref,
 } from "@/lib/admin-navigation";
 import type { UserRole } from "@/lib/auth-session";
@@ -13,6 +15,7 @@ type AdminShellProps = {
   role: UserRole;
   activeNav: AdminNavKey;
   activeStaffNav?: "requests" | "shifts";
+  activeNurseryNav?: NurserySubNavKey;
   account?: AuthAccount;
   /** 一覧パネル内だけスクロールさせる画面向け */
   scrollPanelLayout?: boolean;
@@ -23,17 +26,11 @@ export function AdminShell({
   role,
   activeNav,
   activeStaffNav,
+  activeNurseryNav,
   account,
   scrollPanelLayout = false,
   children,
 }: AdminShellProps) {
-  const allAdminNavItems = ADMIN_NAV_ITEMS.map((item) => ({
-    label: item.label,
-    href: resolveAdminNavHref(item.path, role),
-    isActive: !activeStaffNav && item.key === activeNav,
-    icon: <SidebarIcon path={item.iconPath} />,
-  }));
-
   const staffNavItems = [
     {
       label: "出勤希望",
@@ -49,15 +46,43 @@ export function AdminShell({
     },
   ];
 
-  const groupedNavItems =
-    role === "staff"
-      ? [allAdminNavItems[0], ...staffNavItems]
-      : [
-          allAdminNavItems[0],
-          ...staffNavItems,
-          { label: "管理者", kind: "section" as const },
-          ...allAdminNavItems.slice(1),
-        ];
+  const nurserySubItems = NURSERY_SUB_NAV_ITEMS.map((item) => ({
+    label: item.label,
+    href: item.path,
+    isActive: item.key === activeNurseryNav,
+    icon: <SidebarIcon path={item.iconPath} />,
+    kind: "sub" as const,
+  }));
+
+  let navItems;
+
+  if (role === "staff") {
+    const homeItem = ADMIN_NAV_ITEMS[0];
+    navItems = [
+      {
+        label: homeItem.label,
+        href: resolveAdminNavHref(homeItem.path, role),
+        isActive: activeNav === homeItem.key,
+        icon: <SidebarIcon path={homeItem.iconPath} />,
+      },
+      ...staffNavItems,
+    ];
+  } else {
+    navItems = ADMIN_NAV_ITEMS.flatMap((item) => {
+      const base = {
+        label: item.label,
+        href: resolveAdminNavHref(item.path, role),
+        isActive: !activeStaffNav && item.key === activeNav,
+        icon: <SidebarIcon path={item.iconPath} />,
+      };
+
+      if (item.key === "nursery" && activeNav === "nursery") {
+        return [base, ...nurserySubItems];
+      }
+
+      return [base];
+    });
+  }
 
   return (
     <main className="home-page">
@@ -67,7 +92,7 @@ export function AdminShell({
             brandTitle="Shift Manager"
             displayName={account?.displayName}
             email={account?.email}
-            navItems={groupedNavItems}
+            navItems={navItems}
             roleLabel={account?.roleLabel}
           />
 
