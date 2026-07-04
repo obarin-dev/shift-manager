@@ -71,24 +71,31 @@ function NursingHoursForm({ onDone }: { onDone: () => void }) {
   const [extendedCloseTime, setExtendedCloseTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [currentProfile, setCurrentProfile] = useState<Record<string, unknown>>({});
+  const [currentProfile, setCurrentProfile] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     fetch("/api/nursery/profile")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((result) => {
-        const data = result?.data ?? {};
+        const data = result?.data;
+        if (!data || typeof data.name !== "string" || !data.name) throw new Error();
         setCurrentProfile(data);
-        if (data?.open_time) setOpenTime(data.open_time);
-        if (data?.close_time) setCloseTime(data.close_time);
-        if (data?.extended_close_time) setExtendedCloseTime(data.extended_close_time);
+        if (data.open_time) setOpenTime(data.open_time);
+        if (data.close_time) setCloseTime(data.close_time);
+        if (data.extended_close_time) setExtendedCloseTime(data.extended_close_time);
       })
-      .catch(() => {});
+      .catch(() => { setCurrentProfile(null); });
   }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrors({});
+
+    if (!currentProfile) {
+      setErrors({ form: "園情報の読み込みに失敗しました。ページを再読み込みしてください。" });
+      return;
+    }
+
     const profile = { open_time: openTime, close_time: closeTime, extended_close_time: extendedCloseTime };
     const validationErrors = validateNurseryHours(profile);
     if (Object.keys(validationErrors).length > 0) {

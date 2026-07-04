@@ -63,7 +63,7 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const statusUrl = new URL("/api/setup/status", request.url);
+      const statusUrl = new URL("/api/setup/status", request.nextUrl.origin);
       const statusRes = await fetch(statusUrl);
       if (statusRes.ok) {
         const { setupRequired } = (await statusRes.json()) as { setupRequired?: boolean };

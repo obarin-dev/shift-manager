@@ -16,14 +16,12 @@ export async function isSetupRequired(): Promise<boolean> {
 }
 
 export async function createInitialSetup(input: SetupInput): Promise<void> {
-  const required = await isSetupRequired();
-  if (!required) {
-    throw new SetupAlreadyDoneError();
-  }
-
-  const passwordHash = await hashPassword(input.adminPassword);
-
   await prisma.$transaction(async (tx) => {
+    const count = await tx.nursery.count();
+    if (count > 0) throw new SetupAlreadyDoneError();
+
+    const passwordHash = await hashPassword(input.adminPassword);
+
     const nursery = await tx.nursery.create({
       data: {
         name: input.nurseryName.trim(),
