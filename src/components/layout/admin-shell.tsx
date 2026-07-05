@@ -52,12 +52,7 @@ export function AdminShell({
   const groupedNavItems =
     role === "staff"
       ? [allAdminNavItems[0], ...staffNavItems]
-      : [
-          allAdminNavItems[0],
-          ...staffNavItems,
-          { label: "管理者", kind: "section" as const },
-          ...allAdminNavItems.slice(1),
-        ];
+      : allAdminNavItems;
 
   return (
     <main className="home-page">
