@@ -1212,11 +1212,39 @@ a.home-card:hover {
   font-weight: 900;
 }
 
+.admin-requests-date-item__approved-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .admin-requests-date-item__approved {
   color: #16a34a;
   font-size: 0.78rem;
   font-weight: 900;
   white-space: nowrap;
+}
+
+.admin-requests-revoke-button {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: var(--surface, #fff);
+  color: var(--muted, #6b7280);
+  cursor: pointer;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.admin-requests-revoke-button:hover:not(:disabled) {
+  background: var(--surface-alt, #f9fafb);
+  color: var(--foreground, #111827);
+}
+
+.admin-requests-revoke-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .admin-requests-date-item small {

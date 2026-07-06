@@ -10,7 +10,7 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-const VALID_STATUSES = new Set(["approved", "needs_review"]);
+const VALID_STATUSES = new Set(["approved", "needs_review", "submitted"]);
 
 export async function PATCH(request: Request, context: RouteContext) {
   const session = await getSession();
@@ -54,15 +54,17 @@ export async function PATCH(request: Request, context: RouteContext) {
 
     const updated = await prisma.staffRequest.update({
       where: { id },
-      data: { status: status as "approved" | "needs_review" },
+      data: { status: status as "approved" | "needs_review" | "submitted" },
     });
 
-    await createRequestStatusNotification(
-      owner.nurseryId,
-      existing.staff_id,
-      id,
-      status as "approved" | "needs_review",
-    );
+    if (status !== "submitted") {
+      await createRequestStatusNotification(
+        owner.nurseryId,
+        existing.staff_id,
+        id,
+        status as "approved" | "needs_review",
+      );
+    }
 
     return NextResponse.json({ data: { id: updated.id, status: updated.status } });
   } catch (error) {

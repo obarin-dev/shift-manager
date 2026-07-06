@@ -8,25 +8,46 @@ function formatShortDate(date: string) {
   return `${Number(month)}/${Number(day)}`;
 }
 
-export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[] }) {
+type RequestStatus = "提出済み" | "承認" | "要確認";
+
+type LocalRequest = {
+  id: string;
+  date: string;
+  type: string;
+  time: string;
+  memo: string;
+  status: RequestStatus;
+};
+
+type LocalGroup = {
+  staffId: string;
+  staffName: string;
+  requests: LocalRequest[];
+};
+
+export function AdminRequestsPanel({ groups: initialGroups }: { groups: AdminStaffRequestGroup[] }) {
+  const [groups, setGroups] = useState<LocalGroup[]>(initialGroups as LocalGroup[]);
+  const [revoking, setRevoking] = useState<string | null>(null);
+
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
     () =>
       new Set(
-        groups
+        initialGroups
           .filter((g) => g.requests.some((r) => r.status === "提出済み"))
           .map((g) => g.staffId),
       ),
   );
 
   useEffect(() => {
+    setGroups(initialGroups as LocalGroup[]);
     setExpandedIds(
       new Set(
-        groups
+        initialGroups
           .filter((g) => g.requests.some((r) => r.status === "提出済み"))
           .map((g) => g.staffId),
       ),
     );
-  }, [groups]);
+  }, [initialGroups]);
 
   if (groups.length === 0) {
     return (
@@ -46,6 +67,31 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
       }
       return next;
     });
+  }
+
+  async function handleRevoke(requestId: string) {
+    setRevoking(requestId);
+    try {
+      const res = await fetch(`/api/staff-requests/${requestId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "submitted" }),
+      });
+      if (!res.ok) throw new Error("revoke_failed");
+
+      setGroups((prev) =>
+        prev.map((g) => ({
+          ...g,
+          requests: g.requests.map((r) =>
+            r.id === requestId ? { ...r, status: "提出済み" as RequestStatus } : r,
+          ),
+        })),
+      );
+    } catch {
+      // 失敗時は何もしない（次のリロードで整合）
+    } finally {
+      setRevoking(null);
+    }
   }
 
   return (
@@ -90,9 +136,19 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
                         </span>
                         <span>{request.type}</span>
                         <span>{request.time}</span>
-                        {request.status === "承認" && (
-                          <span className="admin-requests-date-item__approved">✓ 反映済み</span>
-                        )}
+                        {request.status === "承認" ? (
+                          <span className="admin-requests-date-item__approved-row">
+                            <span className="admin-requests-date-item__approved">✓ 反映済み</span>
+                            <button
+                              className="admin-requests-revoke-button"
+                              disabled={revoking === request.id}
+                              onClick={() => handleRevoke(request.id)}
+                              type="button"
+                            >
+                              {revoking === request.id ? "..." : "取り下げ"}
+                            </button>
+                          </span>
+                        ) : null}
                         {request.memo ? <small>{request.memo}</small> : null}
                       </li>
                     ))}

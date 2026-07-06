@@ -114,8 +114,15 @@ describe("PATCH /api/staff-requests/[id]/status", () => {
     expect(res.status).toBe(403);
   });
 
-  it("不正なステータス: 400 を返す", async () => {
+  it("取り下げ (submitted): 200 を返す", async () => {
+    vi.mocked(prisma.staffRequest.update).mockResolvedValue({ id: "req-1", status: "submitted" } as never);
     const res = await PATCH(makePatchRequest({ status: "submitted" }), makeRouteContext("req-1"));
+    expect(res.status).toBe(200);
+    expect(vi.mocked(createRequestStatusNotification)).not.toHaveBeenCalled();
+  });
+
+  it("不正なステータス: 400 を返す", async () => {
+    const res = await PATCH(makePatchRequest({ status: "deleted" }), makeRouteContext("req-1"));
     expect(res.status).toBe(400);
   });
 
