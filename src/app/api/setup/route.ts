@@ -7,7 +7,8 @@ type SetupBody = {
   nurseryName?: unknown;
   address?: unknown;
   phoneNumber?: unknown;
-  adminName?: unknown;
+  adminLastName?: unknown;
+  adminFirstName?: unknown;
   adminEmail?: unknown;
   adminPassword?: unknown;
 };
@@ -19,11 +20,12 @@ function parseBody(body: unknown) {
   const nurseryName = typeof b.nurseryName === "string" ? b.nurseryName.trim() : "";
   const address = typeof b.address === "string" ? b.address : "";
   const phoneNumber = typeof b.phoneNumber === "string" ? b.phoneNumber : "";
-  const adminName = typeof b.adminName === "string" ? b.adminName.trim() : "";
+  const adminLastName = typeof b.adminLastName === "string" ? b.adminLastName.trim() : "";
+  const adminFirstName = typeof b.adminFirstName === "string" ? b.adminFirstName.trim() : "";
   const adminEmail = typeof b.adminEmail === "string" ? b.adminEmail.trim() : "";
   const adminPassword = typeof b.adminPassword === "string" ? b.adminPassword : "";
 
-  if (!nurseryName || !adminName || !adminEmail || !adminPassword) {
+  if (!nurseryName || !adminLastName || !adminEmail || !adminPassword) {
     return null;
   }
 
@@ -32,7 +34,7 @@ function parseBody(body: unknown) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(adminEmail)) return null;
 
-  return { nurseryName, address, phoneNumber, adminName, adminEmail, adminPassword };
+  return { nurseryName, address, phoneNumber, adminLastName, adminFirstName, adminEmail, adminPassword };
 }
 
 export async function POST(request: Request) {

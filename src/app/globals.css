@@ -4480,6 +4480,12 @@ a.home-card:hover {
   gap: 16px;
 }
 
+.modal-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 .modal-form__actions {
   display: flex;
   gap: 12px;

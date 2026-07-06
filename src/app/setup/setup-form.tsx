@@ -31,13 +31,15 @@ type NurseryFields = {
 };
 
 type AdminFields = {
-  adminName: string;
+  adminLastName: string;
+  adminFirstName: string;
   adminEmail: string;
   adminPassword: string;
   adminPasswordConfirm: string;
 };
 
 type FieldErrors = Partial<Record<keyof NurseryFields | keyof AdminFields, string>>;
+
 
 const ERROR_MESSAGES: Record<string, string> = {
   invalid_payload: "入力内容を確認してください。",
@@ -55,7 +57,9 @@ function validateNursery(fields: NurseryFields): FieldErrors {
 
 function validateAdmin(fields: AdminFields): FieldErrors {
   const errors: FieldErrors = {};
-  if (!fields.adminName.trim()) errors.adminName = "名前を入力してください。";
+  if (!fields.adminLastName.trim()) errors.adminLastName = "姓を入力してください。";
+  if (fields.adminLastName.trim().length > 25) errors.adminLastName = "姓は25文字以内で入力してください。";
+  if (fields.adminFirstName.trim().length > 25) errors.adminFirstName = "名は25文字以内で入力してください。";
   if (!fields.adminEmail.trim()) {
     errors.adminEmail = "メールアドレスを入力してください。";
   } else if (!EMAIL_PATTERN.test(fields.adminEmail.trim())) {
@@ -86,7 +90,8 @@ export function SetupForm() {
   });
 
   const [admin, setAdmin] = useState<AdminFields>({
-    adminName: "",
+    adminLastName: "",
+    adminFirstName: "",
     adminEmail: "",
     adminPassword: "",
     adminPasswordConfirm: "",
@@ -125,7 +130,8 @@ export function SetupForm() {
           nurseryName: nursery.nurseryName,
           address: nursery.address,
           phoneNumber: nursery.phoneNumber,
-          adminName: admin.adminName,
+          adminLastName: admin.adminLastName,
+          adminFirstName: admin.adminFirstName,
           adminEmail: admin.adminEmail,
           adminPassword: admin.adminPassword,
         }),
@@ -210,20 +216,36 @@ export function SetupForm() {
         <p className="form-alert" role="alert">{serverError}</p>
       )}
 
-      <div className="form-field">
-        <label htmlFor="adminName">名前 <span aria-hidden="true">*</span></label>
-        <input
-          id="adminName"
-          type="text"
-          value={admin.adminName}
-          onChange={(e) => setAdmin({ ...admin, adminName: e.target.value })}
-          aria-invalid={!!fieldErrors.adminName}
-          placeholder="山田 花子"
-          required
-        />
-        {fieldErrors.adminName && (
-          <p className="form-error" role="alert">{fieldErrors.adminName}</p>
-        )}
+      <div className="modal-form__grid">
+        <div className="form-field">
+          <label htmlFor="adminLastName">姓 <span aria-hidden="true">*</span></label>
+          <input
+            id="adminLastName"
+            type="text"
+            value={admin.adminLastName}
+            onChange={(e) => setAdmin({ ...admin, adminLastName: e.target.value })}
+            aria-invalid={!!fieldErrors.adminLastName}
+            placeholder="山田"
+            required
+          />
+          {fieldErrors.adminLastName && (
+            <p className="form-error" role="alert">{fieldErrors.adminLastName}</p>
+          )}
+        </div>
+        <div className="form-field">
+          <label htmlFor="adminFirstName">名</label>
+          <input
+            id="adminFirstName"
+            type="text"
+            value={admin.adminFirstName}
+            onChange={(e) => setAdmin({ ...admin, adminFirstName: e.target.value })}
+            aria-invalid={!!fieldErrors.adminFirstName}
+            placeholder="花子"
+          />
+          {fieldErrors.adminFirstName && (
+            <p className="form-error" role="alert">{fieldErrors.adminFirstName}</p>
+          )}
+        </div>
       </div>
 
       <div className="form-field">
