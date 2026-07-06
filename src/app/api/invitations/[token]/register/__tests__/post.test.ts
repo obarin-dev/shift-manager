@@ -65,7 +65,7 @@ describe("POST /api/invitations/[token]/register", () => {
     });
     const json = await res.json();
     expect(res.status).toBe(200);
-    expect(json).toEqual({ ok: true, autoLogin: true });
+    expect(json).toEqual({ ok: true, autoLogin: true, role: "staff" });
   });
 
   it("findActiveUserByEmail と hashPassword が並列実行される", async () => {

@@ -17,6 +17,20 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     iconPath: "M3 10.5L12 3l9 7.5M6 9.5V21h12V9.5",
   },
   {
+    key: "nursery",
+    label: "園管理",
+    path: "/nursery",
+    iconPath:
+      "M12 3v3M12 18v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M3 12h3M18 12h3M4.9 19.1 7 17M17 7l2.1-2.1M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+  },
+  {
+    key: "requests",
+    label: "希望一覧",
+    path: "/requests",
+    iconPath:
+      "M8 2v4M16 2v4M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm3 7h3m2 0h3m-8 4h8",
+  },
+  {
     key: "shifts",
     label: "勤務表作成",
     path: "/shifts",
@@ -28,20 +42,6 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     label: "体制表作成",
     path: "/roster",
     iconPath: "M5 5h14M5 12h14M5 19h14M8 5v14M16 5v14",
-  },
-  {
-    key: "requests",
-    label: "希望一覧",
-    path: "/requests",
-    iconPath:
-      "M8 2v4M16 2v4M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm3 7h3m2 0h3m-8 4h8",
-  },
-  {
-    key: "nursery",
-    label: "園管理",
-    path: "/nursery",
-    iconPath:
-      "M12 3v3M12 18v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M3 12h3M18 12h3M4.9 19.1 7 17M17 7l2.1-2.1M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
   },
 ];
 

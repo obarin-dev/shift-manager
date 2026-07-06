@@ -87,7 +87,9 @@ export function LoginForm({ demoAccounts }: LoginFormProps) {
       });
 
       if (response.ok) {
-        router.push("/home");
+        const data = (await response.json()) as { role?: string };
+        const dest = data.role === "admin" || data.role === "manager" ? "/nursery" : "/home";
+        router.push(dest);
         router.refresh();
         return;
       }

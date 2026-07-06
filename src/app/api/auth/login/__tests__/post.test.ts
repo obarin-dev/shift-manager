@@ -49,6 +49,7 @@ describe("POST /api/auth/login", () => {
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.ok).toBe(true);
+    expect(json.role).toBe("staff");
     expect(setSessionCookie).toHaveBeenCalledWith(
       expect.objectContaining({ userId: "staff-1", role: "staff" }),
     );
@@ -118,6 +119,8 @@ describe("POST /api/auth/login", () => {
     vi.mocked(findActiveUserByEmail).mockResolvedValue({ ...STAFF_RECORD, role: "admin" } as never);
     const res = await POST(makeRequest({ email: "admin@example.com", password: "password" }));
     expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.role).toBe("admin");
     expect(setSessionCookie).toHaveBeenCalledWith(
       expect.objectContaining({ role: "admin" }),
     );

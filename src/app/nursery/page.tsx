@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
-import { getPrimaryNurseryName } from "@/lib/nursery-db";
+import { getPrimaryNurseryName, getActiveNurseryId, getOnboardingStatus } from "@/lib/nursery-db";
+import { ONBOARDING_STEP_KEYS, type OnboardingStepKey } from "@/lib/onboarding-steps";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { NurseryHubCard } from "@/components/nursery/nursery-hub-card";
+import { SetupCompleteModal } from "@/components/nursery/setup-complete-modal";
 
 type NurseryHubCardConfig = {
   title: string;
@@ -46,13 +48,41 @@ const NURSERY_HUB_CARDS: NurseryHubCardConfig[] = [
   },
 ];
 
+const STEP_DETAILS: Record<OnboardingStepKey, { label: string; href: string }> = {
+  nursingHours: { label: "保育時間が未設定です。", href: "/nursery/settings" },
+  shiftTypes: { label: "勤務区分が未登録です。", href: "/nursery/settings" },
+  holidaySettings: { label: "休日設定が未完了です。", href: "/nursery/settings" },
+  staff: { label: "職員が未登録です。", href: "/nursery/staff" },
+  classes: { label: "クラスが未登録です。", href: "/nursery/classes" },
+};
+
 export default async function NurseryPage() {
   const { account } = await requireAdminOrManager();
   const role = account.role;
-  const nurseryName = await getPrimaryNurseryName();
+  const [nurseryName, nurseryId] = await Promise.all([
+    getPrimaryNurseryName(),
+    getActiveNurseryId(),
+  ]);
+  const onboardingStatus = await getOnboardingStatus(nurseryId);
+  const firstIncompleteKey = ONBOARDING_STEP_KEYS.find((key) => !onboardingStatus[key]);
+  const firstIncomplete = firstIncompleteKey
+    ? { key: firstIncompleteKey, ...STEP_DETAILS[firstIncompleteKey] }
+    : null;
 
   return (
     <AdminShell activeNav="nursery" account={account} role={role}>
+      {!firstIncomplete && <SetupCompleteModal />}
+      {firstIncomplete && (
+        <div className="onboarding-banner" role="note">
+          <div className="onboarding-banner__body">
+            <span className="onboarding-banner__badge">初期設定が未完了です</span>
+            <span className="onboarding-banner__guide">{firstIncomplete.label}</span>
+          </div>
+          <a className="onboarding-banner__back" href={firstIncomplete.href}>
+            設定する →
+          </a>
+        </div>
+      )}
       <AppHeader
         actions={
           account?.roleLabel ? (

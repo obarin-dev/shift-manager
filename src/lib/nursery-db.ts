@@ -53,7 +53,7 @@ export async function getOnboardingStatus(nurseryId: string) {
     prisma.staff.count({
       where: {
         nursery_id: nurseryId,
-        NOT: { role: "admin" },
+        OR: [{ role: { not: "admin" } }, { role: null }],
       },
     }),
     prisma.classroom.count({ where: { nursery_id: nurseryId } }),
