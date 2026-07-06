@@ -140,6 +140,9 @@ export function DailyRosterGrid({
   const [saveMessage, setSaveMessage] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingRoster, setIsLoadingRoster] = useState(false);
+  const [hasPublishedSchedule, setHasPublishedSchedule] = useState<boolean | null>(null);
+  const [draftPayload, setDraftPayload] = useState<RosterPersistencePayload | null>(null);
+  const [hasExistingRoster, setHasExistingRoster] = useState(false);
   const [todayEvents, setTodayEvents] = useState<NurseryCalendarEntry[]>([]);
   const columnResizeState = useRef<{ classroomId: string; startX: number; startWidth: number } | null>(null);
   const rowResizeState = useRef<{ rowId: string; startY: number; startHeight: number } | null>(null);
@@ -281,6 +284,35 @@ export function DailyRosterGrid({
       .filter((row): row is Extract<RosterRow, { kind: "schedule" }> => row.kind === "schedule")
       .map((row) => ({ id: row.id, timeSlot: row.timeSlot }));
     setAssignments(buildMockRosterAssignments(focusDate, scheduleRows, classrooms));
+  };
+
+  const applyDraftPayload = (payload: RosterPersistencePayload) => {
+    setRows(payload.rows);
+    setAssignments(migrateRosterAssignments(payload.rows, payload.assignments, classrooms));
+    setHasExistingRoster(false);
+    setCellSlotCounts((current) => {
+      const next = { ...current };
+      const prefix = `${focusDate}:`;
+      for (const key of Object.keys(next)) {
+        if (key.startsWith(prefix)) {
+          delete next[key];
+        }
+      }
+      return next;
+    });
+    setSaveMessage("");
+  };
+
+  const handleGenerateFromShift = () => {
+    const payload = draftPayload;
+    if (!payload) return;
+
+    if (hasExistingRoster) {
+      if (!window.confirm("既存の体制表データを上書きしてシフト表からたたき台を生成しますか？")) {
+        return;
+      }
+    }
+    applyDraftPayload(payload);
   };
 
   const buildPersistencePayload = (): RosterPersistencePayload => {
@@ -495,20 +527,36 @@ export function DailyRosterGrid({
     const loadRoster = async () => {
       setIsLoadingRoster(true);
       setSaveMessage("");
+      setHasPublishedSchedule(null);
+      setDraftPayload(null);
       try {
-        const response = await apiFetch(`/api/roster?date=${focusDate}`, {
-          method: "GET",
-          cache: "no-store",
-        });
-        if (!response.ok) {
+        const [rosterResponse, draftResponse] = await Promise.all([
+          apiFetch(`/api/roster?date=${focusDate}`, { method: "GET", cache: "no-store" }),
+          apiFetch(`/api/roster/draft?date=${focusDate}`, { method: "GET", cache: "no-store" }),
+        ]);
+
+        if (!rosterResponse.ok) {
           throw new Error("load_failed");
         }
-        const data = (await response.json()) as { data: RosterPersistencePayload | null };
+        const data = (await rosterResponse.json()) as { data: RosterPersistencePayload | null };
+
+        if (draftResponse.ok) {
+          const draftData = (await draftResponse.json()) as {
+            hasPublishedSchedule: boolean;
+            draft: RosterPersistencePayload | null;
+          };
+          if (active) {
+            setHasPublishedSchedule(draftData.hasPublishedSchedule);
+            setDraftPayload(draftData.draft);
+          }
+        }
+
         if (!active) {
           return;
         }
 
         if (!data.data) {
+          setHasExistingRoster(false);
           setRows(createDefaultRows());
           setAssignments([]);
           setRowHeights(loadRowHeightsFromStorage(focusDate));
@@ -532,6 +580,7 @@ export function DailyRosterGrid({
           return;
         }
 
+        setHasExistingRoster(true);
         setRows(data.data.rows);
         setAssignments(migrateRosterAssignments(data.data.rows, data.data.assignments, classrooms));
         setRowHeights(loadRowHeightsFromStorage(focusDate));
@@ -635,6 +684,21 @@ export function DailyRosterGrid({
                 style={{ padding: "8px 14px" }}
               >
                 AIで作成
+              </button>
+              <button
+                className="secondary-button secondary-button--compact"
+                type="button"
+                disabled={!draftPayload || hasPublishedSchedule === false}
+                title={
+                  hasPublishedSchedule === false
+                    ? "この日の公開済みシフト表がありません"
+                    : hasPublishedSchedule === null
+                      ? "確認中..."
+                      : "公開済みシフト表からたたき台を生成します"
+                }
+                onClick={handleGenerateFromShift}
+              >
+                シフト表から生成
               </button>
               <button
                 className="secondary-button secondary-button--compact"
