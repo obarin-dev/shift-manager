@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       email: staff.email ?? email,
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, role: staff.role });
   } catch (error) {
     if (error instanceof AuthConfigError) {
       console.error("Auth config error on login:", error);

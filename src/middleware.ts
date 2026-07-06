@@ -54,7 +54,9 @@ export async function middleware(request: NextRequest) {
   const session = token ? await verifySessionTokenEdge(token) : null;
 
   if ((pathname === "/login" || pathname === "/setup") && session) {
-    return NextResponse.redirect(new URL("/home", request.url));
+    const dest =
+      session.role === "admin" || session.role === "manager" ? "/nursery" : "/home";
+    return NextResponse.redirect(new URL(dest, request.url));
   }
 
   if (!isPublicPath(pathname) && !session) {
