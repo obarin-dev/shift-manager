@@ -1224,6 +1224,12 @@ a.home-card:hover {
   gap: 2px;
 }
 
+.admin-requests-date-item__time {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
 .admin-requests-date-item__approved {
   color: #16a34a;
   font-size: 0.78rem;
