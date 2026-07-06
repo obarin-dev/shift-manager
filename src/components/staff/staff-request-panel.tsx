@@ -39,7 +39,7 @@ function getStatusClass(status: RequestStatus) {
   return "staff-request-badge staff-request-badge--pending";
 }
 
-export function StaffRequestPanel({ canSubmit = true }: { canSubmit?: boolean }) {
+export function StaffRequestPanel() {
   const [date, setDate] = useState(getTomorrowDateKey);
   const [type, setType] = useState<RequestType>("休み希望");
   const [time, setTime] = useState("終日");
@@ -232,7 +232,7 @@ export function StaffRequestPanel({ canSubmit = true }: { canSubmit?: boolean })
 
   return (
     <section className="staff-request-layout" aria-label="出勤希望入力">
-      {canSubmit ? <form className="staff-request-card" onSubmit={handleSubmit}>
+      <form className="staff-request-card" onSubmit={handleSubmit}>
         <div className="staff-request-card-heading">
           <h2>希望を提出する</h2>
           {editingId ? <span className="staff-request-editing-badge">編集中</span> : null}
@@ -305,7 +305,7 @@ export function StaffRequestPanel({ canSubmit = true }: { canSubmit?: boolean })
             </button>
           </div>
         </div>
-      </form> : null}
+      </form>
 
       <aside className="staff-request-card">
         <div className="staff-request-card-heading">
