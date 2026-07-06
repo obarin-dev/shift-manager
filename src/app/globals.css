@@ -1239,6 +1239,7 @@ a.home-card:hover {
   font-size: 0.78rem;
   font-weight: 900;
   white-space: nowrap;
+  align-self: center;
 }
 
 .admin-requests-revoke-button {
@@ -1252,6 +1253,7 @@ a.home-card:hover {
   cursor: pointer;
   line-height: 1.4;
   white-space: nowrap;
+  align-self: center;
 }
 
 .admin-requests-revoke-button:hover:not(:disabled) {
