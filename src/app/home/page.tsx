@@ -35,7 +35,7 @@ export default async function HomePage() {
       role={role}
       scrollPanelLayout
     >
-<TodayScheduleHeader
+      <TodayScheduleHeader
         actions={headerActions}
         dateLabel={todayLabel}
         items={todayScheduleItems}

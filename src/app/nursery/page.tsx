@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireAdminOrManager } from "@/lib/page-auth";
 import { buildAdminHref } from "@/lib/admin-navigation";
 import { getPrimaryNurseryName, getActiveNurseryId, getOnboardingStatus } from "@/lib/nursery-db";
+import { ONBOARDING_STEP_KEYS, type OnboardingStepKey } from "@/lib/onboarding-steps";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { NurseryHubCard } from "@/components/nursery/nursery-hub-card";
@@ -47,21 +48,26 @@ const NURSERY_HUB_CARDS: NurseryHubCardConfig[] = [
   },
 ];
 
-const SETUP_STEPS = [
-  { key: "nursingHours" as const, label: "保育時間が未設定です。", href: "/nursery/settings" },
-  { key: "shiftTypes" as const, label: "勤務区分が未登録です。", href: "/nursery/settings" },
-  { key: "holidaySettings" as const, label: "休日設定が未完了です。", href: "/nursery/settings" },
-  { key: "staff" as const, label: "職員が未登録です。", href: "/nursery/staff" },
-  { key: "classes" as const, label: "クラスが未登録です。", href: "/nursery/classes" },
-];
+const STEP_DETAILS: Record<OnboardingStepKey, { label: string; href: string }> = {
+  nursingHours: { label: "保育時間が未設定です。", href: "/nursery/settings" },
+  shiftTypes: { label: "勤務区分が未登録です。", href: "/nursery/settings" },
+  holidaySettings: { label: "休日設定が未完了です。", href: "/nursery/settings" },
+  staff: { label: "職員が未登録です。", href: "/nursery/staff" },
+  classes: { label: "クラスが未登録です。", href: "/nursery/classes" },
+};
 
 export default async function NurseryPage() {
   const { account } = await requireAdminOrManager();
   const role = account.role;
-  const nurseryName = await getPrimaryNurseryName();
-  const nurseryId = await getActiveNurseryId();
+  const [nurseryName, nurseryId] = await Promise.all([
+    getPrimaryNurseryName(),
+    getActiveNurseryId(),
+  ]);
   const onboardingStatus = await getOnboardingStatus(nurseryId);
-  const firstIncomplete = SETUP_STEPS.find((s) => !onboardingStatus[s.key]);
+  const firstIncompleteKey = ONBOARDING_STEP_KEYS.find((key) => !onboardingStatus[key]);
+  const firstIncomplete = firstIncompleteKey
+    ? { key: firstIncompleteKey, ...STEP_DETAILS[firstIncompleteKey] }
+    : null;
 
   return (
     <AdminShell activeNav="nursery" account={account} role={role}>
