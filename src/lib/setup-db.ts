@@ -5,7 +5,8 @@ export type SetupInput = {
   nurseryName: string;
   address: string;
   phoneNumber: string;
-  adminName: string;
+  adminLastName: string;
+  adminFirstName: string;
   adminEmail: string;
   adminPassword: string;
 };
@@ -30,10 +31,13 @@ export async function createInitialSetup(input: SetupInput): Promise<void> {
       },
     });
 
+    const fullName = [input.adminLastName, input.adminFirstName].filter(Boolean).join(" ");
     await tx.staff.create({
       data: {
         nursery_id: nursery.id,
-        name: input.adminName.trim(),
+        name: fullName,
+        last_name: input.adminLastName,
+        first_name: input.adminFirstName || null,
         email: input.adminEmail.trim().toLowerCase(),
         password_hash: passwordHash,
         role: "admin",

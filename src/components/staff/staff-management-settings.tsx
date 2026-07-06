@@ -11,6 +11,8 @@ import {
   formatStaffWorkAvailability,
   staffLoginIdToInput,
   getEmploymentTypeLabel,
+  type EmploymentType,
+  type JobType,
   type StaffMember,
 } from "@/lib/staff-helpers";
 import { StaffFormModal, type StaffFormValues } from "@/components/staff/staff-form-modal";
@@ -82,8 +84,8 @@ function staffToFormValues(staff: StaffMember) {
     staff_id: staffLoginIdToInput(staff.staff_id),
     last_name: staff.last_name,
     first_name: staff.first_name,
-    employment_type: staff.employment_type,
-    job_type: staff.job_type,
+    employment_type: (staff.employment_type ?? "") as EmploymentType | "",
+    job_type: (staff.job_type ?? "") as JobType | "",
     has_nursery_teacher_license: staff.has_nursery_teacher_license,
     work_availability: staff.work_availability,
     is_active: staff.is_active,
@@ -99,8 +101,8 @@ function staffToApiPayload(values: StaffFormValues) {
   return {
     last_name: values.last_name.trim(),
     first_name: values.first_name.trim(),
-    employment_type: values.employment_type,
-    job_type: values.job_type,
+    employment_type: values.employment_type || null,
+    job_type: values.job_type || null,
     has_nursery_teacher_license: values.has_nursery_teacher_license,
     work_availability: values.work_availability,
     is_active: values.is_active,
@@ -519,8 +521,16 @@ export function StaffManagementSettings({
                         {staff.name}
                       </button>
                     </td>
-                    <td>{staff.roleLabel}</td>
-                    <td>{getEmploymentTypeLabel(staff.employment_type)}</td>
+                    <td>
+                      <span className={staff.job_type ? undefined : "is-muted"}>
+                        {staff.roleLabel}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={staff.employment_type ? undefined : "is-muted"}>
+                        {getEmploymentTypeLabel(staff.employment_type)}
+                      </span>
+                    </td>
                     <td>{staff.has_nursery_teacher_license ? "あり" : "なし"}</td>
                     <td>
                       {formatStaffClassLabels(

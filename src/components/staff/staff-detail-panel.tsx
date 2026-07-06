@@ -45,7 +45,7 @@ export function StaffDetailPanel({
       >
         <div className="class-detail-head">
           <div className="class-detail-head__copy">
-            <span className="class-detail-badge">{jobLabel}</span>
+            <span className={`class-detail-badge${staff.job_type ? "" : " is-muted"}`}>{jobLabel}</span>
             <h2 className="class-detail-title" id="staff-detail-title">
               {staff.name}
             </h2>
@@ -74,7 +74,7 @@ export function StaffDetailPanel({
           </div>
           <div className="class-detail-stat">
             <span className="class-detail-stat__label">雇用区分</span>
-            <span className="class-detail-stat__value">{employmentLabel}</span>
+            <span className={`class-detail-stat__value${staff.employment_type ? "" : " is-muted"}`}>{employmentLabel}</span>
           </div>
           <div className="class-detail-stat">
             <span className="class-detail-stat__label">保育士資格</span>

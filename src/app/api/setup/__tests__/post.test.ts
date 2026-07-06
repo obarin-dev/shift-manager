@@ -19,9 +19,8 @@ const VALID_BODY = {
   nurseryName: "星の子保育園",
   address: "東京都",
   phoneNumber: "03-1234-5678",
-  openTime: "07:00",
-  closeTime: "18:00",
-  adminName: "管理者",
+  adminLastName: "管理",
+  adminFirstName: "者",
   adminEmail: "admin@example.com",
   adminPassword: "password123",
 };
