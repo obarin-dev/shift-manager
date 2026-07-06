@@ -26,7 +26,7 @@ export default async function StaffRequestsPage() {
         title="出勤希望"
       />
 
-      <StaffRequestPanel />
+      <StaffRequestPanel canSubmit={role === "staff"} />
     </AdminShell>
   );
 }
