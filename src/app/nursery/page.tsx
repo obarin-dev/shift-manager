@@ -5,6 +5,7 @@ import { getPrimaryNurseryName } from "@/lib/nursery-db";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { NurseryHubCard } from "@/components/nursery/nursery-hub-card";
+import { OnboardingModal } from "@/components/home/onboarding-modal";
 
 type NurseryHubCardConfig = {
   title: string;
@@ -53,6 +54,7 @@ export default async function NurseryPage() {
 
   return (
     <AdminShell activeNav="nursery" account={account} role={role}>
+      {account.role === "admin" && <OnboardingModal />}
       <AppHeader
         actions={
           account?.roleLabel ? (
