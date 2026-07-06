@@ -1203,8 +1203,11 @@ a.home-card:hover {
 }
 
 .admin-requests-date-item--approved {
-  opacity: 0.55;
   background: #f8fafc;
+}
+
+.admin-requests-date-item--approved > :not(.admin-requests-revoke-button) {
+  opacity: 0.6;
 }
 
 .admin-requests-date-item__date {
@@ -1218,16 +1221,17 @@ a.home-card:hover {
   gap: 8px;
 }
 
-.admin-requests-date-item__time-cell {
+.admin-requests-date-item__type-cell {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .admin-requests-date-item__time {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--muted);
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .admin-requests-date-item__approved {
