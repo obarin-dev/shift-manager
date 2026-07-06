@@ -63,7 +63,7 @@ export async function POST(
         role: "staff",
         email: registeredUser.email,
       });
-      return NextResponse.json({ ok: true, autoLogin: true });
+      return NextResponse.json({ ok: true, autoLogin: true, role: "staff" as const });
     } catch (sessionError) {
       // ユーザー作成は成功済み。AuthConfigError のみフォールバック（ログインページへ誘導）
       // それ以外はプログラミングエラーの可能性があるため outer catch へ re-throw

@@ -64,14 +64,19 @@ export function RegisterForm({ token, staffName }: Props) {
         body: JSON.stringify({ email, password }),
       });
 
-      const body = (await response.json()) as { ok?: boolean; error?: string; autoLogin?: boolean };
+      const body = (await response.json()) as { ok?: boolean; error?: string; autoLogin?: boolean; role?: string };
 
       if (!response.ok) {
         setError(ERROR_MESSAGES[body.error ?? ""] ?? ERROR_MESSAGES.server_error);
         return;
       }
 
-      router.push(body.autoLogin === true ? "/home" : "/login?registered=1");
+      if (body.autoLogin === true) {
+        const dest = body.role === "admin" || body.role === "manager" ? "/nursery" : "/home";
+        router.push(dest);
+      } else {
+        router.push("/login?registered=1");
+      }
     } catch {
       setError(ERROR_MESSAGES.server_error);
     } finally {
