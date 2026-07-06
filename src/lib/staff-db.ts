@@ -2,8 +2,7 @@ import type { Staff as PrismaStaff } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveNurseryId } from "@/lib/nursery-db";
-import type { StaffMember, StaffShiftTime } from "@/lib/staff-helpers";
-import type { EmploymentType, JobType } from "@/lib/staff-helpers";
+import type { EmploymentType, JobType, StaffMember, StaffShiftTime } from "@/lib/staff-helpers";
 import { getJobTypeLabel } from "@/lib/staff-helpers";
 import { formatDbTime, parseTimeToDate } from "@/lib/nursery-time";
 
@@ -11,8 +10,8 @@ export type StaffWriteInput = {
   staff_id: string;
   last_name: string;
   first_name: string;
-  employment_type: EmploymentType;
-  job_type: JobType;
+  employment_type: EmploymentType | null;
+  job_type: JobType | null;
   has_nursery_teacher_license: boolean;
   work_availability: StaffShiftTime;
   is_active: boolean;

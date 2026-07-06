@@ -33,6 +33,12 @@ function parseWorkAvailability(value: unknown): StaffShiftTime | null {
   return { start, end };
 }
 
+function parseOptionalEnum<T extends string>(value: unknown, validSet: Set<T>): T | null | undefined {
+  if (value === null || value === undefined) return null;
+  if (typeof value === "string" && validSet.has(value as T)) return value as T;
+  return undefined;
+}
+
 function parseWriteBody(body: unknown): StaffWriteInput | null {
   if (!body || typeof body !== "object") {
     return null;
@@ -40,17 +46,14 @@ function parseWriteBody(body: unknown): StaffWriteInput | null {
 
   const payload = body as Record<string, unknown>;
   const lastName = typeof payload.last_name === "string" ? payload.last_name.trim() : "";
-  const firstName = typeof payload.first_name === "string" ? payload.first_name.trim() : "";
-  const employmentType = payload.employment_type;
-  const jobType = payload.job_type;
+  const employmentType = parseOptionalEnum(payload.employment_type, EMPLOYMENT_TYPES);
+  const jobType = parseOptionalEnum(payload.job_type, JOB_TYPES);
   const workAvailability = parseWorkAvailability(payload.work_availability);
 
   if (
     !lastName ||
-    typeof employmentType !== "string" ||
-    !EMPLOYMENT_TYPES.has(employmentType as EmploymentType) ||
-    typeof jobType !== "string" ||
-    !JOB_TYPES.has(jobType as JobType) ||
+    employmentType === undefined ||
+    jobType === undefined ||
     workAvailability === null ||
     typeof payload.has_nursery_teacher_license !== "boolean" ||
     typeof payload.is_active !== "boolean"
@@ -61,9 +64,9 @@ function parseWriteBody(body: unknown): StaffWriteInput | null {
   return {
     staff_id: "",
     last_name: lastName,
-    first_name: firstName,
-    employment_type: employmentType as EmploymentType,
-    job_type: jobType as JobType,
+    first_name: typeof payload.first_name === "string" ? payload.first_name.trim() : "",
+    employment_type: employmentType,
+    job_type: jobType,
     has_nursery_teacher_license: payload.has_nursery_teacher_license,
     work_availability: workAvailability,
     is_active: payload.is_active,

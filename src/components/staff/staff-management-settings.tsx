@@ -101,8 +101,8 @@ function staffToApiPayload(values: StaffFormValues) {
   return {
     last_name: values.last_name.trim(),
     first_name: values.first_name.trim(),
-    employment_type: values.employment_type,
-    job_type: values.job_type,
+    employment_type: values.employment_type || null,
+    job_type: values.job_type || null,
     has_nursery_teacher_license: values.has_nursery_teacher_license,
     work_availability: values.work_availability,
     is_active: values.is_active,
@@ -522,18 +522,14 @@ export function StaffManagementSettings({
                       </button>
                     </td>
                     <td>
-                      {staff.job_type ? (
-                        staff.roleLabel
-                      ) : (
-                        <span className="is-muted">—</span>
-                      )}
+                      <span className={staff.job_type ? undefined : "is-muted"}>
+                        {staff.roleLabel}
+                      </span>
                     </td>
                     <td>
-                      {staff.employment_type ? (
-                        getEmploymentTypeLabel(staff.employment_type)
-                      ) : (
-                        <span className="is-muted">—</span>
-                      )}
+                      <span className={staff.employment_type ? undefined : "is-muted"}>
+                        {getEmploymentTypeLabel(staff.employment_type)}
+                      </span>
                     </td>
                     <td>{staff.has_nursery_teacher_license ? "あり" : "なし"}</td>
                     <td>

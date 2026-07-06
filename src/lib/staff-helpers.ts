@@ -139,5 +139,5 @@ export function compareStaffLoginIds(a: string, b: string) {
 }
 
 export function normalizeStaffRoleLabel(staff: StaffMember) {
-  return staff.job_type ? getJobTypeLabel(staff.job_type) : "—";
+  return getJobTypeLabel(staff.job_type);
 }

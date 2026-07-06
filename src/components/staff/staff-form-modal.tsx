@@ -41,7 +41,7 @@ type StaffFormModalProps = {
   onSave: (values: StaffFormValues) => void;
 };
 
-function validateStaffForm(values: StaffFormValues) {
+function validateStaffForm(values: StaffFormValues, mode: "create" | "edit") {
   const errors: StaffFormErrors = {};
 
   if (!values.last_name.trim()) {
@@ -54,11 +54,11 @@ function validateStaffForm(values: StaffFormValues) {
     errors.first_name = "名は25文字以内で入力してください。";
   }
 
-  if (!values.employment_type) {
+  if (mode === "create" && !values.employment_type) {
     errors.employment_type = "雇用区分を選択してください。";
   }
 
-  if (!values.job_type) {
+  if (mode === "create" && !values.job_type) {
     errors.job_type = "職種を選択してください。";
   }
 
@@ -94,7 +94,7 @@ export function StaffFormModal({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nextErrors = validateStaffForm(values);
+    const nextErrors = validateStaffForm(values, mode);
     const nextWorkAvailabilityError = validateStaffWorkAvailability(
       values.work_availability,
     );

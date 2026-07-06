@@ -40,7 +40,6 @@ type AdminFields = {
 
 type FieldErrors = Partial<Record<keyof NurseryFields | keyof AdminFields, string>>;
 
-
 const ERROR_MESSAGES: Record<string, string> = {
   invalid_payload: "入力内容を確認してください。",
   already_setup: "セットアップはすでに完了しています。ログインしてください。",
