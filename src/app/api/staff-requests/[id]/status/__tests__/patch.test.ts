@@ -11,13 +11,9 @@ vi.mock("@/lib/user-db", () => ({
   getAuthAccountByUserId: vi.fn(),
 }));
 
-vi.mock("@/lib/prisma", () => ({
-  prisma: {
-    staffRequest: {
-      findFirst: vi.fn(),
-      update: vi.fn(),
-    },
-  },
+vi.mock("@/lib/staff-request-db", () => ({
+  findRequestForStatusUpdate: vi.fn(),
+  setRequestStatus: vi.fn(),
 }));
 
 vi.mock("@/lib/notification-db", () => ({
@@ -26,7 +22,7 @@ vi.mock("@/lib/notification-db", () => ({
 
 import { getSession } from "@/lib/auth-session";
 import { getAuthAccountByUserId } from "@/lib/user-db";
-import { prisma } from "@/lib/prisma";
+import { findRequestForStatusUpdate, setRequestStatus } from "@/lib/staff-request-db";
 import { createRequestStatusNotification } from "@/lib/notification-db";
 import { PATCH } from "../route";
 
@@ -53,8 +49,6 @@ const EXISTING_REQUEST = {
   status: "submitted",
 };
 
-const UPDATED_REQUEST = { id: "req-1", status: "approved" };
-
 function makeRouteContext(id: string) {
   return { params: Promise.resolve({ id }) };
 }
@@ -72,8 +66,8 @@ beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
   vi.mocked(getSession).mockResolvedValue(ADMIN_SESSION);
   vi.mocked(getAuthAccountByUserId).mockResolvedValue(ADMIN_ACCOUNT);
-  vi.mocked(prisma.staffRequest.findFirst).mockResolvedValue(EXISTING_REQUEST as never);
-  vi.mocked(prisma.staffRequest.update).mockResolvedValue(UPDATED_REQUEST as never);
+  vi.mocked(findRequestForStatusUpdate).mockResolvedValue(EXISTING_REQUEST);
+  vi.mocked(setRequestStatus).mockResolvedValue({ id: "req-1", status: "approved" });
   vi.mocked(createRequestStatusNotification).mockResolvedValue();
 });
 
@@ -96,7 +90,7 @@ describe("PATCH /api/staff-requests/[id]/status", () => {
   });
 
   it("正常系: needs_review → 200 を返す", async () => {
-    vi.mocked(prisma.staffRequest.update).mockResolvedValue({ id: "req-1", status: "needs_review" } as never);
+    vi.mocked(setRequestStatus).mockResolvedValue({ id: "req-1", status: "needs_review" });
     const res = await PATCH(makePatchRequest({ status: "needs_review" }), makeRouteContext("req-1"));
     expect(res.status).toBe(200);
   });
@@ -114,9 +108,31 @@ describe("PATCH /api/staff-requests/[id]/status", () => {
     expect(res.status).toBe(403);
   });
 
+  it("自己承認: 403 を返す", async () => {
+    vi.mocked(findRequestForStatusUpdate).mockResolvedValue({
+      id: "req-1",
+      staff_id: "admin-1",
+      status: "submitted",
+    });
+    const res = await PATCH(makePatchRequest({ status: "approved" }), makeRouteContext("req-1"));
+    expect(res.status).toBe(403);
+  });
+
   it("取り下げ (submitted): 200 を返す", async () => {
-    vi.mocked(prisma.staffRequest.update).mockResolvedValue({ id: "req-1", status: "submitted" } as never);
+    vi.mocked(setRequestStatus).mockResolvedValue({ id: "req-1", status: "submitted" });
     const res = await PATCH(makePatchRequest({ status: "submitted" }), makeRouteContext("req-1"));
+    expect(res.status).toBe(200);
+    expect(vi.mocked(createRequestStatusNotification)).not.toHaveBeenCalled();
+  });
+
+  it("同一ステータスへの更新: 通知を送らない", async () => {
+    vi.mocked(findRequestForStatusUpdate).mockResolvedValue({
+      id: "req-1",
+      staff_id: "staff-1",
+      status: "approved",
+    });
+    vi.mocked(setRequestStatus).mockResolvedValue({ id: "req-1", status: "approved" });
+    const res = await PATCH(makePatchRequest({ status: "approved" }), makeRouteContext("req-1"));
     expect(res.status).toBe(200);
     expect(vi.mocked(createRequestStatusNotification)).not.toHaveBeenCalled();
   });
@@ -127,7 +143,7 @@ describe("PATCH /api/staff-requests/[id]/status", () => {
   });
 
   it("存在しない申請: 404 を返す", async () => {
-    vi.mocked(prisma.staffRequest.findFirst).mockResolvedValue(null);
+    vi.mocked(findRequestForStatusUpdate).mockResolvedValue(null);
     const res = await PATCH(makePatchRequest({ status: "approved" }), makeRouteContext("req-999"));
     expect(res.status).toBe(404);
   });
@@ -143,7 +159,7 @@ describe("PATCH /api/staff-requests/[id]/status", () => {
   });
 
   it("DB 例外: 500 を返す", async () => {
-    vi.mocked(prisma.staffRequest.update).mockRejectedValue(new Error("db error"));
+    vi.mocked(setRequestStatus).mockRejectedValue(new Error("db error"));
     const res = await PATCH(makePatchRequest({ status: "approved" }), makeRouteContext("req-1"));
     expect(res.status).toBe(500);
   });

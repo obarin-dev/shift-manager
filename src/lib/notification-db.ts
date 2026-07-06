@@ -31,24 +31,24 @@ function toPayload(row: {
   };
 }
 
-export async function listNotifications(staffId: string): Promise<NotificationPayload[]> {
+export async function listNotifications(staffId: string, nurseryId: string): Promise<NotificationPayload[]> {
   const rows = await prisma.notification.findMany({
-    where: { staff_id: staffId },
+    where: { staff_id: staffId, nursery_id: nurseryId },
     orderBy: { created_at: "desc" },
     take: 50,
   });
   return rows.map(toPayload);
 }
 
-export async function countUnreadNotifications(staffId: string): Promise<number> {
+export async function countUnreadNotifications(staffId: string, nurseryId: string): Promise<number> {
   return prisma.notification.count({
-    where: { staff_id: staffId, is_read: false },
+    where: { staff_id: staffId, nursery_id: nurseryId, is_read: false },
   });
 }
 
-export async function markAllNotificationsRead(staffId: string): Promise<void> {
+export async function markAllNotificationsRead(staffId: string, nurseryId: string): Promise<void> {
   await prisma.notification.updateMany({
-    where: { staff_id: staffId, is_read: false },
+    where: { staff_id: staffId, nursery_id: nurseryId, is_read: false },
     data: { is_read: true },
   });
 }

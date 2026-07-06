@@ -16,6 +16,11 @@ export function NotificationPanel({ initialNotifications }: NotificationPanelPro
   const [notifications, setNotifications] = useState(initialNotifications);
   const [marked, setMarked] = useState(false);
 
+  useEffect(() => {
+    setNotifications(initialNotifications);
+    setMarked(false);
+  }, [initialNotifications]);
+
   const unread = notifications.filter((n) => !n.isRead);
 
   useEffect(() => {

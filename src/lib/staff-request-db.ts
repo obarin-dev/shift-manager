@@ -87,6 +87,29 @@ function toStaffRequestPayload(row: PrismaStaffRequest): StaffRequestPayload {
   };
 }
 
+export async function findRequestForStatusUpdate(
+  nurseryId: string,
+  requestId: string,
+): Promise<{ id: string; staff_id: string; status: string } | null> {
+  return prisma.staffRequest.findFirst({
+    where: { id: requestId, nursery_id: nurseryId },
+    select: { id: true, staff_id: true, status: true },
+  });
+}
+
+export async function setRequestStatus(
+  nurseryId: string,
+  requestId: string,
+  newStatus: "approved" | "needs_review" | "submitted",
+): Promise<{ id: string; status: string } | null> {
+  const result = await prisma.staffRequest.updateMany({
+    where: { id: requestId, nursery_id: nurseryId },
+    data: { status: newStatus },
+  });
+  if (result.count === 0) return null;
+  return { id: requestId, status: newStatus };
+}
+
 export async function countSubmittedRequests(nurseryId: string): Promise<number> {
   return prisma.staffRequest.count({
     where: { nursery_id: nurseryId, status: "submitted" },

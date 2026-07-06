@@ -28,6 +28,7 @@ type LocalGroup = {
 export function AdminRequestsPanel({ groups: initialGroups }: { groups: AdminStaffRequestGroup[] }) {
   const [groups, setGroups] = useState<LocalGroup[]>(initialGroups as LocalGroup[]);
   const [revoking, setRevoking] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
     () =>
@@ -88,7 +89,7 @@ export function AdminRequestsPanel({ groups: initialGroups }: { groups: AdminSta
         })),
       );
     } catch {
-      // 失敗時は何もしない（次のリロードで整合）
+      setErrorMessage("取り下げに失敗しました。再度お試しください。");
     } finally {
       setRevoking(null);
     }
@@ -96,6 +97,19 @@ export function AdminRequestsPanel({ groups: initialGroups }: { groups: AdminSta
 
   return (
     <section className="admin-requests-panel" aria-label="提出された出勤希望">
+      {errorMessage ? (
+        <div className="staff-request-toast staff-request-toast--error" role="alert">
+          {errorMessage}
+          <button
+            className="admin-requests-error-dismiss"
+            onClick={() => setErrorMessage(null)}
+            type="button"
+            aria-label="閉じる"
+          >
+            ✕
+          </button>
+        </div>
+      ) : null}
       <div className="admin-requests-staff-list" aria-label="職員一覧">
         {groups.map((group) => {
           const isExpanded = expandedIds.has(group.staffId);

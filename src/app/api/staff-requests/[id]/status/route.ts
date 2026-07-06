@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession, isAdminOrManager } from "@/lib/auth-session";
 import { getRequestOwner } from "../../_shared";
-import { prisma } from "@/lib/prisma";
+import { findRequestForStatusUpdate, setRequestStatus } from "@/lib/staff-request-db";
 import { createRequestStatusNotification } from "@/lib/notification-db";
 
 export const runtime = "nodejs";
@@ -43,21 +43,25 @@ export async function PATCH(request: Request, context: RouteContext) {
   const { id } = await context.params;
 
   try {
-    const existing = await prisma.staffRequest.findFirst({
-      where: { id, nursery_id: owner.nurseryId },
-      select: { id: true, staff_id: true, status: true },
-    });
-
+    const existing = await findRequestForStatusUpdate(owner.nurseryId, id);
     if (!existing) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
 
-    const updated = await prisma.staffRequest.update({
-      where: { id },
-      data: { status: status as "approved" | "needs_review" | "submitted" },
-    });
+    if (existing.staff_id === owner.staffId) {
+      return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    }
 
-    if (status !== "submitted") {
+    const updated = await setRequestStatus(
+      owner.nurseryId,
+      id,
+      status as "approved" | "needs_review" | "submitted",
+    );
+    if (!updated) {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+
+    if (status !== "submitted" && existing.status !== status) {
       await createRequestStatusNotification(
         owner.nurseryId,
         existing.staff_id,

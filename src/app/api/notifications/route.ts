@@ -14,7 +14,7 @@ export async function GET() {
   }
 
   try {
-    const notifications = await listNotifications(session.userId);
+    const notifications = await listNotifications(session.userId, session.nurseryId);
     return NextResponse.json({ data: notifications });
   } catch (error) {
     console.error("[GET /api/notifications]", error);
@@ -29,7 +29,7 @@ export async function PATCH() {
   }
 
   try {
-    await markAllNotificationsRead(session.userId);
+    await markAllNotificationsRead(session.userId, session.nurseryId);
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("[PATCH /api/notifications]", error);

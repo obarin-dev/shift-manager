@@ -75,7 +75,7 @@ describe("PATCH /api/notifications", () => {
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.ok).toBe(true);
-    expect(vi.mocked(markAllNotificationsRead)).toHaveBeenCalledWith(STAFF_SESSION.userId);
+    expect(vi.mocked(markAllNotificationsRead)).toHaveBeenCalledWith(STAFF_SESSION.userId, STAFF_SESSION.nurseryId);
   });
 
   it("未認証: 401 を返す", async () => {

@@ -31,7 +31,7 @@ export async function AdminShell({
 }: AdminShellProps) {
   const [unreadCount, submittedRequestCount] = await Promise.all([
     account?.userId && role === "staff"
-      ? countUnreadNotifications(account.userId).catch(() => 0)
+      ? countUnreadNotifications(account.userId, account.nurseryId).catch(() => 0)
       : Promise.resolve(0),
     account?.nurseryId && role !== "staff"
       ? countSubmittedRequests(account.nurseryId).catch(() => 0)
