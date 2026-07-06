@@ -33,6 +33,7 @@ import {
   type RosterCellAssignment,
   type RosterTimeSlot,
 } from "@/lib/roster-helpers";
+import { buildAssignmentsFromPresences, type StaffPresence } from "@/lib/roster-draft";
 
 type DailyRosterGridProps = {
   nurseryName?: string;
@@ -142,6 +143,7 @@ export function DailyRosterGrid({
   const [isLoadingRoster, setIsLoadingRoster] = useState(false);
   const [hasPublishedSchedule, setHasPublishedSchedule] = useState<boolean | null>(null);
   const [draftPayload, setDraftPayload] = useState<RosterPersistencePayload | null>(null);
+  const [staffPresences, setStaffPresences] = useState<StaffPresence[]>([]);
   const [hasExistingRoster, setHasExistingRoster] = useState(false);
   const [todayEvents, setTodayEvents] = useState<NurseryCalendarEntry[]>([]);
   const columnResizeState = useRef<{ classroomId: string; startX: number; startWidth: number } | null>(null);
@@ -304,15 +306,21 @@ export function DailyRosterGrid({
   };
 
   const handleGenerateFromShift = () => {
-    const payload = draftPayload;
-    if (!payload) return;
+    if (hasPublishedSchedule !== true) return;
 
     if (hasExistingRoster) {
-      if (!window.confirm("保存済みの体制表データがあります。シフト表から生成したたたき台で上書きしますか？\n\n「保存」ボタンを押すまで DB には反映されません。")) {
+      // 保存済み行・枠を保持してスタッフだけ充填
+      if (!window.confirm("現在の配置をシフト表のスタッフで上書きします。行・枠の構造は保持されます。\n\n「保存」ボタンを押すまで DB には反映されません。")) {
         return;
       }
+      const newAssignments = buildAssignmentsFromPresences(rows, staffPresences);
+      setAssignments(newAssignments);
+      setSaveMessage("シフト表からスタッフを配置しました。内容を確認して「保存」してください。");
+    } else {
+      // 保存データなし → デフォルト行で新規作成
+      if (!draftPayload) return;
+      applyDraftPayload(draftPayload);
     }
-    applyDraftPayload(payload);
   };
 
   const buildPersistencePayload = (): RosterPersistencePayload => {
@@ -529,6 +537,7 @@ export function DailyRosterGrid({
       setSaveMessage("");
       setHasPublishedSchedule(null);
       setDraftPayload(null);
+      setStaffPresences([]);
       try {
         const [rosterResponse, draftResponse] = await Promise.all([
           apiFetch(`/api/roster?date=${focusDate}`, { method: "GET", cache: "no-store" }),
@@ -544,10 +553,12 @@ export function DailyRosterGrid({
           const draftData = (await draftResponse.json()) as {
             hasPublishedSchedule: boolean;
             draft: RosterPersistencePayload | null;
+            staffPresences: StaffPresence[];
           };
           if (active) {
             setHasPublishedSchedule(draftData.hasPublishedSchedule);
             setDraftPayload(draftData.draft);
+            setStaffPresences(draftData.staffPresences ?? []);
           }
         }
 
@@ -688,7 +699,7 @@ export function DailyRosterGrid({
               <button
                 className="secondary-button secondary-button--compact"
                 type="button"
-                disabled={!draftPayload || hasPublishedSchedule === false}
+                disabled={hasPublishedSchedule !== true}
                 title={
                   hasPublishedSchedule === false
                     ? "この日の公開済みシフト表がありません"
