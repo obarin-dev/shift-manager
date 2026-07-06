@@ -1238,24 +1238,24 @@ a.home-card:hover {
 }
 
 .admin-requests-revoke-button {
-  font-size: 0.72rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border, #e5e7eb);
-  background: var(--surface, #fff);
-  color: var(--muted, #6b7280);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #f97316;
+  background: #fff7ed;
+  color: #c2410c;
   cursor: pointer;
   line-height: 1.4;
   white-space: nowrap;
 }
 
 .admin-requests-revoke-button:hover:not(:disabled) {
-  background: var(--surface-alt, #f9fafb);
-  color: var(--foreground, #111827);
+  background: #ffedd5;
 }
 
 .admin-requests-revoke-button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
