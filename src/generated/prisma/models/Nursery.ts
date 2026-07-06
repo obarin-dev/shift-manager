@@ -276,6 +276,7 @@ export type NurseryWhereInput = {
   roster_sheets?: Prisma.RosterSheetListRelationFilter
   staff_requests?: Prisma.StaffRequestListRelationFilter
   invitations?: Prisma.InvitationListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type NurseryOrderByWithRelationInput = {
@@ -299,6 +300,7 @@ export type NurseryOrderByWithRelationInput = {
   roster_sheets?: Prisma.RosterSheetOrderByRelationAggregateInput
   staff_requests?: Prisma.StaffRequestOrderByRelationAggregateInput
   invitations?: Prisma.InvitationOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type NurseryWhereUniqueInput = Prisma.AtLeast<{
@@ -325,6 +327,7 @@ export type NurseryWhereUniqueInput = Prisma.AtLeast<{
   roster_sheets?: Prisma.RosterSheetListRelationFilter
   staff_requests?: Prisma.StaffRequestListRelationFilter
   invitations?: Prisma.InvitationListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id">
 
 export type NurseryOrderByWithAggregationInput = {
@@ -386,6 +389,7 @@ export type NurseryCreateInput = {
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateInput = {
@@ -409,6 +413,7 @@ export type NurseryUncheckedCreateInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUpdateInput = {
@@ -432,6 +437,7 @@ export type NurseryUpdateInput = {
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateInput = {
@@ -455,6 +461,7 @@ export type NurseryUncheckedUpdateInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateManyInput = {
@@ -707,6 +714,20 @@ export type NurseryUpdateOneRequiredWithoutStaff_requestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.NurseryUpdateToOneWithWhereWithoutStaff_requestsInput, Prisma.NurseryUpdateWithoutStaff_requestsInput>, Prisma.NurseryUncheckedUpdateWithoutStaff_requestsInput>
 }
 
+export type NurseryCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.NurseryCreateWithoutNotificationsInput, Prisma.NurseryUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.NurseryCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.NurseryWhereUniqueInput
+}
+
+export type NurseryUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.NurseryCreateWithoutNotificationsInput, Prisma.NurseryUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.NurseryCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.NurseryUpsertWithoutNotificationsInput
+  connect?: Prisma.NurseryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NurseryUpdateToOneWithWhereWithoutNotificationsInput, Prisma.NurseryUpdateWithoutNotificationsInput>, Prisma.NurseryUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type NurseryCreateWithoutCalendar_entriesInput = {
   id?: string
   name: string
@@ -727,6 +748,7 @@ export type NurseryCreateWithoutCalendar_entriesInput = {
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutCalendar_entriesInput = {
@@ -749,6 +771,7 @@ export type NurseryUncheckedCreateWithoutCalendar_entriesInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutCalendar_entriesInput = {
@@ -787,6 +810,7 @@ export type NurseryUpdateWithoutCalendar_entriesInput = {
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutCalendar_entriesInput = {
@@ -809,6 +833,7 @@ export type NurseryUncheckedUpdateWithoutCalendar_entriesInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateWithoutShift_typesInput = {
@@ -831,6 +856,7 @@ export type NurseryCreateWithoutShift_typesInput = {
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutShift_typesInput = {
@@ -853,6 +879,7 @@ export type NurseryUncheckedCreateWithoutShift_typesInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutShift_typesInput = {
@@ -891,6 +918,7 @@ export type NurseryUpdateWithoutShift_typesInput = {
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutShift_typesInput = {
@@ -913,6 +941,7 @@ export type NurseryUncheckedUpdateWithoutShift_typesInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateWithoutClassroomsInput = {
@@ -935,6 +964,7 @@ export type NurseryCreateWithoutClassroomsInput = {
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutClassroomsInput = {
@@ -957,6 +987,7 @@ export type NurseryUncheckedCreateWithoutClassroomsInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutClassroomsInput = {
@@ -995,6 +1026,7 @@ export type NurseryUpdateWithoutClassroomsInput = {
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutClassroomsInput = {
@@ -1017,6 +1049,7 @@ export type NurseryUncheckedUpdateWithoutClassroomsInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateWithoutStaffsInput = {
@@ -1039,6 +1072,7 @@ export type NurseryCreateWithoutStaffsInput = {
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutStaffsInput = {
@@ -1061,6 +1095,7 @@ export type NurseryUncheckedCreateWithoutStaffsInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutStaffsInput = {
@@ -1099,6 +1134,7 @@ export type NurseryUpdateWithoutStaffsInput = {
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutStaffsInput = {
@@ -1121,6 +1157,7 @@ export type NurseryUncheckedUpdateWithoutStaffsInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateWithoutShift_schedulesInput = {
@@ -1143,6 +1180,7 @@ export type NurseryCreateWithoutShift_schedulesInput = {
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutShift_schedulesInput = {
@@ -1165,6 +1203,7 @@ export type NurseryUncheckedCreateWithoutShift_schedulesInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutShift_schedulesInput = {
@@ -1203,6 +1242,7 @@ export type NurseryUpdateWithoutShift_schedulesInput = {
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutShift_schedulesInput = {
@@ -1225,6 +1265,7 @@ export type NurseryUncheckedUpdateWithoutShift_schedulesInput = {
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateWithoutRoster_sheetsInput = {
@@ -1247,6 +1288,7 @@ export type NurseryCreateWithoutRoster_sheetsInput = {
   shift_schedules?: Prisma.ShiftScheduleCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutRoster_sheetsInput = {
@@ -1269,6 +1311,7 @@ export type NurseryUncheckedCreateWithoutRoster_sheetsInput = {
   shift_schedules?: Prisma.ShiftScheduleUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutRoster_sheetsInput = {
@@ -1307,6 +1350,7 @@ export type NurseryUpdateWithoutRoster_sheetsInput = {
   shift_schedules?: Prisma.ShiftScheduleUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutRoster_sheetsInput = {
@@ -1329,6 +1373,7 @@ export type NurseryUncheckedUpdateWithoutRoster_sheetsInput = {
   shift_schedules?: Prisma.ShiftScheduleUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateWithoutInvitationsInput = {
@@ -1351,6 +1396,7 @@ export type NurseryCreateWithoutInvitationsInput = {
   shift_schedules?: Prisma.ShiftScheduleCreateNestedManyWithoutNurseryInput
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutInvitationsInput = {
@@ -1373,6 +1419,7 @@ export type NurseryUncheckedCreateWithoutInvitationsInput = {
   shift_schedules?: Prisma.ShiftScheduleUncheckedCreateNestedManyWithoutNurseryInput
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutInvitationsInput = {
@@ -1411,6 +1458,7 @@ export type NurseryUpdateWithoutInvitationsInput = {
   shift_schedules?: Prisma.ShiftScheduleUpdateManyWithoutNurseryNestedInput
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutInvitationsInput = {
@@ -1433,6 +1481,7 @@ export type NurseryUncheckedUpdateWithoutInvitationsInput = {
   shift_schedules?: Prisma.ShiftScheduleUncheckedUpdateManyWithoutNurseryNestedInput
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryCreateWithoutStaff_requestsInput = {
@@ -1455,6 +1504,7 @@ export type NurseryCreateWithoutStaff_requestsInput = {
   shift_schedules?: Prisma.ShiftScheduleCreateNestedManyWithoutNurseryInput
   roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryUncheckedCreateWithoutStaff_requestsInput = {
@@ -1477,6 +1527,7 @@ export type NurseryUncheckedCreateWithoutStaff_requestsInput = {
   shift_schedules?: Prisma.ShiftScheduleUncheckedCreateNestedManyWithoutNurseryInput
   roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutNurseryInput
 }
 
 export type NurseryCreateOrConnectWithoutStaff_requestsInput = {
@@ -1515,6 +1566,7 @@ export type NurseryUpdateWithoutStaff_requestsInput = {
   shift_schedules?: Prisma.ShiftScheduleUpdateManyWithoutNurseryNestedInput
   roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutNurseryNestedInput
 }
 
 export type NurseryUncheckedUpdateWithoutStaff_requestsInput = {
@@ -1537,6 +1589,115 @@ export type NurseryUncheckedUpdateWithoutStaff_requestsInput = {
   shift_schedules?: Prisma.ShiftScheduleUncheckedUpdateManyWithoutNurseryNestedInput
   roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutNurseryNestedInput
+}
+
+export type NurseryCreateWithoutNotificationsInput = {
+  id?: string
+  name: string
+  address?: string | null
+  phone_number?: string | null
+  open_time?: Date | string | null
+  close_time?: Date | string | null
+  extended_close_time?: Date | string | null
+  weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
+  close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  classrooms?: Prisma.ClassroomCreateNestedManyWithoutNurseryInput
+  staffs?: Prisma.StaffCreateNestedManyWithoutNurseryInput
+  shift_types?: Prisma.ShiftTypeCreateNestedManyWithoutNurseryInput
+  calendar_entries?: Prisma.CalendarEntryCreateNestedManyWithoutNurseryInput
+  shift_schedules?: Prisma.ShiftScheduleCreateNestedManyWithoutNurseryInput
+  roster_sheets?: Prisma.RosterSheetCreateNestedManyWithoutNurseryInput
+  staff_requests?: Prisma.StaffRequestCreateNestedManyWithoutNurseryInput
+  invitations?: Prisma.InvitationCreateNestedManyWithoutNurseryInput
+}
+
+export type NurseryUncheckedCreateWithoutNotificationsInput = {
+  id?: string
+  name: string
+  address?: string | null
+  phone_number?: string | null
+  open_time?: Date | string | null
+  close_time?: Date | string | null
+  extended_close_time?: Date | string | null
+  weekly_closed_weekdays?: Prisma.NurseryCreateweekly_closed_weekdaysInput | number[]
+  close_on_public_holidays?: boolean
+  holiday_settings_confirmed?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  classrooms?: Prisma.ClassroomUncheckedCreateNestedManyWithoutNurseryInput
+  staffs?: Prisma.StaffUncheckedCreateNestedManyWithoutNurseryInput
+  shift_types?: Prisma.ShiftTypeUncheckedCreateNestedManyWithoutNurseryInput
+  calendar_entries?: Prisma.CalendarEntryUncheckedCreateNestedManyWithoutNurseryInput
+  shift_schedules?: Prisma.ShiftScheduleUncheckedCreateNestedManyWithoutNurseryInput
+  roster_sheets?: Prisma.RosterSheetUncheckedCreateNestedManyWithoutNurseryInput
+  staff_requests?: Prisma.StaffRequestUncheckedCreateNestedManyWithoutNurseryInput
+  invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutNurseryInput
+}
+
+export type NurseryCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.NurseryWhereUniqueInput
+  create: Prisma.XOR<Prisma.NurseryCreateWithoutNotificationsInput, Prisma.NurseryUncheckedCreateWithoutNotificationsInput>
+}
+
+export type NurseryUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.NurseryUpdateWithoutNotificationsInput, Prisma.NurseryUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.NurseryCreateWithoutNotificationsInput, Prisma.NurseryUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.NurseryWhereInput
+}
+
+export type NurseryUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.NurseryWhereInput
+  data: Prisma.XOR<Prisma.NurseryUpdateWithoutNotificationsInput, Prisma.NurseryUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type NurseryUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  open_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
+  close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classrooms?: Prisma.ClassroomUpdateManyWithoutNurseryNestedInput
+  staffs?: Prisma.StaffUpdateManyWithoutNurseryNestedInput
+  shift_types?: Prisma.ShiftTypeUpdateManyWithoutNurseryNestedInput
+  calendar_entries?: Prisma.CalendarEntryUpdateManyWithoutNurseryNestedInput
+  shift_schedules?: Prisma.ShiftScheduleUpdateManyWithoutNurseryNestedInput
+  roster_sheets?: Prisma.RosterSheetUpdateManyWithoutNurseryNestedInput
+  staff_requests?: Prisma.StaffRequestUpdateManyWithoutNurseryNestedInput
+  invitations?: Prisma.InvitationUpdateManyWithoutNurseryNestedInput
+}
+
+export type NurseryUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  open_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  extended_close_time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  weekly_closed_weekdays?: Prisma.NurseryUpdateweekly_closed_weekdaysInput | number[]
+  close_on_public_holidays?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  holiday_settings_confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classrooms?: Prisma.ClassroomUncheckedUpdateManyWithoutNurseryNestedInput
+  staffs?: Prisma.StaffUncheckedUpdateManyWithoutNurseryNestedInput
+  shift_types?: Prisma.ShiftTypeUncheckedUpdateManyWithoutNurseryNestedInput
+  calendar_entries?: Prisma.CalendarEntryUncheckedUpdateManyWithoutNurseryNestedInput
+  shift_schedules?: Prisma.ShiftScheduleUncheckedUpdateManyWithoutNurseryNestedInput
+  roster_sheets?: Prisma.RosterSheetUncheckedUpdateManyWithoutNurseryNestedInput
+  staff_requests?: Prisma.StaffRequestUncheckedUpdateManyWithoutNurseryNestedInput
+  invitations?: Prisma.InvitationUncheckedUpdateManyWithoutNurseryNestedInput
 }
 
 
@@ -1553,6 +1714,7 @@ export type NurseryCountOutputType = {
   roster_sheets: number
   staff_requests: number
   invitations: number
+  notifications: number
 }
 
 export type NurseryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1564,6 +1726,7 @@ export type NurseryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   roster_sheets?: boolean | NurseryCountOutputTypeCountRoster_sheetsArgs
   staff_requests?: boolean | NurseryCountOutputTypeCountStaff_requestsArgs
   invitations?: boolean | NurseryCountOutputTypeCountInvitationsArgs
+  notifications?: boolean | NurseryCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -1632,6 +1795,13 @@ export type NurseryCountOutputTypeCountInvitationsArgs<ExtArgs extends runtime.T
   where?: Prisma.InvitationWhereInput
 }
 
+/**
+ * NurseryCountOutputType without action
+ */
+export type NurseryCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type NurserySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1654,6 +1824,7 @@ export type NurserySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   roster_sheets?: boolean | Prisma.Nursery$roster_sheetsArgs<ExtArgs>
   staff_requests?: boolean | Prisma.Nursery$staff_requestsArgs<ExtArgs>
   invitations?: boolean | Prisma.Nursery$invitationsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Nursery$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.NurseryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["nursery"]>
 
@@ -1712,6 +1883,7 @@ export type NurseryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   roster_sheets?: boolean | Prisma.Nursery$roster_sheetsArgs<ExtArgs>
   staff_requests?: boolean | Prisma.Nursery$staff_requestsArgs<ExtArgs>
   invitations?: boolean | Prisma.Nursery$invitationsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Nursery$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.NurseryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type NurseryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1728,6 +1900,7 @@ export type $NurseryPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     roster_sheets: Prisma.$RosterSheetPayload<ExtArgs>[]
     staff_requests: Prisma.$StaffRequestPayload<ExtArgs>[]
     invitations: Prisma.$InvitationPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2156,6 +2329,7 @@ export interface Prisma__NurseryClient<T, Null = never, ExtArgs extends runtime.
   roster_sheets<T extends Prisma.Nursery$roster_sheetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Nursery$roster_sheetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RosterSheetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   staff_requests<T extends Prisma.Nursery$staff_requestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Nursery$staff_requestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invitations<T extends Prisma.Nursery$invitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Nursery$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.Nursery$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Nursery$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2779,6 +2953,30 @@ export type Nursery$invitationsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.InvitationScalarFieldEnum | Prisma.InvitationScalarFieldEnum[]
+}
+
+/**
+ * Nursery.notifications
+ */
+export type Nursery$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

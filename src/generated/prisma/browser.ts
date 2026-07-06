@@ -72,3 +72,8 @@ export type Invitation = Prisma.InvitationModel
  * 
  */
 export type StaffRequest = Prisma.StaffRequestModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

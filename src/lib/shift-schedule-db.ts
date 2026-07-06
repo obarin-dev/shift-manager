@@ -7,6 +7,7 @@ import type { ShiftTypeDefinition, NurseryRestSettings } from "@/lib/nursery-hel
 import { resolveNurseryId } from "@/lib/nursery-db";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 import { SHIFT_CELL_OFF } from "@/lib/shift-schedule-options";
+import { createShiftPublishedNotifications } from "@/lib/notification-db";
 
 export type ShiftSchedulePayload = {
   status: ShiftScheduleStatus;
@@ -204,4 +205,10 @@ export async function saveShiftSchedule(
       })),
     });
   });
+
+  if (isPublishing) {
+    await createShiftPublishedNotifications(resolvedNurseryId, targetMonth).catch((err) => {
+      console.error("[saveShiftSchedule] notification creation failed:", err);
+    });
+  }
 }

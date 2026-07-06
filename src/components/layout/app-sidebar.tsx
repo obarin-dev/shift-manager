@@ -10,6 +10,7 @@ type SidebarNavItem = {
   isActive?: boolean;
   icon?: ReactNode;
   kind?: "link" | "section";
+  badge?: number;
 };
 
 type AppSidebarProps = {
@@ -105,6 +106,11 @@ export function AppSidebar({
                 {item.icon ?? <span className="app-sidebar__link-fallback" />}
               </span>
               <span className="app-sidebar__link-label">{item.label}</span>
+              {item.badge != null && item.badge > 0 ? (
+                <span className="app-sidebar__link-badge" aria-label={`未読${item.badge}件`}>
+                  {item.badge > 99 ? "99+" : item.badge}
+                </span>
+              ) : null}
             </a>
           );
         })}
