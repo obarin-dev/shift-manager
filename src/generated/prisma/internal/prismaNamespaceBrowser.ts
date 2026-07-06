@@ -61,7 +61,8 @@ export const ModelName = {
   ShiftSlot: 'ShiftSlot',
   RosterSheet: 'RosterSheet',
   Invitation: 'Invitation',
-  StaffRequest: 'StaffRequest'
+  StaffRequest: 'StaffRequest',
+  Notification: 'Notification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -258,6 +259,21 @@ export const StaffRequestScalarFieldEnum = {
 } as const
 
 export type StaffRequestScalarFieldEnum = (typeof StaffRequestScalarFieldEnum)[keyof typeof StaffRequestScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  nursery_id: 'nursery_id',
+  staff_id: 'staff_id',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  is_read: 'is_read',
+  related_id: 'related_id',
+  created_at: 'created_at'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const SortOrder = {

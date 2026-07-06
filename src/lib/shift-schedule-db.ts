@@ -7,6 +7,7 @@ import type { ShiftTypeDefinition, NurseryRestSettings } from "@/lib/nursery-hel
 import { resolveNurseryId } from "@/lib/nursery-db";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 import { SHIFT_CELL_OFF } from "@/lib/shift-schedule-options";
+import { createShiftPublishedNotifications } from "@/lib/notification-db";
 
 export type ShiftSchedulePayload = {
   status: ShiftScheduleStatus;
@@ -138,15 +139,6 @@ export async function saveShiftSchedule(
   const publishedPayload = payload.assignments as unknown as Prisma.InputJsonValue;
 
   await prisma.$transaction(async (tx) => {
-    let isFirstPublish = false;
-    if (isPublishing) {
-      const existing = await tx.shiftSchedule.findFirst({
-        where: { nursery_id: resolvedNurseryId, target_month: targetMonth },
-        select: { published_at: true },
-      });
-      isFirstPublish = existing?.published_at == null;
-    }
-
     const schedule = await tx.shiftSchedule.upsert({
       where: {
         nursery_id_target_month: {
@@ -176,7 +168,7 @@ export async function saveShiftSchedule(
       where: { shift_schedule_id: schedule.id },
     });
 
-    if (isFirstPublish) {
+    if (isPublishing) {
       const monthStart = new Date(`${targetMonth}-01T00:00:00.000Z`);
       const monthEnd = new Date(monthStart);
       monthEnd.setUTCMonth(monthEnd.getUTCMonth() + 1);
@@ -204,4 +196,10 @@ export async function saveShiftSchedule(
       })),
     });
   });
+
+  if (isPublishing) {
+    await createShiftPublishedNotifications(resolvedNurseryId, targetMonth).catch((err) => {
+      console.error("[saveShiftSchedule] notification creation failed:", err);
+    });
+  }
 }

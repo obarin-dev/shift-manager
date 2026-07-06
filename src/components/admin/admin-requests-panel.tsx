@@ -8,25 +8,47 @@ function formatShortDate(date: string) {
   return `${Number(month)}/${Number(day)}`;
 }
 
-export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[] }) {
+type RequestStatus = "提出済み" | "承認" | "要確認";
+
+type LocalRequest = {
+  id: string;
+  date: string;
+  type: string;
+  time: string;
+  memo: string;
+  status: RequestStatus;
+};
+
+type LocalGroup = {
+  staffId: string;
+  staffName: string;
+  requests: LocalRequest[];
+};
+
+export function AdminRequestsPanel({ groups: initialGroups }: { groups: AdminStaffRequestGroup[] }) {
+  const [groups, setGroups] = useState<LocalGroup[]>(initialGroups as LocalGroup[]);
+  const [revoking, setRevoking] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
     () =>
       new Set(
-        groups
+        initialGroups
           .filter((g) => g.requests.some((r) => r.status === "提出済み"))
           .map((g) => g.staffId),
       ),
   );
 
   useEffect(() => {
+    setGroups(initialGroups as LocalGroup[]);
     setExpandedIds(
       new Set(
-        groups
+        initialGroups
           .filter((g) => g.requests.some((r) => r.status === "提出済み"))
           .map((g) => g.staffId),
       ),
     );
-  }, [groups]);
+  }, [initialGroups]);
 
   if (groups.length === 0) {
     return (
@@ -48,8 +70,46 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
     });
   }
 
+  async function handleRevoke(requestId: string) {
+    setRevoking(requestId);
+    try {
+      const res = await fetch(`/api/staff-requests/${requestId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "submitted" }),
+      });
+      if (!res.ok) throw new Error("revoke_failed");
+
+      setGroups((prev) =>
+        prev.map((g) => ({
+          ...g,
+          requests: g.requests.map((r) =>
+            r.id === requestId ? { ...r, status: "提出済み" as RequestStatus } : r,
+          ),
+        })),
+      );
+    } catch {
+      setErrorMessage("取り下げに失敗しました。再度お試しください。");
+    } finally {
+      setRevoking(null);
+    }
+  }
+
   return (
     <section className="admin-requests-panel" aria-label="提出された出勤希望">
+      {errorMessage ? (
+        <div className="staff-request-toast staff-request-toast--error" role="alert">
+          {errorMessage}
+          <button
+            className="admin-requests-error-dismiss"
+            onClick={() => setErrorMessage(null)}
+            type="button"
+            aria-label="閉じる"
+          >
+            ✕
+          </button>
+        </div>
+      ) : null}
       <div className="admin-requests-staff-list" aria-label="職員一覧">
         {groups.map((group) => {
           const isExpanded = expandedIds.has(group.staffId);
@@ -88,11 +148,23 @@ export function AdminRequestsPanel({ groups }: { groups: AdminStaffRequestGroup[
                         <span className="admin-requests-date-item__date">
                           {formatShortDate(request.date)}
                         </span>
-                        <span>{request.type}</span>
-                        <span>{request.time}</span>
-                        {request.status === "承認" && (
-                          <span className="admin-requests-date-item__approved">✓ 反映済み</span>
-                        )}
+                        <span className="admin-requests-date-item__type-cell">
+                          <span>{request.type}</span>
+                          <span className="admin-requests-date-item__time">{request.time}</span>
+                        </span>
+                        {request.status === "承認" ? (
+                          <>
+                            <span className="admin-requests-date-item__approved">✓ 反映済み</span>
+                            <button
+                              className="admin-requests-revoke-button"
+                              disabled={revoking === request.id}
+                              onClick={() => handleRevoke(request.id)}
+                              type="button"
+                            >
+                              {revoking === request.id ? "..." : "取り下げ"}
+                            </button>
+                          </>
+                        ) : null}
                         {request.memo ? <small>{request.memo}</small> : null}
                       </li>
                     ))}

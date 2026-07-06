@@ -99,6 +99,14 @@ export const StaffRequestStatus = {
 export type StaffRequestStatus = (typeof StaffRequestStatus)[keyof typeof StaffRequestStatus]
 
 
+export const NotificationType = {
+  shift_published: 'shift_published',
+  request_status_changed: 'request_status_changed'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
 export const ClassroomStaffRole = {
   main: 'main',
   sub: 'sub'

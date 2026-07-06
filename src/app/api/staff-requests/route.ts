@@ -67,10 +67,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  if (isAdminOrManager(owner.role)) {
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  }
-
   let body: unknown;
   try {
     body = await request.json();
