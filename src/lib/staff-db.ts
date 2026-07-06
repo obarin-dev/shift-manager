@@ -2,7 +2,8 @@ import type { Staff as PrismaStaff } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveNurseryId } from "@/lib/nursery-db";
-import type { EmploymentType, JobType, StaffMember, StaffShiftTime } from "@/lib/staff-helpers";
+import type { StaffMember, StaffShiftTime } from "@/lib/staff-helpers";
+import type { EmploymentType, JobType } from "@/lib/staff-helpers";
 import { getJobTypeLabel } from "@/lib/staff-helpers";
 import { formatDbTime, parseTimeToDate } from "@/lib/nursery-time";
 
@@ -42,10 +43,10 @@ export function toStaffMember(record: PrismaStaff): StaffMember {
     last_name: record.last_name ?? record.name.split(/[\s　]/)[0] ?? record.name,
     first_name: record.first_name ?? record.name.split(/[\s　]/).slice(1).join(" ") ?? "",
     role: record.role ?? null,
-    roleLabel: getJobTypeLabel((record.job_type ?? "other") as JobType),
+    roleLabel: getJobTypeLabel(record.job_type as JobType | null),
     capable_class_ids: record.capable_class_ids ?? [],
-    employment_type: (record.employment_type ?? "hijokin") as EmploymentType,
-    job_type: (record.job_type ?? "other") as JobType,
+    employment_type: record.employment_type as EmploymentType | null,
+    job_type: record.job_type as JobType | null,
     has_nursery_teacher_license: record.has_nursery_teacher_license,
     work_availability: {
       start: record.work_availability_start

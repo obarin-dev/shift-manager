@@ -18,14 +18,16 @@ export const JOB_TYPE_OPTIONS: Array<{ value: JobType; label: string }> = [
   { value: "other", label: "その他" },
 ];
 
-export function getEmploymentTypeLabel(type: EmploymentType) {
+export function getEmploymentTypeLabel(type: EmploymentType | null) {
+  if (type === null) return "—";
   return (
     EMPLOYMENT_TYPE_OPTIONS.find((option) => option.value === type)?.label ??
     type
   );
 }
 
-export function getJobTypeLabel(type: JobType) {
+export function getJobTypeLabel(type: JobType | null) {
+  if (type === null) return "—";
   return JOB_TYPE_OPTIONS.find((option) => option.value === type)?.label ?? type;
 }
 
@@ -77,8 +79,8 @@ export type StaffMember = {
   role: string | null;
   roleLabel: string;
   capable_class_ids: string[];
-  employment_type: EmploymentType;
-  job_type: JobType;
+  employment_type: EmploymentType | null;
+  job_type: JobType | null;
   has_nursery_teacher_license: boolean;
   work_availability: StaffShiftTime;
   is_active: boolean;
@@ -137,5 +139,5 @@ export function compareStaffLoginIds(a: string, b: string) {
 }
 
 export function normalizeStaffRoleLabel(staff: StaffMember) {
-  return getJobTypeLabel(staff.job_type);
+  return staff.job_type ? getJobTypeLabel(staff.job_type) : "—";
 }

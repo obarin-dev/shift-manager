@@ -11,6 +11,8 @@ import {
   formatStaffWorkAvailability,
   staffLoginIdToInput,
   getEmploymentTypeLabel,
+  type EmploymentType,
+  type JobType,
   type StaffMember,
 } from "@/lib/staff-helpers";
 import { StaffFormModal, type StaffFormValues } from "@/components/staff/staff-form-modal";
@@ -82,8 +84,8 @@ function staffToFormValues(staff: StaffMember) {
     staff_id: staffLoginIdToInput(staff.staff_id),
     last_name: staff.last_name,
     first_name: staff.first_name,
-    employment_type: staff.employment_type,
-    job_type: staff.job_type,
+    employment_type: (staff.employment_type ?? "") as EmploymentType | "",
+    job_type: (staff.job_type ?? "") as JobType | "",
     has_nursery_teacher_license: staff.has_nursery_teacher_license,
     work_availability: staff.work_availability,
     is_active: staff.is_active,
@@ -519,8 +521,20 @@ export function StaffManagementSettings({
                         {staff.name}
                       </button>
                     </td>
-                    <td>{staff.roleLabel}</td>
-                    <td>{getEmploymentTypeLabel(staff.employment_type)}</td>
+                    <td>
+                      {staff.job_type ? (
+                        staff.roleLabel
+                      ) : (
+                        <span className="is-muted">—</span>
+                      )}
+                    </td>
+                    <td>
+                      {staff.employment_type ? (
+                        getEmploymentTypeLabel(staff.employment_type)
+                      ) : (
+                        <span className="is-muted">—</span>
+                      )}
+                    </td>
                     <td>{staff.has_nursery_teacher_license ? "あり" : "なし"}</td>
                     <td>
                       {formatStaffClassLabels(
