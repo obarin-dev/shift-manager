@@ -305,3 +305,45 @@ export function getRosterCellStaffSlots(staffIds: string[]) {
   return staffIds;
 }
 
+export function timeStringToMinutes(timeStr: string): number {
+  const [h, m] = timeStr.split(":").map(Number);
+  return (h ?? 0) * 60 + (m ?? 0);
+}
+
+/** シフト出勤スタッフの在勤情報。既存行への充填に使う */
+export type StaffPresence = {
+  staffId: string;
+  classroomId: string;
+  startMinutes: number;
+  endMinutes: number;
+};
+
+/** 任意の行リストと在勤情報からセル配置を生成する */
+export function buildAssignmentsFromPresences(
+  rows: Array<{ id: string; kind: string; timeSlot?: string }>,
+  staffPresences: StaffPresence[],
+): RosterCellAssignment[] {
+  const assignments: RosterCellAssignment[] = [];
+
+  for (const row of rows) {
+    if (row.kind !== "schedule" || !row.timeSlot) continue;
+    const rowMin = timeStringToMinutes(row.timeSlot);
+
+    const cellMap = new Map<string, string[]>();
+    for (const presence of staffPresences) {
+      if (rowMin >= presence.startMinutes && rowMin < presence.endMinutes) {
+        const current = cellMap.get(presence.classroomId) ?? [];
+        if (!current.includes(presence.staffId)) {
+          cellMap.set(presence.classroomId, [...current, presence.staffId]);
+        }
+      }
+    }
+
+    for (const [classroomId, staffIds] of cellMap) {
+      assignments.push({ row_id: row.id, classroom_id: classroomId, staff_ids: staffIds });
+    }
+  }
+
+  return assignments;
+}
+

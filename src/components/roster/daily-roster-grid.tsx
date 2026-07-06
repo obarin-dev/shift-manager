@@ -20,6 +20,7 @@ import { RosterStaffSelect } from "@/components/roster/roster-staff-select";
 import { apiFetch } from "@/lib/api-fetch";
 import {
   addDaysToDateKey,
+  buildAssignmentsFromPresences,
   buildMockRosterAssignments,
   buildRosterAssignmentMap,
   buildRosterTimeSlots,
@@ -32,8 +33,8 @@ import {
   toDateKey,
   type RosterCellAssignment,
   type RosterTimeSlot,
+  type StaffPresence,
 } from "@/lib/roster-helpers";
-import { buildAssignmentsFromPresences, type StaffPresence } from "@/lib/roster-draft";
 
 type DailyRosterGridProps = {
   nurseryName?: string;
