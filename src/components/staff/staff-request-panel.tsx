@@ -355,19 +355,23 @@ export function StaffRequestPanel() {
           ) : null}
           {requests.map((request) => (
             <article className="staff-request-item" key={request.id}>
-              <label className="staff-request-check">
-                <input
-                  checked={selectedRequestId === request.id}
-                  disabled={isSaving}
-                  onChange={() =>
-                    setSelectedRequestId((current) =>
-                      current === request.id ? null : request.id,
-                    )
-                  }
-                  type="checkbox"
-                />
-                <span className="sr-only">{request.type}を選択</span>
-              </label>
+              {request.status === "提出済み" ? (
+                <label className="staff-request-check">
+                  <input
+                    checked={selectedRequestId === request.id}
+                    disabled={isSaving}
+                    onChange={() =>
+                      setSelectedRequestId((current) =>
+                        current === request.id ? null : request.id,
+                      )
+                    }
+                    type="checkbox"
+                  />
+                  <span className="sr-only">{request.type}を選択</span>
+                </label>
+              ) : (
+                <span className="staff-request-check" aria-hidden="true" />
+              )}
               <div className="staff-request-date">{formatShortDate(request.date)}</div>
               <div>
                 <strong>{request.type}</strong>
