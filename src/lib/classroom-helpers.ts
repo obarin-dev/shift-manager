@@ -43,7 +43,7 @@ function padTimePart(value: number) {
 }
 
 export function formatTimeLabel(hour: number, minute: number) {
-  return `${hour}:${padTimePart(minute)}`;
+  return `${padTimePart(hour)}:${padTimePart(minute)}`;
 }
 
 export function generateTimeOptions(

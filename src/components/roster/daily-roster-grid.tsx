@@ -300,7 +300,7 @@ export function DailyRosterGrid({
       }
       return next;
     });
-    setSaveMessage("");
+    setSaveMessage("シフト表からたたき台を生成しました。内容を確認して「保存」してください。");
   };
 
   const handleGenerateFromShift = () => {
@@ -308,7 +308,7 @@ export function DailyRosterGrid({
     if (!payload) return;
 
     if (hasExistingRoster) {
-      if (!window.confirm("既存の体制表データを上書きしてシフト表からたたき台を生成しますか？")) {
+      if (!window.confirm("保存済みの体制表データがあります。シフト表から生成したたたき台で上書きしますか？\n\n「保存」ボタンを押すまで DB には反映されません。")) {
         return;
       }
     }
