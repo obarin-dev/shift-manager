@@ -9,6 +9,7 @@ import type { AuthAccount } from "@/lib/user-db";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarIcon } from "@/components/layout/sidebar-icon";
 import { countUnreadNotifications } from "@/lib/notification-db";
+import { countSubmittedRequests } from "@/lib/staff-request-db";
 
 type AdminShellProps = {
   role: UserRole;
@@ -28,17 +29,24 @@ export async function AdminShell({
   scrollPanelLayout = false,
   children,
 }: AdminShellProps) {
-  const unreadCount =
+  const [unreadCount, submittedRequestCount] = await Promise.all([
     account?.userId && role === "staff"
-      ? await countUnreadNotifications(account.userId).catch(() => 0)
-      : 0;
+      ? countUnreadNotifications(account.userId).catch(() => 0)
+      : Promise.resolve(0),
+    account?.nurseryId && role !== "staff"
+      ? countSubmittedRequests(account.nurseryId).catch(() => 0)
+      : Promise.resolve(0),
+  ]);
 
   const allAdminNavItems = ADMIN_NAV_ITEMS.map((item) => ({
     label: item.label,
     href: resolveAdminNavHref(item.path, role),
     isActive: !activeStaffNav && item.key === activeNav,
     icon: <SidebarIcon path={item.iconPath} />,
-    badge: item.key === "home" && role === "staff" ? unreadCount : undefined,
+    badge:
+      item.key === "home" && role === "staff" ? unreadCount
+      : item.key === "requests" && role !== "staff" ? submittedRequestCount
+      : undefined,
   }));
 
   const staffNavItems = [

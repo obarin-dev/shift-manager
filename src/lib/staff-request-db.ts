@@ -87,6 +87,12 @@ function toStaffRequestPayload(row: PrismaStaffRequest): StaffRequestPayload {
   };
 }
 
+export async function countSubmittedRequests(nurseryId: string): Promise<number> {
+  return prisma.staffRequest.count({
+    where: { nursery_id: nurseryId, status: "submitted" },
+  });
+}
+
 export async function listStaffRequests(owner: StaffRequestOwner) {
   const todayBoundary = parseDateToDb(getTodayJst());
 
