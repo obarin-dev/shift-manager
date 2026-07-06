@@ -135,19 +135,21 @@ export function AdminRequestsPanel({ groups: initialGroups }: { groups: AdminSta
                           {formatShortDate(request.date)}
                         </span>
                         <span>{request.type}</span>
-                        <span>{request.time}</span>
-                        {request.status === "承認" ? (
-                          <span className="admin-requests-date-item__approved-row">
+                        <span className="admin-requests-date-item__time-cell">
+                          {request.time}
+                          {request.status === "承認" && (
                             <span className="admin-requests-date-item__approved">✓ 反映済み</span>
-                            <button
-                              className="admin-requests-revoke-button"
-                              disabled={revoking === request.id}
-                              onClick={() => handleRevoke(request.id)}
-                              type="button"
-                            >
-                              {revoking === request.id ? "..." : "取り下げ"}
-                            </button>
-                          </span>
+                          )}
+                        </span>
+                        {request.status === "承認" ? (
+                          <button
+                            className="admin-requests-revoke-button"
+                            disabled={revoking === request.id}
+                            onClick={() => handleRevoke(request.id)}
+                            type="button"
+                          >
+                            {revoking === request.id ? "..." : "取り下げ"}
+                          </button>
                         ) : null}
                         {request.memo ? <small>{request.memo}</small> : null}
                       </li>

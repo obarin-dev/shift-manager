@@ -1192,7 +1192,7 @@ a.home-card:hover {
 
 .admin-requests-date-item {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) auto;
+  grid-template-columns: 64px minmax(0, 1fr) auto auto;
   gap: 8px 12px;
   align-items: baseline;
   border: 1px solid var(--border);
@@ -1216,6 +1216,12 @@ a.home-card:hover {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.admin-requests-date-item__time-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .admin-requests-date-item__approved {
@@ -1248,7 +1254,7 @@ a.home-card:hover {
 }
 
 .admin-requests-date-item small {
-  grid-column: 2 / -1;
+  grid-column: 2 / 4;
   color: var(--muted);
   font-weight: 700;
 }
