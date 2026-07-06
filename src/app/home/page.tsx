@@ -4,8 +4,6 @@ import { TodayScheduleHeader } from "@/components/home/today-schedule-header";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { DailyRosterGrid } from "@/components/roster/daily-roster-grid";
 import { getPrimaryNurseryName } from "@/lib/nursery-db";
-import { listNotifications } from "@/lib/notification-db";
-import { NotificationPanel } from "@/components/home/notification-panel";
 
 export default async function HomePage() {
   const { account } = await requireAuth();
@@ -30,11 +28,6 @@ export default async function HomePage() {
     // DB 未接続時は空表示
   }
 
-  const notifications =
-    role === "staff"
-      ? await listNotifications(account.userId).catch(() => [])
-      : [];
-
   return (
     <AdminShell
       activeNav="home"
@@ -47,9 +40,6 @@ export default async function HomePage() {
         dateLabel={todayLabel}
         items={todayScheduleItems}
       />
-      {notifications.length > 0 ? (
-        <NotificationPanel initialNotifications={notifications} />
-      ) : null}
       <DailyRosterGrid
         className="home-roster-panel"
         nurseryName={nurseryName}
