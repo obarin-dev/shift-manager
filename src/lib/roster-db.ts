@@ -4,12 +4,10 @@ import type { Classroom } from "@/lib/classroom-helpers";
 import { sortClassrooms } from "@/lib/classroom-helpers";
 import { prisma } from "@/lib/prisma";
 import { resolveNurseryId } from "@/lib/nursery-db";
-import { migrateRosterAssignments, type RosterCellAssignment } from "@/lib/roster-helpers";
+import { migrateRosterAssignments, type RosterCellAssignment, type RosterSheetRow } from "@/lib/roster-helpers";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
-export type RosterSheetRow =
-  | { id: string; kind: "schedule"; timeSlot: string }
-  | { id: string; kind: "note"; label: string; notesByClassroom: Record<string, string> };
+export type { RosterSheetRow };
 
 export type RosterSheetPayload = {
   rows: RosterSheetRow[];

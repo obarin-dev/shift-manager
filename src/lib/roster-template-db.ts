@@ -8,7 +8,12 @@ export type { RosterTemplatePayload };
 function isRosterTemplatePayload(value: unknown): value is RosterTemplatePayload {
   if (!value || typeof value !== "object") return false;
   const v = value as Partial<RosterTemplatePayload>;
-  return Array.isArray(v.rows);
+  if (!Array.isArray(v.rows)) return false;
+  return v.rows.every((row) => {
+    if (!row || typeof row !== "object") return false;
+    const r = row as Record<string, unknown>;
+    return typeof r.id === "string" && (r.kind === "schedule" || r.kind === "note");
+  });
 }
 
 function toRosterTemplatePayload(value: Prisma.JsonValue): RosterTemplatePayload | null {

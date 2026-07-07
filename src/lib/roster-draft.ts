@@ -9,9 +9,10 @@ import {
   ROSTER_DEFAULT_START_TIME,
   ROSTER_DEFAULT_END_TIME,
   ROSTER_DEFAULT_STEP_MINUTES,
+  type RosterSheetRow,
   type StaffPresence,
 } from "@/lib/roster-helpers";
-import type { RosterSheetPayload, RosterSheetRow } from "@/lib/roster-db";
+import type { RosterSheetPayload } from "@/lib/roster-db";
 
 export type { StaffPresence };
 

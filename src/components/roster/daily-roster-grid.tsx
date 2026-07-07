@@ -284,6 +284,26 @@ export function DailyRosterGrid({
     });
   };
 
+  const applyTemplateCellSlotCounts = (
+    templateRows: RosterRow[],
+    slotCountsByRowAndClass: Record<string, number>,
+  ) => {
+    setCellSlotCounts((current) => {
+      const next = { ...current };
+      const prefix = `${focusDate}:`;
+      for (const key of Object.keys(next)) {
+        if (key.startsWith(prefix)) delete next[key];
+      }
+      for (const row of templateRows) {
+        for (const classroom of classrooms) {
+          const subKey = `${row.id}:${classroom.id}`;
+          next[`${prefix}${subKey}`] = slotCountsByRowAndClass[subKey] ?? 0;
+        }
+      }
+      return next;
+    });
+  };
+
   const runAiGeneration = () => {
     const scheduleRows = rows
       .filter((row): row is Extract<RosterRow, { kind: "schedule" }> => row.kind === "schedule")
@@ -340,20 +360,7 @@ export function DailyRosterGrid({
         );
         setRows(templateRows);
         setAssignments(newAssignments);
-        setCellSlotCounts((current) => {
-          const next = { ...current };
-          const prefix = `${focusDate}:`;
-          for (const key of Object.keys(next)) {
-            if (key.startsWith(prefix)) delete next[key];
-          }
-          for (const row of templateRows) {
-            for (const classroom of classrooms) {
-              const subKey = `${row.id}:${classroom.id}`;
-              next[`${prefix}${subKey}`] = templateSlotCounts[subKey] ?? 0;
-            }
-          }
-          return next;
-        });
+        applyTemplateCellSlotCounts(templateRows, templateSlotCounts);
         setSaveMessage("テンプレートにシフト表のスタッフを配置しました。内容を確認して「保存」してください。");
       } else if (draftPayload) {
         applyDraftPayload(draftPayload);
@@ -603,6 +610,8 @@ export function DailyRosterGrid({
             setDraftPayload(draftData.draft);
             setStaffPresences(draftData.staffPresences ?? []);
           }
+        } else if (active) {
+          setHasPublishedSchedule(false);
         }
 
         type TemplateData = { rows: RosterRow[]; slotCountsByRowAndClass: Record<string, number> };
@@ -629,20 +638,7 @@ export function DailyRosterGrid({
           });
           if (templateData) {
             setRows(templateData.rows);
-            setCellSlotCounts((current) => {
-              const next = { ...current };
-              const prefix = `${focusDate}:`;
-              for (const key of Object.keys(next)) {
-                if (key.startsWith(prefix)) delete next[key];
-              }
-              for (const row of templateData.rows) {
-                for (const classroom of classrooms) {
-                  const subKey = `${row.id}:${classroom.id}`;
-                  next[`${prefix}${subKey}`] = templateData.slotCountsByRowAndClass[subKey] ?? 0;
-                }
-              }
-              return next;
-            });
+            applyTemplateCellSlotCounts(templateData.rows, templateData.slotCountsByRowAndClass);
           } else {
             setRows(createDefaultRows());
             setCellSlotCounts((current) => {

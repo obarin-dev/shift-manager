@@ -387,17 +387,20 @@ export function buildTemplateAwareAssignments(
     // 第1パス: 優先クラスに枠があれば配置
     for (const presence of activePresences) {
       const cap = capacity.get(presence.classroomId) ?? 0;
-      const current = assigned.get(presence.classroomId)!;
-      if (current.length < cap) {
+      const current = assigned.get(presence.classroomId);
+      if (current !== undefined && current.length < cap) {
         current.push(presence.staffId);
       } else {
         overflow.push(presence);
       }
     }
 
-    // 第2パス: あぶれたスタッフを空き枠のあるクラスへ柔軟配置
+    // 第2パス: あぶれたスタッフを空き枠のあるクラスへ柔軟配置（配置数が少ない順）
     for (const presence of overflow) {
-      for (const classroomId of classroomIds) {
+      const sortedIds = [...classroomIds].sort(
+        (a, b) => (assigned.get(a)?.length ?? 0) - (assigned.get(b)?.length ?? 0),
+      );
+      for (const classroomId of sortedIds) {
         const cap = capacity.get(classroomId) ?? 0;
         const current = assigned.get(classroomId)!;
         if (current.length < cap) {
