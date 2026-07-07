@@ -17,7 +17,7 @@ function createPrismaClient() {
 
 function isPrismaClientReady(client: PrismaClient | undefined): client is PrismaClient {
   return Boolean(
-    client && "shiftSchedule" in client && "rosterSheet" in client && "staffRequest" in client && "classroomStaff" in client,
+    client && "shiftSchedule" in client && "rosterSheet" in client && "rosterTemplate" in client && "staffRequest" in client && "classroomStaff" in client,
   );
 }
 

@@ -7,6 +7,15 @@ import { getStaffSurname } from "@/lib/shift-helpers";
 
 export type RosterTimeSlot = string;
 
+export type RosterSheetRow =
+  | { id: string; kind: "schedule"; timeSlot: RosterTimeSlot }
+  | { id: string; kind: "note"; label: string; notesByClassroom: Record<string, string> };
+
+export type RosterTemplatePayload = {
+  rows: RosterSheetRow[];
+  slotCountsByRowAndClass: Record<string, number>;
+};
+
 export type RosterCellAssignment = {
   row_id: string;
   classroom_id: string;
@@ -303,5 +312,111 @@ export function getRosterCellStaffSlots(staffIds: string[]) {
   }
 
   return staffIds;
+}
+
+export function timeStringToMinutes(timeStr: string): number {
+  const [h, m] = timeStr.split(":").map(Number);
+  return (h ?? 0) * 60 + (m ?? 0);
+}
+
+/** シフト出勤スタッフの在勤情報。既存行への充填に使う */
+export type StaffPresence = {
+  staffId: string;
+  classroomId: string;
+  startMinutes: number;
+  endMinutes: number;
+};
+
+/** 任意の行リストと在勤情報からセル配置を生成する */
+export function buildAssignmentsFromPresences(
+  rows: Array<{ id: string; kind: string; timeSlot?: string }>,
+  staffPresences: StaffPresence[],
+): RosterCellAssignment[] {
+  const assignments: RosterCellAssignment[] = [];
+
+  for (const row of rows) {
+    if (row.kind !== "schedule" || !row.timeSlot) continue;
+    const rowMin = timeStringToMinutes(row.timeSlot);
+
+    const cellMap = new Map<string, string[]>();
+    for (const presence of staffPresences) {
+      if (rowMin >= presence.startMinutes && rowMin < presence.endMinutes) {
+        const current = cellMap.get(presence.classroomId) ?? [];
+        if (!current.includes(presence.staffId)) {
+          cellMap.set(presence.classroomId, [...current, presence.staffId]);
+        }
+      }
+    }
+
+    for (const [classroomId, staffIds] of cellMap) {
+      assignments.push({ row_id: row.id, classroom_id: classroomId, staff_ids: staffIds });
+    }
+  }
+
+  return assignments;
+}
+
+/**
+ * テンプレートの枠数を権威として、在勤スタッフを行ごとに適切なクラスに配置する。
+ * staffPresences.classroomId は優先クラスとして扱い、枠がなければ他クラスに柔軟に移動する。
+ */
+export function buildTemplateAwareAssignments(
+  rows: Array<{ id: string; kind: string; timeSlot?: string }>,
+  staffPresences: StaffPresence[],
+  slotCountsByRowAndClass: Record<string, number>,
+  classroomIds: string[],
+): RosterCellAssignment[] {
+  const assignments: RosterCellAssignment[] = [];
+
+  for (const row of rows) {
+    if (row.kind !== "schedule" || !row.timeSlot) continue;
+    const rowMin = timeStringToMinutes(row.timeSlot);
+
+    const activePresences = staffPresences.filter(
+      (p) => rowMin >= p.startMinutes && rowMin < p.endMinutes,
+    );
+    if (activePresences.length === 0) continue;
+
+    const capacity = new Map<string, number>(
+      classroomIds.map((id) => [id, slotCountsByRowAndClass[`${row.id}:${id}`] ?? 0]),
+    );
+    const assigned = new Map<string, string[]>(classroomIds.map((id) => [id, []]));
+
+    const overflow: StaffPresence[] = [];
+
+    // 第1パス: 優先クラスに枠があれば配置
+    for (const presence of activePresences) {
+      const cap = capacity.get(presence.classroomId) ?? 0;
+      const current = assigned.get(presence.classroomId);
+      if (current !== undefined && current.length < cap) {
+        current.push(presence.staffId);
+      } else {
+        overflow.push(presence);
+      }
+    }
+
+    // 第2パス: あぶれたスタッフを空き枠のあるクラスへ柔軟配置（配置数が少ない順）
+    for (const presence of overflow) {
+      const sortedIds = [...classroomIds].sort(
+        (a, b) => (assigned.get(a)?.length ?? 0) - (assigned.get(b)?.length ?? 0),
+      );
+      for (const classroomId of sortedIds) {
+        const cap = capacity.get(classroomId) ?? 0;
+        const current = assigned.get(classroomId)!;
+        if (current.length < cap) {
+          current.push(presence.staffId);
+          break;
+        }
+      }
+    }
+
+    for (const [classroomId, staffIds] of assigned) {
+      if (staffIds.length > 0) {
+        assignments.push({ row_id: row.id, classroom_id: classroomId, staff_ids: staffIds });
+      }
+    }
+  }
+
+  return assignments;
 }
 

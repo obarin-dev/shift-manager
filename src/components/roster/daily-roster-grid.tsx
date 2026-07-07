@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   useEffect,
   useMemo,
@@ -20,6 +21,7 @@ import { RosterStaffSelect } from "@/components/roster/roster-staff-select";
 import { apiFetch } from "@/lib/api-fetch";
 import {
   addDaysToDateKey,
+  buildTemplateAwareAssignments,
   buildMockRosterAssignments,
   buildRosterAssignmentMap,
   buildRosterTimeSlots,
@@ -32,6 +34,7 @@ import {
   toDateKey,
   type RosterCellAssignment,
   type RosterTimeSlot,
+  type StaffPresence,
 } from "@/lib/roster-helpers";
 
 type DailyRosterGridProps = {
@@ -140,6 +143,10 @@ export function DailyRosterGrid({
   const [saveMessage, setSaveMessage] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingRoster, setIsLoadingRoster] = useState(false);
+  const [hasPublishedSchedule, setHasPublishedSchedule] = useState<boolean | null>(null);
+  const [draftPayload, setDraftPayload] = useState<RosterPersistencePayload | null>(null);
+  const [staffPresences, setStaffPresences] = useState<StaffPresence[]>([]);
+  const [hasExistingRoster, setHasExistingRoster] = useState(false);
   const [todayEvents, setTodayEvents] = useState<NurseryCalendarEntry[]>([]);
   const columnResizeState = useRef<{ classroomId: string; startX: number; startWidth: number } | null>(null);
   const rowResizeState = useRef<{ rowId: string; startY: number; startHeight: number } | null>(null);
@@ -276,11 +283,96 @@ export function DailyRosterGrid({
     });
   };
 
+  const applyTemplateCellSlotCounts = (
+    templateRows: RosterRow[],
+    slotCountsByRowAndClass: Record<string, number>,
+  ) => {
+    setCellSlotCounts((current) => {
+      const next = { ...current };
+      const prefix = `${focusDate}:`;
+      for (const key of Object.keys(next)) {
+        if (key.startsWith(prefix)) delete next[key];
+      }
+      for (const row of templateRows) {
+        for (const classroom of classrooms) {
+          const subKey = `${row.id}:${classroom.id}`;
+          next[`${prefix}${subKey}`] = slotCountsByRowAndClass[subKey] ?? 0;
+        }
+      }
+      return next;
+    });
+  };
+
   const runAiGeneration = () => {
     const scheduleRows = rows
       .filter((row): row is Extract<RosterRow, { kind: "schedule" }> => row.kind === "schedule")
       .map((row) => ({ id: row.id, timeSlot: row.timeSlot }));
     setAssignments(buildMockRosterAssignments(focusDate, scheduleRows, classrooms));
+  };
+
+  const applyDraftPayload = (payload: RosterPersistencePayload) => {
+    setRows(payload.rows);
+    setAssignments(migrateRosterAssignments(payload.rows, payload.assignments, classrooms));
+    setHasExistingRoster(false);
+    setCellSlotCounts((current) => {
+      const next = { ...current };
+      const prefix = `${focusDate}:`;
+      for (const key of Object.keys(next)) {
+        if (key.startsWith(prefix)) {
+          delete next[key];
+        }
+      }
+      return next;
+    });
+    setSaveMessage("シフト表からたたき台を生成しました。内容を確認して「保存」してください。");
+  };
+
+  const handleGenerateFromShift = async () => {
+    if (hasPublishedSchedule !== true) return;
+
+    if (hasExistingRoster) {
+      if (!window.confirm("現在の体制表をシフト表から生成した内容で上書きします。\n\n「保存」ボタンを押すまで DB には反映されません。")) {
+        return;
+      }
+    }
+
+    const capturedDate = focusDate;
+
+    try {
+      const templateRes = await apiFetch("/api/roster/template", { cache: "no-store" });
+
+      if (focusDateRef.current !== capturedDate) return;
+      let templateRows: RosterRow[] | null = null;
+      let templateSlotCounts: Record<string, number> = {};
+      if (templateRes.ok) {
+        const body = (await templateRes.json()) as {
+          data: { rows: RosterRow[]; slotCountsByRowAndClass: Record<string, number> } | null;
+        };
+        if (body.data) {
+          templateRows = body.data.rows;
+          templateSlotCounts = body.data.slotCountsByRowAndClass ?? {};
+        }
+      }
+
+      if (templateRows) {
+        const newAssignments = buildTemplateAwareAssignments(
+          templateRows,
+          staffPresences,
+          templateSlotCounts,
+          classrooms.map((c) => c.id),
+        );
+        setRows(templateRows);
+        setAssignments(newAssignments);
+        applyTemplateCellSlotCounts(templateRows, templateSlotCounts);
+        setSaveMessage("テンプレートにシフト表のスタッフを配置しました。内容を確認して「保存」してください。");
+      } else if (draftPayload) {
+        applyDraftPayload(draftPayload);
+      } else {
+        setSaveMessage("テンプレートも公開済みシフト表のデータもありません。");
+      }
+    } catch {
+      setSaveMessage("生成に失敗しました");
+    }
   };
 
   const buildPersistencePayload = (): RosterPersistencePayload => {
@@ -495,21 +587,49 @@ export function DailyRosterGrid({
     const loadRoster = async () => {
       setIsLoadingRoster(true);
       setSaveMessage("");
+      setHasPublishedSchedule(null);
+      setDraftPayload(null);
+      setStaffPresences([]);
       try {
-        const response = await apiFetch(`/api/roster?date=${focusDate}`, {
-          method: "GET",
-          cache: "no-store",
-        });
-        if (!response.ok) {
+        const [rosterResponse, draftResponse, templateResponse] = await Promise.all([
+          apiFetch(`/api/roster?date=${focusDate}`, { method: "GET", cache: "no-store" }),
+          apiFetch(`/api/roster/draft?date=${focusDate}`, { method: "GET", cache: "no-store" }),
+          apiFetch("/api/roster/template", { cache: "no-store" }),
+        ]);
+
+        if (!rosterResponse.ok) {
           throw new Error("load_failed");
         }
-        const data = (await response.json()) as { data: RosterPersistencePayload | null };
+        const data = (await rosterResponse.json()) as { data: RosterPersistencePayload | null };
+
+        if (draftResponse.ok) {
+          const draftData = (await draftResponse.json()) as {
+            hasPublishedSchedule: boolean;
+            draft: RosterPersistencePayload | null;
+            staffPresences: StaffPresence[];
+          };
+          if (active) {
+            setHasPublishedSchedule(draftData.hasPublishedSchedule);
+            setDraftPayload(draftData.draft);
+            setStaffPresences(draftData.staffPresences ?? []);
+          }
+        } else if (active) {
+          setHasPublishedSchedule(false);
+        }
+
+        type TemplateData = { rows: RosterRow[]; slotCountsByRowAndClass: Record<string, number> };
+        let templateData: TemplateData | null = null;
+        if (templateResponse.ok) {
+          const tbody = (await templateResponse.json()) as { data: TemplateData | null };
+          templateData = tbody.data;
+        }
+
         if (!active) {
           return;
         }
 
         if (!data.data) {
-          setRows(createDefaultRows());
+          setHasExistingRoster(false);
           setAssignments([]);
           setRowHeights(loadRowHeightsFromStorage(focusDate));
           setDailyChildCounts((current) => {
@@ -519,19 +639,24 @@ export function DailyRosterGrid({
             }
             return next;
           });
-          setCellSlotCounts((current) => {
-            const next = { ...current };
-            const prefix = `${focusDate}:`;
-            for (const key of Object.keys(next)) {
-              if (key.startsWith(prefix)) {
-                delete next[key];
+          if (templateData) {
+            setRows(templateData.rows);
+            applyTemplateCellSlotCounts(templateData.rows, templateData.slotCountsByRowAndClass);
+          } else {
+            setRows(createDefaultRows());
+            setCellSlotCounts((current) => {
+              const next = { ...current };
+              const prefix = `${focusDate}:`;
+              for (const key of Object.keys(next)) {
+                if (key.startsWith(prefix)) delete next[key];
               }
-            }
-            return next;
-          });
+              return next;
+            });
+          }
           return;
         }
 
+        setHasExistingRoster(true);
         setRows(data.data.rows);
         setAssignments(migrateRosterAssignments(data.data.rows, data.data.assignments, classrooms));
         setRowHeights(loadRowHeightsFromStorage(focusDate));
@@ -636,6 +761,29 @@ export function DailyRosterGrid({
               >
                 AIで作成
               </button>
+              <button
+                className="secondary-button secondary-button--compact"
+                type="button"
+                disabled={hasPublishedSchedule !== true}
+                title={
+                  hasPublishedSchedule === false
+                    ? "この月の確認中・確定済み・公開済みシフト表がありません"
+                    : hasPublishedSchedule === null
+                      ? "確認中..."
+                      : "テンプレートにシフト表のスタッフを配置します"
+                }
+                onClick={() => void handleGenerateFromShift()}
+              >
+                シフト表から生成
+              </button>
+              <Link
+                href="/roster/template"
+                className="secondary-button secondary-button--compact"
+                style={{ textDecoration: "none" }}
+                title="毎日使い回すテンプレートを編集します"
+              >
+                テンプレート編集
+              </Link>
               <button
                 className="secondary-button secondary-button--compact"
                 type="button"
