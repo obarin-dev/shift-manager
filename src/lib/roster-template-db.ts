@@ -5,15 +5,20 @@ import type { RosterTemplatePayload } from "@/lib/roster-helpers";
 
 export type { RosterTemplatePayload };
 
-function isRosterTemplatePayload(value: unknown): value is RosterTemplatePayload {
+export function isRosterTemplatePayload(value: unknown): value is RosterTemplatePayload {
   if (!value || typeof value !== "object") return false;
   const v = value as Partial<RosterTemplatePayload>;
   if (!Array.isArray(v.rows)) return false;
-  return v.rows.every((row) => {
+  if (!v.rows.every((row) => {
     if (!row || typeof row !== "object") return false;
     const r = row as Record<string, unknown>;
     return typeof r.id === "string" && (r.kind === "schedule" || r.kind === "note");
-  });
+  })) return false;
+  if (v.slotCountsByRowAndClass !== undefined) {
+    if (typeof v.slotCountsByRowAndClass !== "object" || Array.isArray(v.slotCountsByRowAndClass)) return false;
+    if (!Object.values(v.slotCountsByRowAndClass).every((n) => typeof n === "number")) return false;
+  }
+  return true;
 }
 
 function toRosterTemplatePayload(value: Prisma.JsonValue): RosterTemplatePayload | null {

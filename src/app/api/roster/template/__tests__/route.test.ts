@@ -10,6 +10,11 @@ vi.mock("@/lib/auth-session", async (importOriginal) => {
 vi.mock("@/lib/roster-template-db", () => ({
   getRosterTemplate: vi.fn(),
   saveRosterTemplate: vi.fn(),
+  isRosterTemplatePayload: vi.fn((v: unknown) => {
+    if (!v || typeof v !== "object") return false;
+    const obj = v as Record<string, unknown>;
+    return Array.isArray(obj.rows);
+  }),
 }));
 
 import { getSession } from "@/lib/auth-session";

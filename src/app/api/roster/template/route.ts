@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth-session";
 import { forbiddenResponse, unauthorizedResponse } from "@/lib/api-auth";
-import { getRosterTemplate, saveRosterTemplate, type RosterTemplatePayload } from "@/lib/roster-template-db";
+import { getRosterTemplate, saveRosterTemplate, isRosterTemplatePayload } from "@/lib/roster-template-db";
 
 export const runtime = "nodejs";
 
@@ -31,15 +31,14 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
   }
 
-  const payload = body as Partial<RosterTemplatePayload>;
-  if (!Array.isArray(payload?.rows)) {
+  if (!isRosterTemplatePayload(body)) {
     return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
   }
 
   try {
     await saveRosterTemplate({
-      rows: payload.rows,
-      slotCountsByRowAndClass: payload.slotCountsByRowAndClass ?? {},
+      rows: body.rows,
+      slotCountsByRowAndClass: body.slotCountsByRowAndClass ?? {},
     });
     return NextResponse.json({ ok: true });
   } catch (error) {

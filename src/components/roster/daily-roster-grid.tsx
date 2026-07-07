@@ -21,7 +21,6 @@ import { RosterStaffSelect } from "@/components/roster/roster-staff-select";
 import { apiFetch } from "@/lib/api-fetch";
 import {
   addDaysToDateKey,
-  buildAssignmentsFromPresences,
   buildTemplateAwareAssignments,
   buildMockRosterAssignments,
   buildRosterAssignmentMap,
@@ -337,8 +336,12 @@ export function DailyRosterGrid({
       }
     }
 
+    const capturedDate = focusDate;
+
     try {
       const templateRes = await apiFetch("/api/roster/template", { cache: "no-store" });
+
+      if (focusDateRef.current !== capturedDate) return;
       let templateRows: RosterRow[] | null = null;
       let templateSlotCounts: Record<string, number> = {};
       if (templateRes.ok) {
