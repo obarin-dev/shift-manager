@@ -44,7 +44,8 @@ export async function generateRosterDraftFromShift(
     select: { id: true, status: true },
   });
 
-  if (!schedule || schedule.status !== "published") {
+  const USABLE_STATUSES = ["published", "confirmed", "checking"] as const;
+  if (!schedule || !(USABLE_STATUSES as readonly string[]).includes(schedule.status)) {
     return { hasPublishedSchedule: false, draft: null, staffPresences: [] };
   }
 
@@ -78,8 +79,12 @@ export async function generateRosterDraftFromShift(
     }
   }
 
+  const classroomIds = classrooms.map((c) => c.id);
+
   // 在勤情報を構築（既存行への充填で行のステップ幅に依存しない）
   const staffPresences: StaffPresence[] = [];
+
+  // Phase 1: ClassroomStaff 登録済みスタッフを担当クラスへ配置
   for (const slot of slots) {
     if (!slot.shift_type) continue;
     const classroomId = staffClassroomMap.get(slot.staff_id);
@@ -90,6 +95,43 @@ export async function generateRosterDraftFromShift(
       startMinutes: dbTimeToMinutes(slot.shift_type.start_time),
       endMinutes: dbTimeToMinutes(slot.shift_type.end_time),
     });
+  }
+
+  // Phase 2: 未所属スタッフを空きの多いクラスへ柔軟配置
+  if (classroomIds.length > 0) {
+    for (const slot of slots) {
+      if (!slot.shift_type) continue;
+      if (staffClassroomMap.has(slot.staff_id)) continue;
+
+      const startMin = dbTimeToMinutes(slot.shift_type.start_time);
+      const endMin = dbTimeToMinutes(slot.shift_type.end_time);
+
+      // この時間帯に各クラスへ何人配置済みかカウント
+      const staffCountByClassroom = new Map<string, number>(classroomIds.map((id) => [id, 0]));
+      for (const p of staffPresences) {
+        if (p.startMinutes < endMin && p.endMinutes > startMin) {
+          staffCountByClassroom.set(p.classroomId, (staffCountByClassroom.get(p.classroomId) ?? 0) + 1);
+        }
+      }
+
+      // 最も人数が少ないクラスを選ぶ
+      let targetClassroomId = classroomIds[0]!;
+      let minCount = staffCountByClassroom.get(targetClassroomId) ?? 0;
+      for (const cId of classroomIds) {
+        const count = staffCountByClassroom.get(cId) ?? 0;
+        if (count < minCount) {
+          minCount = count;
+          targetClassroomId = cId;
+        }
+      }
+
+      staffPresences.push({
+        staffId: slot.staff_id,
+        classroomId: targetClassroomId,
+        startMinutes: startMin,
+        endMinutes: endMin,
+      });
+    }
   }
 
   // 保存データがない場合向けのデフォルト行 + 配置（初回セットアップ用）

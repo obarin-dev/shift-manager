@@ -7,6 +7,15 @@ import { getStaffSurname } from "@/lib/shift-helpers";
 
 export type RosterTimeSlot = string;
 
+export type RosterSheetRow =
+  | { id: string; kind: "schedule"; timeSlot: RosterTimeSlot }
+  | { id: string; kind: "note"; label: string; notesByClassroom: Record<string, string> };
+
+export type RosterTemplatePayload = {
+  rows: RosterSheetRow[];
+  slotCountsByRowAndClass: Record<string, number>;
+};
+
 export type RosterCellAssignment = {
   row_id: string;
   classroom_id: string;
@@ -341,6 +350,67 @@ export function buildAssignmentsFromPresences(
 
     for (const [classroomId, staffIds] of cellMap) {
       assignments.push({ row_id: row.id, classroom_id: classroomId, staff_ids: staffIds });
+    }
+  }
+
+  return assignments;
+}
+
+/**
+ * テンプレートの枠数を権威として、在勤スタッフを行ごとに適切なクラスに配置する。
+ * staffPresences.classroomId は優先クラスとして扱い、枠がなければ他クラスに柔軟に移動する。
+ */
+export function buildTemplateAwareAssignments(
+  rows: Array<{ id: string; kind: string; timeSlot?: string }>,
+  staffPresences: StaffPresence[],
+  slotCountsByRowAndClass: Record<string, number>,
+  classroomIds: string[],
+): RosterCellAssignment[] {
+  const assignments: RosterCellAssignment[] = [];
+
+  for (const row of rows) {
+    if (row.kind !== "schedule" || !row.timeSlot) continue;
+    const rowMin = timeStringToMinutes(row.timeSlot);
+
+    const activePresences = staffPresences.filter(
+      (p) => rowMin >= p.startMinutes && rowMin < p.endMinutes,
+    );
+    if (activePresences.length === 0) continue;
+
+    const capacity = new Map<string, number>(
+      classroomIds.map((id) => [id, slotCountsByRowAndClass[`${row.id}:${id}`] ?? 0]),
+    );
+    const assigned = new Map<string, string[]>(classroomIds.map((id) => [id, []]));
+
+    const overflow: StaffPresence[] = [];
+
+    // 第1パス: 優先クラスに枠があれば配置
+    for (const presence of activePresences) {
+      const cap = capacity.get(presence.classroomId) ?? 0;
+      const current = assigned.get(presence.classroomId)!;
+      if (current.length < cap) {
+        current.push(presence.staffId);
+      } else {
+        overflow.push(presence);
+      }
+    }
+
+    // 第2パス: あぶれたスタッフを空き枠のあるクラスへ柔軟配置
+    for (const presence of overflow) {
+      for (const classroomId of classroomIds) {
+        const cap = capacity.get(classroomId) ?? 0;
+        const current = assigned.get(classroomId)!;
+        if (current.length < cap) {
+          current.push(presence.staffId);
+          break;
+        }
+      }
+    }
+
+    for (const [classroomId, staffIds] of assigned) {
+      if (staffIds.length > 0) {
+        assignments.push({ row_id: row.id, classroom_id: classroomId, staff_ids: staffIds });
+      }
     }
   }
 

@@ -108,6 +108,7 @@ model Nursery {
   calendar_entries         CalendarEntry[]
   shift_schedules          ShiftSchedule[]
   roster_sheets            RosterSheet[]
+  roster_template          RosterTemplate?
   staff_requests           StaffRequest[]
   invitations              Invitation[]
   notifications            Notification[]
@@ -265,6 +266,15 @@ model RosterSheet {
 
   @@unique([nursery_id, entry_date])
   @@index([nursery_id])
+}
+
+model RosterTemplate {
+  id         String   @id @default(cuid())
+  nursery_id String   @unique
+  nursery    Nursery  @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  payload    Json
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Invitation {

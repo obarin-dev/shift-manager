@@ -393,6 +393,7 @@ export const ModelName = {
   ShiftSchedule: 'ShiftSchedule',
   ShiftSlot: 'ShiftSlot',
   RosterSheet: 'RosterSheet',
+  RosterTemplate: 'RosterTemplate',
   Invitation: 'Invitation',
   StaffRequest: 'StaffRequest',
   Notification: 'Notification'
@@ -411,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "nursery" | "calendarEntry" | "shiftType" | "classroom" | "classroomStaff" | "staff" | "shiftSchedule" | "shiftSlot" | "rosterSheet" | "invitation" | "staffRequest" | "notification"
+    modelProps: "nursery" | "calendarEntry" | "shiftType" | "classroom" | "classroomStaff" | "staff" | "shiftSchedule" | "shiftSlot" | "rosterSheet" | "rosterTemplate" | "invitation" | "staffRequest" | "notification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1081,6 +1082,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RosterTemplate: {
+      payload: Prisma.$RosterTemplatePayload<ExtArgs>
+      fields: Prisma.RosterTemplateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RosterTemplateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RosterTemplateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>
+        }
+        findFirst: {
+          args: Prisma.RosterTemplateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RosterTemplateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>
+        }
+        findMany: {
+          args: Prisma.RosterTemplateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>[]
+        }
+        create: {
+          args: Prisma.RosterTemplateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>
+        }
+        createMany: {
+          args: Prisma.RosterTemplateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RosterTemplateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>[]
+        }
+        delete: {
+          args: Prisma.RosterTemplateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>
+        }
+        update: {
+          args: Prisma.RosterTemplateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>
+        }
+        deleteMany: {
+          args: Prisma.RosterTemplateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RosterTemplateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RosterTemplateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>[]
+        }
+        upsert: {
+          args: Prisma.RosterTemplateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RosterTemplatePayload>
+        }
+        aggregate: {
+          args: Prisma.RosterTemplateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRosterTemplate>
+        }
+        groupBy: {
+          args: Prisma.RosterTemplateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RosterTemplateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RosterTemplateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RosterTemplateCountAggregateOutputType> | number
+        }
+      }
+    }
     Invitation: {
       payload: Prisma.$InvitationPayload<ExtArgs>
       fields: Prisma.InvitationFieldRefs
@@ -1488,6 +1563,17 @@ export const RosterSheetScalarFieldEnum = {
 } as const
 
 export type RosterSheetScalarFieldEnum = (typeof RosterSheetScalarFieldEnum)[keyof typeof RosterSheetScalarFieldEnum]
+
+
+export const RosterTemplateScalarFieldEnum = {
+  id: 'id',
+  nursery_id: 'nursery_id',
+  payload: 'payload',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type RosterTemplateScalarFieldEnum = (typeof RosterTemplateScalarFieldEnum)[keyof typeof RosterTemplateScalarFieldEnum]
 
 
 export const InvitationScalarFieldEnum = {
@@ -1940,6 +2026,7 @@ export type GlobalOmitConfig = {
   shiftSchedule?: Prisma.ShiftScheduleOmit
   shiftSlot?: Prisma.ShiftSlotOmit
   rosterSheet?: Prisma.RosterSheetOmit
+  rosterTemplate?: Prisma.RosterTemplateOmit
   invitation?: Prisma.InvitationOmit
   staffRequest?: Prisma.StaffRequestOmit
   notification?: Prisma.NotificationOmit

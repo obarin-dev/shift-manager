@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   useEffect,
   useMemo,
@@ -21,6 +22,7 @@ import { apiFetch } from "@/lib/api-fetch";
 import {
   addDaysToDateKey,
   buildAssignmentsFromPresences,
+  buildTemplateAwareAssignments,
   buildMockRosterAssignments,
   buildRosterAssignmentMap,
   buildRosterTimeSlots,
@@ -306,21 +308,60 @@ export function DailyRosterGrid({
     setSaveMessage("シフト表からたたき台を生成しました。内容を確認して「保存」してください。");
   };
 
-  const handleGenerateFromShift = () => {
+  const handleGenerateFromShift = async () => {
     if (hasPublishedSchedule !== true) return;
 
     if (hasExistingRoster) {
-      // 保存済み行・枠を保持してスタッフだけ充填
-      if (!window.confirm("現在の配置をシフト表のスタッフで上書きします。行・枠の構造は保持されます。\n\n「保存」ボタンを押すまで DB には反映されません。")) {
+      if (!window.confirm("現在の体制表をシフト表から生成した内容で上書きします。\n\n「保存」ボタンを押すまで DB には反映されません。")) {
         return;
       }
-      const newAssignments = buildAssignmentsFromPresences(rows, staffPresences);
-      setAssignments(newAssignments);
-      setSaveMessage("シフト表からスタッフを配置しました。内容を確認して「保存」してください。");
-    } else {
-      // 保存データなし → デフォルト行で新規作成
-      if (!draftPayload) return;
-      applyDraftPayload(draftPayload);
+    }
+
+    try {
+      const templateRes = await apiFetch("/api/roster/template", { cache: "no-store" });
+      let templateRows: RosterRow[] | null = null;
+      let templateSlotCounts: Record<string, number> = {};
+      if (templateRes.ok) {
+        const body = (await templateRes.json()) as {
+          data: { rows: RosterRow[]; slotCountsByRowAndClass: Record<string, number> } | null;
+        };
+        if (body.data) {
+          templateRows = body.data.rows;
+          templateSlotCounts = body.data.slotCountsByRowAndClass ?? {};
+        }
+      }
+
+      if (templateRows) {
+        const newAssignments = buildTemplateAwareAssignments(
+          templateRows,
+          staffPresences,
+          templateSlotCounts,
+          classrooms.map((c) => c.id),
+        );
+        setRows(templateRows);
+        setAssignments(newAssignments);
+        setCellSlotCounts((current) => {
+          const next = { ...current };
+          const prefix = `${focusDate}:`;
+          for (const key of Object.keys(next)) {
+            if (key.startsWith(prefix)) delete next[key];
+          }
+          for (const row of templateRows) {
+            for (const classroom of classrooms) {
+              const subKey = `${row.id}:${classroom.id}`;
+              next[`${prefix}${subKey}`] = templateSlotCounts[subKey] ?? 0;
+            }
+          }
+          return next;
+        });
+        setSaveMessage("テンプレートにシフト表のスタッフを配置しました。内容を確認して「保存」してください。");
+      } else if (draftPayload) {
+        applyDraftPayload(draftPayload);
+      } else {
+        setSaveMessage("テンプレートも公開済みシフト表のデータもありません。");
+      }
+    } catch {
+      setSaveMessage("生成に失敗しました");
     }
   };
 
@@ -540,9 +581,10 @@ export function DailyRosterGrid({
       setDraftPayload(null);
       setStaffPresences([]);
       try {
-        const [rosterResponse, draftResponse] = await Promise.all([
+        const [rosterResponse, draftResponse, templateResponse] = await Promise.all([
           apiFetch(`/api/roster?date=${focusDate}`, { method: "GET", cache: "no-store" }),
           apiFetch(`/api/roster/draft?date=${focusDate}`, { method: "GET", cache: "no-store" }),
+          apiFetch("/api/roster/template", { cache: "no-store" }),
         ]);
 
         if (!rosterResponse.ok) {
@@ -563,13 +605,19 @@ export function DailyRosterGrid({
           }
         }
 
+        type TemplateData = { rows: RosterRow[]; slotCountsByRowAndClass: Record<string, number> };
+        let templateData: TemplateData | null = null;
+        if (templateResponse.ok) {
+          const tbody = (await templateResponse.json()) as { data: TemplateData | null };
+          templateData = tbody.data;
+        }
+
         if (!active) {
           return;
         }
 
         if (!data.data) {
           setHasExistingRoster(false);
-          setRows(createDefaultRows());
           setAssignments([]);
           setRowHeights(loadRowHeightsFromStorage(focusDate));
           setDailyChildCounts((current) => {
@@ -579,16 +627,33 @@ export function DailyRosterGrid({
             }
             return next;
           });
-          setCellSlotCounts((current) => {
-            const next = { ...current };
-            const prefix = `${focusDate}:`;
-            for (const key of Object.keys(next)) {
-              if (key.startsWith(prefix)) {
-                delete next[key];
+          if (templateData) {
+            setRows(templateData.rows);
+            setCellSlotCounts((current) => {
+              const next = { ...current };
+              const prefix = `${focusDate}:`;
+              for (const key of Object.keys(next)) {
+                if (key.startsWith(prefix)) delete next[key];
               }
-            }
-            return next;
-          });
+              for (const row of templateData.rows) {
+                for (const classroom of classrooms) {
+                  const subKey = `${row.id}:${classroom.id}`;
+                  next[`${prefix}${subKey}`] = templateData.slotCountsByRowAndClass[subKey] ?? 0;
+                }
+              }
+              return next;
+            });
+          } else {
+            setRows(createDefaultRows());
+            setCellSlotCounts((current) => {
+              const next = { ...current };
+              const prefix = `${focusDate}:`;
+              for (const key of Object.keys(next)) {
+                if (key.startsWith(prefix)) delete next[key];
+              }
+              return next;
+            });
+          }
           return;
         }
 
@@ -703,15 +768,23 @@ export function DailyRosterGrid({
                 disabled={hasPublishedSchedule !== true}
                 title={
                   hasPublishedSchedule === false
-                    ? "この日の公開済みシフト表がありません"
+                    ? "この月の確認中・確定済み・公開済みシフト表がありません"
                     : hasPublishedSchedule === null
                       ? "確認中..."
-                      : "公開済みシフト表からたたき台を生成します"
+                      : "テンプレートにシフト表のスタッフを配置します"
                 }
-                onClick={handleGenerateFromShift}
+                onClick={() => void handleGenerateFromShift()}
               >
                 シフト表から生成
               </button>
+              <Link
+                href="/roster/template"
+                className="secondary-button secondary-button--compact"
+                style={{ textDecoration: "none" }}
+                title="毎日使い回すテンプレートを編集します"
+              >
+                テンプレート編集
+              </Link>
               <button
                 className="secondary-button secondary-button--compact"
                 type="button"

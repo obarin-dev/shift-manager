@@ -63,6 +63,11 @@ export type ShiftSlot = Prisma.ShiftSlotModel
  */
 export type RosterSheet = Prisma.RosterSheetModel
 /**
+ * Model RosterTemplate
+ * 
+ */
+export type RosterTemplate = Prisma.RosterTemplateModel
+/**
  * Model Invitation
  * 
  */
