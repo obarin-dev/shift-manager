@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { SessionData } from "@/lib/auth-session";
+import type { RosterDraftResult } from "@/lib/roster-draft";
 
 vi.mock("@/lib/auth-session", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/auth-session")>();
@@ -28,7 +29,7 @@ const STAFF_SESSION: SessionData = {
   email: "staff@example.com",
 };
 
-const DRAFT_RESULT = {
+const DRAFT_RESULT: RosterDraftResult = {
   hasPublishedSchedule: true,
   draft: {
     rows: [{ id: "row-1", kind: "schedule", timeSlot: "09:00" }],
