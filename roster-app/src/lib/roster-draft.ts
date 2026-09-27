@@ -1,8 +1,4 @@
-import { prisma } from "@/lib/prisma";
-import { resolveNurseryId } from "@/lib/nursery-db";
-import { listClassrooms } from "@/lib/classroom-db";
-import { sortClassrooms } from "@/lib/classroom-helpers";
-import { parseDateToDb } from "@/lib/nursery-time";
+import { getClassroomsForRoster, getConfirmedShiftPresences } from "@/lib/roster-boundary";
 import {
   buildAssignmentsFromPresences,
   buildRosterTimeSlots,
@@ -20,50 +16,18 @@ function createRowId() {
   return `row-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-function dbTimeToMinutes(date: Date): number {
-  return date.getUTCHours() * 60 + date.getUTCMinutes();
-}
-
 export type RosterDraftResult =
   | { hasPublishedSchedule: true; draft: RosterSheetPayload; staffPresences: StaffPresence[] }
   | { hasPublishedSchedule: false; draft: null; staffPresences: [] };
 
-export async function generateRosterDraftFromShift(
-  dateKey: string,
-  nurseryId?: string,
-): Promise<RosterDraftResult> {
-  const resolvedNurseryId = await resolveNurseryId(nurseryId);
-  const targetMonth = dateKey.slice(0, 7);
-
-  const schedule = await prisma.shiftSchedule.findUnique({
-    where: {
-      nursery_id_target_month: {
-        nursery_id: resolvedNurseryId,
-        target_month: targetMonth,
-      },
-    },
-    select: { id: true, status: true },
-  });
-
-  const USABLE_STATUSES = ["published", "confirmed", "checking"] as const;
-  if (!schedule || !(USABLE_STATUSES as readonly string[]).includes(schedule.status)) {
+export async function generateRosterDraftFromShift(dateKey: string): Promise<RosterDraftResult> {
+  const shiftResult = await getConfirmedShiftPresences(dateKey);
+  if (!shiftResult.hasUsableSchedule) {
     return { hasPublishedSchedule: false, draft: null, staffPresences: [] };
   }
+  const slots = shiftResult.presences;
 
-  const slots = await prisma.shiftSlot.findMany({
-    where: {
-      shift_schedule_id: schedule.id,
-      work_date: parseDateToDb(dateKey),
-      shift_type_id: { not: null },
-    },
-    include: {
-      shift_type: {
-        select: { start_time: true, end_time: true },
-      },
-    },
-  });
-
-  const classrooms = sortClassrooms(await listClassrooms(resolvedNurseryId));
+  const classrooms = await getClassroomsForRoster();
 
   // staff_id → classroom_id: 主担当（main）を優先、なければ副担当（sub）の最初
   const staffClassroomMap = new Map<string, string>();
@@ -87,25 +51,23 @@ export async function generateRosterDraftFromShift(
 
   // Phase 1: ClassroomStaff 登録済みスタッフを担当クラスへ配置
   for (const slot of slots) {
-    if (!slot.shift_type) continue;
-    const classroomId = staffClassroomMap.get(slot.staff_id);
+    const classroomId = staffClassroomMap.get(slot.staffId);
     if (!classroomId) continue;
     staffPresences.push({
-      staffId: slot.staff_id,
+      staffId: slot.staffId,
       classroomId,
-      startMinutes: dbTimeToMinutes(slot.shift_type.start_time),
-      endMinutes: dbTimeToMinutes(slot.shift_type.end_time),
+      startMinutes: slot.startMinutes,
+      endMinutes: slot.endMinutes,
     });
   }
 
   // Phase 2: 未所属スタッフを空きの多いクラスへ柔軟配置
   if (classroomIds.length > 0) {
     for (const slot of slots) {
-      if (!slot.shift_type) continue;
-      if (staffClassroomMap.has(slot.staff_id)) continue;
+      if (staffClassroomMap.has(slot.staffId)) continue;
 
-      const startMin = dbTimeToMinutes(slot.shift_type.start_time);
-      const endMin = dbTimeToMinutes(slot.shift_type.end_time);
+      const startMin = slot.startMinutes;
+      const endMin = slot.endMinutes;
 
       // この時間帯に各クラスへ何人配置済みかカウント
       const staffCountByClassroom = new Map<string, number>(classroomIds.map((id) => [id, 0]));
@@ -127,7 +89,7 @@ export async function generateRosterDraftFromShift(
       }
 
       staffPresences.push({
-        staffId: slot.staff_id,
+        staffId: slot.staffId,
         classroomId: targetClassroomId,
         startMinutes: startMin,
         endMinutes: endMin,
