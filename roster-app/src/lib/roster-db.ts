@@ -1,9 +1,8 @@
 import type { Prisma } from "@/generated/prisma/client";
-import { listClassrooms } from "@/lib/classroom-db";
 import type { Classroom } from "@/lib/classroom-helpers";
-import { sortClassrooms } from "@/lib/classroom-helpers";
 import { prisma } from "@/lib/prisma";
 import { resolveNurseryId } from "@/lib/nursery-db";
+import { getClassroomsForRoster } from "@/lib/roster-boundary";
 import { migrateRosterAssignments, type RosterCellAssignment, type RosterSheetRow } from "@/lib/roster-helpers";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
@@ -76,7 +75,7 @@ export async function getRosterSheetByDate(
     return null;
   }
 
-  const classrooms = sortClassrooms(await listClassrooms(resolvedNurseryId));
+  const classrooms = await getClassroomsForRoster();
   return toRosterSheetPayload(row.payload, classrooms);
 }
 

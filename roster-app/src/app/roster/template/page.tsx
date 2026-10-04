@@ -1,15 +1,14 @@
 import { requireAdminOrManager } from "@/lib/page-auth";
-import { AdminShell } from "@/components/layout/admin-shell";
+import { RosterShell } from "@/components/layout/roster-shell";
 import { AppHeader } from "@/components/layout/app-header";
 import { RosterTemplateEditor } from "@/components/roster/roster-template-editor";
 import Link from "next/link";
 
 export default async function RosterTemplatePage() {
   const { account } = await requireAdminOrManager();
-  const role = account.role;
 
   return (
-    <AdminShell activeNav="roster" account={account} role={role} scrollPanelLayout>
+    <RosterShell activeNav="roster" account={account} scrollPanelLayout>
       <div className="no-print">
         <AppHeader
           actions={
@@ -26,6 +25,6 @@ export default async function RosterTemplatePage() {
       <div className="scroll-panel-host shift-roster-page">
         <RosterTemplateEditor />
       </div>
-    </AdminShell>
+    </RosterShell>
   );
 }

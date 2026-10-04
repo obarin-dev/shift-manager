@@ -1,0 +1,42 @@
+// roster-app専用のPrismaスキーマ。
+// 本体(shiftmanager)と同じPostgresを共有するが、rosterアプリが実際に
+// 読み書きするモデルだけを宣言する(Nurseryは外部キー参照のための最小限)。
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Nursery {
+  id         String   @id
+  name       String
+  created_at DateTime @default(now())
+
+  roster_sheets    RosterSheet[]
+  roster_templates RosterTemplate[]
+}
+
+model RosterSheet {
+  id         String   @id @default(cuid())
+  nursery_id String
+  nursery    Nursery  @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  entry_date DateTime @db.Date
+  payload    Json
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([nursery_id, entry_date])
+  @@index([nursery_id])
+}
+
+model RosterTemplate {
+  id         String   @id @default(cuid())
+  nursery_id String   @unique
+  nursery    Nursery  @relation(fields: [nursery_id], references: [id], onDelete: Cascade)
+  payload    Json
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
