@@ -1,2 +1,3 @@
-roster-app/src/generated/
+src/generated/
 node_modules/
+.next/
