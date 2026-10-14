@@ -25,7 +25,6 @@ export function SetupCompleteModal() {
       <div
         className="modal-panel onboarding-modal onboarding-modal--complete"
         role="dialog"
-        aria-modal="true"
         aria-labelledby="setup-complete-title"
       >
         <button type="button" className="modal-panel__close" aria-label="ダイアログを閉じる" onClick={dismiss}>

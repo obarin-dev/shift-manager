@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 3000;
+// 開発中の dev サーバ (3000) と衝突しないよう E2E 専用ポートを使う。
+// 同じポートだと reuseExistingServer によって古いコードに繋がりうる。
+const PORT = 3100;
 const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({
@@ -29,7 +31,7 @@ export default defineConfig({
   ],
   // dev サーバを Playwright 側で起動する。手動起動前提にすると再現できない
   webServer: {
-    command: "npm run dev",
+    command: `npm run dev -- -p ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
