@@ -21,9 +21,24 @@ test.describe("ログイン画面", () => {
 
     // admin / manager は園情報ハブへ飛ぶ（login-form.tsx の分岐）
     await expect(page).toHaveURL(/\/nursery$/);
-    await expect(page.getByRole("heading", { name: "基本設定" })).toBeVisible();
+
+    // 初期設定が完了済みの場合、初回アクセス時だけ完了モーダルが出る。
+    // 閉じたかどうかは localStorage に持つため、クリーンな
+    // ブラウザコンテキストで動く E2E では毎回表示される。
+    const completeModal = page.getByRole("dialog", {
+      name: "初期設定が完了しました！",
+    });
+    await expect(completeModal).toBeVisible();
+    await completeModal.getByRole("button", { name: "閉じる", exact: true }).click();
+    await expect(completeModal).toBeHidden();
 
     await captureScreen(page, "nursery-admin");
+
+    // toBeVisible() は「他の要素に覆われているか」を見ないため、
+    // モーダルの裏にあっても通ってしまう。実際にクリックして
+    // 操作可能であることまで確認する。
+    await page.getByRole("link", { name: /基本設定/ }).click();
+    await expect(page).toHaveURL(/\/nursery\/settings$/);
   });
 
   test("staff でログインすると /home に遷移する", async ({ page }) => {
