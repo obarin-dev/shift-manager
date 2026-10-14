@@ -45,7 +45,6 @@ export function RosterShell({
         <div className="home-layout">
           <AppSidebar
             brandTitle="Shift Manager"
-            displayName={account.email}
             email={account.email}
             navItems={navItems}
             roleLabel={account.roleLabel}

@@ -21,13 +21,15 @@ export type RosterDraftResult =
   | { hasPublishedSchedule: false; draft: null; staffPresences: [] };
 
 export async function generateRosterDraftFromShift(dateKey: string): Promise<RosterDraftResult> {
-  const shiftResult = await getConfirmedShiftPresences(dateKey);
+  // 本体アプリへの独立した2つのHTTP呼び出しなので並列で取得する
+  const [shiftResult, classrooms] = await Promise.all([
+    getConfirmedShiftPresences(dateKey),
+    getClassroomsForRoster(),
+  ]);
   if (!shiftResult.hasUsableSchedule) {
     return { hasPublishedSchedule: false, draft: null, staffPresences: [] };
   }
   const slots = shiftResult.presences;
-
-  const classrooms = await getClassroomsForRoster();
 
   // staff_id → classroom_id: 主担当（main）を優先、なければ副担当（sub）の最初
   const staffClassroomMap = new Map<string, string>();
