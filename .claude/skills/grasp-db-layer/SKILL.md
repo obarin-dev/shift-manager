@@ -12,7 +12,7 @@ DB操作は `src/lib/*-db.ts` に集約し、ページや API route から直接
 |---------|----------------|
 | `staff-db.ts` | Staff の CRUD・staff_login_id の採番 |
 | `shift-schedule-db.ts` | ShiftSchedule・ShiftSlot の CRUD |
-| `roster-db.ts` | RosterSheet（日次体制表）の永続化 |
+| `roster-app/src/lib/roster-db.ts` | RosterSheet（日次体制表）の永続化。体制表は roster-app として独立しており本体には無い |
 | `staff-request-db.ts` | StaffRequest の CRUD・月次グループ取得 |
 | `calendar-entry-db.ts` | CalendarEntry（行事・特別営業日）の CRUD |
 | `classroom-db.ts` | Classroom の CRUD |
@@ -32,7 +32,7 @@ DB操作は `src/lib/*-db.ts` に集約し、ページや API route から直接
     → mock-*.ts（ドメイン型の定義元）
 ```
 
-`*-db.ts` 同士の相互依存は最小限にする。`roster-db.ts` が `classroom-db.ts` を呼ぶケースはあるが、循環は発生していない。
+`*-db.ts` 同士の相互依存は最小限にする。循環は発生していない。体制表は roster-app へ切り出されたため、本体の `*-db.ts` から参照されることはない。
 
 ## 重要な設計判断
 

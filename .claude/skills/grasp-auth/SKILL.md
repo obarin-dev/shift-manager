@@ -14,7 +14,7 @@ JWT セッションによる認証・認可の仕組みと、ページ・API rou
 | `user-db.ts` | ユーザーのDB検索とパスワード検証（bcrypt）。`AuthAccount` 型の組み立て |
 | `page-auth.ts` | Server Component から呼ぶ `requireAuth()`。未認証なら `/login` へリダイレクト |
 | `middleware.ts` | 全ルートを保護。未認証リクエストを `/login`（ページ）または 401（API）へ振り分け |
-| `mock-auth.ts` | `UserRole` 型の定義とデモアカウント定数。ロール判定ロジックはここを起点にする |
+| `auth-session.ts` | `UserRole` 型の定義。ロール判定ロジックはここを起点にする |
 | `/api/auth/login` | メール・パスワード検証 → JWT 発行 → クッキーセット |
 | `/api/auth/logout` | クッキーを空文字・maxAge=0 で上書きして無効化 |
 
@@ -39,7 +39,7 @@ middleware.ts
 **`AuthAccount` 型でセッションデータを拡張する**
 JWT ペイロード（`SessionData`）には `userId` / `nurseryId` / `role` / `email` の最小限しか入れない。表示名やスタッフIDなど追加情報が必要なときは `getAuthAccountByUserId()` でDBから取得し、`AuthAccount` 型として使う。
 
-**`mock-auth.ts` はデモ用定数の置き場**
+**デモアカウントは `prisma/seed.ts` が投入する**
 `UserRole` 型の定義がここにあるが、実際の認証ロジックとは無関係。デモアカウント（`MOCK_ACCOUNTS`）とホーム画面のコンテンツ定義（`HOME_CONTENT`）が同居している歴史的な理由による。新しいロール制御を書くときは `UserRole` 型だけ参照し、`MOCK_ACCOUNTS` には依存しない。
 
 ## 用語定義

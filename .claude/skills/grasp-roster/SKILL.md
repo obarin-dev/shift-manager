@@ -6,24 +6,35 @@
 
 体制表は「特定の1日におけるクラス別・時間帯別の職員配置」を管理するもの。月次シフト表（ShiftSchedule）とは独立した別エンティティで、7時〜19時の縦軸×クラスの横軸のグリッドに職員を配置する。体制表は日ごとに1件保存され、保存形式は JSON ペイロードで柔軟なレイアウト変更に対応している。
 
-## 責務の分担
+## どこにあるか
+
+**体制表の作成機能は roster-app（ポート 3001 の独立 Next.js アプリ）へ切り出されている。** 本体に残っているのは表示用のコンポーネントのみ。
 
 | ファイル | 責務 |
 |---------|------|
-| `roster-db.ts` | RosterSheet の取得・保存（upsert）。JSON ペイロードの読み書きと `migrateRosterAssignments()` の適用 |
-| `mock-roster.ts` | RosterSheet の型定義・ペイロード操作ユーティリティ・旧データのマイグレーション関数群 |
+| `roster-app/src/lib/roster-db.ts` | RosterSheet の取得・保存（upsert）。JSON ペイロードの読み書きと `migrateRosterAssignments()` の適用 |
+| `roster-app/src/lib/roster-helpers.ts` | RosterSheet の型定義・ペイロード操作ユーティリティ・旧データのマイグレーション関数群 |
+| `roster-app/src/lib/roster-boundary.ts` | 本体の API（クラス一覧・シフト表）を HTTP 経由で呼ぶ境界 |
+| `roster-app/src/app/roster` | 管理者向け体制表作成ページ |
+| `roster-app/src/app/api/roster` | 体制表の取得・保存 API |
+
+本体（`src/`）側に残るもの:
+
+| ファイル | 責務 |
+|---------|------|
+| `roster-helpers.ts` | 型とペイロード操作。`/home` の読み取り専用グリッドが使う |
 | `shift-schedule-class-sections.ts` | 月次シフト表の縦軸をクラス別にグループ化する構造を構築。体制表とは別の表示用ロジック |
-| `/app/roster` | 管理者向け体制表作成ページ |
-| `/app/api/roster` | 体制表の取得・保存 API |
 
 ## 依存方向
 
 ```
-roster-db.ts
-  → mock-roster.ts（型・マイグレーション）
-  → classroom-db.ts（クラス一覧取得）
-  → prisma.ts
+roster-app/src/lib/roster-db.ts
+  → roster-app/src/lib/roster-helpers.ts（型・マイグレーション）
+  → roster-app/src/lib/roster-boundary.ts（本体の API を HTTP で参照）
+  → prisma.ts（roster-app 専用スキーマ。DB は本体と同じ Postgres を共有）
 ```
+
+roster-app は本体の DB 層を直接呼ばず、クラス一覧やシフト表は HTTP 経由で取得する。認証は `AUTH_SECRET` を共有し、本体が発行した JWT セッション Cookie をそのまま検証する。
 
 ShiftSchedule と RosterSheet は DB レベルで独立しており、相互参照はない。体制表ページがシフト表データを参照することはあるが、永続化のフローは別。
 

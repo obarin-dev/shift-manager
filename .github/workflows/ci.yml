@@ -21,6 +21,9 @@ jobs:
 
       - run: npm run typecheck
 
+      - name: Skill の鮮度チェック
+        run: npm run check:skills
+
       - run: npm test
 
       - name: Build

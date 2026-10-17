@@ -12,7 +12,7 @@ ShiftSchedule は「ある保育園のある月のシフト表」を表すエン
 |---------|------|
 | `shift-schedule-db.ts` | ShiftSchedule・ShiftSlot の DB CRUD のみ。ビジネスロジックは持たない |
 | `shift-schedule-ai.ts` | AI生成の全オーケストレーション。職員・シフト区分・休園日・行事を集約してプロンプトを構築し、Gemini を呼び出し、結果を検証・補完してスタッフ希望をマージする |
-| `mock-shift-schedule.ts` | ルールベースのフォールバック生成ロジックと、`target_month` 文字列のパースや日付キー生成などのユーティリティ |
+| `shift-helpers.ts` | ルールベースのフォールバック生成ロジックと、`target_month` 文字列のパースや日付キー生成などのユーティリティ |
 | `shift-schedule-options.ts` | shift_type 値の正規化（不正値を `"off"` に変換） |
 | `shift-schedule-class-sections.ts` | 日次体制表（RosterSheet）向けのクラス別セクション構築 |
 
