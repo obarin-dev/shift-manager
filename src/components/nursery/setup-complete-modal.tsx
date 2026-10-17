@@ -22,8 +22,12 @@ export function SetupCompleteModal() {
 
   return (
     <div className="modal-backdrop">
-      <div className="modal-panel onboarding-modal onboarding-modal--complete">
-        <button type="button" className="modal-panel__close" aria-label="閉じる" onClick={dismiss}>
+      <div
+        className="modal-panel onboarding-modal onboarding-modal--complete"
+        role="dialog"
+        aria-labelledby="setup-complete-title"
+      >
+        <button type="button" className="modal-panel__close" aria-label="ダイアログを閉じる" onClick={dismiss}>
           ✕
         </button>
         <div className="onboarding-complete">
@@ -32,7 +36,9 @@ export function SetupCompleteModal() {
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h2 className="onboarding-complete__title">初期設定が完了しました！</h2>
+          <h2 className="onboarding-complete__title" id="setup-complete-title">
+            初期設定が完了しました！
+          </h2>
           <p className="onboarding-complete__desc">さっそくシフト表の作成を始めましょう。</p>
           <div className="onboarding-complete__actions">
             <a href="/shifts" className="primary-button">シフト表を作成する →</a>
