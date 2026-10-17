@@ -14,9 +14,9 @@
     "db:seed:staff": "npx tsx prisma/seed.ts",
     "db:import:shift-json": "npx tsx scripts/import-shift-schedule-from-json.ts",
     "db:seed:may-shift": "npx tsx scripts/seed-may-shift-schedule.ts",
-    "db:import:roster-json": "npx tsx scripts/import-roster-from-json.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dev:roster": "npm --prefix roster-app run dev"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"

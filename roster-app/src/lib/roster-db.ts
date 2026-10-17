@@ -1,9 +1,8 @@
 import type { Prisma } from "@/generated/prisma/client";
-import { listClassrooms } from "@/lib/classroom-db";
 import type { Classroom } from "@/lib/classroom-helpers";
-import { sortClassrooms } from "@/lib/classroom-helpers";
 import { prisma } from "@/lib/prisma";
 import { resolveNurseryId } from "@/lib/nursery-db";
+import { getClassroomsForRoster } from "@/lib/roster-boundary";
 import { migrateRosterAssignments, type RosterCellAssignment, type RosterSheetRow } from "@/lib/roster-helpers";
 import { formatDbDate, parseDateToDb } from "@/lib/nursery-time";
 
@@ -58,11 +57,10 @@ export function normalizeRosterSheetPayload(
   };
 }
 
-export async function getRosterSheetByDate(
-  dateKey: string,
-  nurseryId?: string,
-): Promise<RosterSheetPayload | null> {
-  const resolvedNurseryId = await resolveNurseryId(nurseryId);
+// 境界API(classrooms)は本体の既定の園しか返せないため、園の指定はあえて受け付けない。
+// 体制表と解釈用のクラス一覧が別々の園を指さないようにするため。
+export async function getRosterSheetByDate(dateKey: string): Promise<RosterSheetPayload | null> {
+  const resolvedNurseryId = await resolveNurseryId();
   const row = await prisma.rosterSheet.findUnique({
     where: {
       nursery_id_entry_date: {
@@ -76,16 +74,12 @@ export async function getRosterSheetByDate(
     return null;
   }
 
-  const classrooms = sortClassrooms(await listClassrooms(resolvedNurseryId));
+  const classrooms = await getClassroomsForRoster();
   return toRosterSheetPayload(row.payload, classrooms);
 }
 
-export async function saveRosterSheet(
-  dateKey: string,
-  payload: RosterSheetPayload,
-  nurseryId?: string,
-) {
-  const resolvedNurseryId = await resolveNurseryId(nurseryId);
+export async function saveRosterSheet(dateKey: string, payload: RosterSheetPayload) {
+  const resolvedNurseryId = await resolveNurseryId();
   const entryDate = parseDateToDb(dateKey);
   const jsonPayload = payload as unknown as Prisma.InputJsonValue;
 

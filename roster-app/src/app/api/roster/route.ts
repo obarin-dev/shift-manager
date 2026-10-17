@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { listClassrooms } from "@/lib/classroom-db";
-import { sortClassrooms } from "@/lib/classroom-helpers";
+import { getClassroomsForRoster } from "@/lib/roster-boundary";
 import {
   getRosterSheetByDate,
   normalizeRosterSheetPayload,
@@ -56,7 +55,7 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const classrooms = sortClassrooms(await listClassrooms());
+    const classrooms = await getClassroomsForRoster();
     const payload = normalizeRosterSheetPayload(body, classrooms);
     if (!payload) {
       return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
