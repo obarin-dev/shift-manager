@@ -74,7 +74,15 @@ function makeDeleteRequest(): Request {
   });
 }
 
+// テストが使う日付 (2026-07-10) を常に「未来」として扱うため現在時刻を固定する。
+// 固定しないと、その日付が過ぎた時点で _shared.ts の
+// `date <= getTodayJst()` に引っかかり全ケースが 400 になる。
+// Date のみ偽装し、タイマー類は実物のままにする。
+const FIXED_NOW = new Date("2026-07-01T00:00:00+09:00");
+
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(FIXED_NOW);
   vi.clearAllMocks();
   vi.spyOn(console, "error").mockImplementation(() => {});
   vi.mocked(getSession).mockResolvedValue(STAFF_SESSION);
@@ -85,6 +93,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 // ─────────────────────────────────────────────
