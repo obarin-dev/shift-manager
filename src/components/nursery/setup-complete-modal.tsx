@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useModalA11y } from "@/hooks/use-modal-a11y";
 
 const DISMISSED_KEY = "setup-complete-dismissed";
 
 export function SetupCompleteModal() {
   const [visible, setVisible] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (localStorage.getItem(DISMISSED_KEY) !== "1") {
@@ -13,18 +15,22 @@ export function SetupCompleteModal() {
     }
   }, []);
 
-  if (!visible) return null;
-
-  const dismiss = () => {
+  const dismiss = useCallback(() => {
     localStorage.setItem(DISMISSED_KEY, "1");
     setVisible(false);
-  };
+  }, []);
+
+  useModalA11y({ ref: panelRef, isOpen: visible, onClose: dismiss });
+
+  if (!visible) return null;
 
   return (
     <div className="modal-backdrop">
       <div
+        ref={panelRef}
         className="modal-panel onboarding-modal onboarding-modal--complete"
         role="dialog"
+        aria-modal="true"
         aria-labelledby="setup-complete-title"
       >
         <button type="button" className="modal-panel__close" aria-label="ダイアログを閉じる" onClick={dismiss}>
