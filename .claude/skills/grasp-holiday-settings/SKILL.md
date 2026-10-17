@@ -13,7 +13,7 @@
 | `holiday-settings.ts` | `isClosedDate()` の実装。3ソースを合成して休園日を判定 |
 | `nursery-holiday-settings-db.ts` | `NurseryRestSettings` の取得・更新。`Nursery` テーブルと `CalendarEntry(closure)` を合わせて1つの設定オブジェクトとして返す |
 | `japanese-public-holidays.ts` | 年ごとの祝日データをハードコードで保持。`getJapanesePublicHolidays(year)` で取得 |
-| `mock-nursery-info.ts` | `NurseryRestSettings` / `NurseryClosedDay` の型定義 |
+| `nursery-helpers.ts` | `NurseryRestSettings` / `NurseryClosedDay` の型定義 |
 
 ## 依存方向
 
